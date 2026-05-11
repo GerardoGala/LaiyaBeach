@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Laiya Beach ILCA Simulator</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Left Side: Map View -->
+    <div id="mapView" class="view">
+      <div id="map"></div>
+      <div id="windInfo">Wind: Loading...</div>
+      <div id="timer">Timer: 0s</div>
+    </div>
+
+    <!-- Right Side: Controls View -->
+    <div id="controlsView" class="view">
+      <!-- Challenge Screen -->
+      <div id="challengeScreen">
+        <h2>Challenge</h2>
+        <p>Sail from Laiya Beach to the moored boat 3 km offshore and round it.</p>
+        <button onclick="showRigging()">Rig</button>
+      </div>
+
+      <!-- Standing Rig Controls -->
+      <div id="riggingScreen" style="display:none;">
+        <h2>Rigging Setup</h2>
+        <label>Vang <input type="range" id="vang" min="0" max="100"></label>
+        <label>Cunningham <input type="range" id="cunningham" min="0" max="100"></label>
+        <label>Outhaul <input type="range" id="outhaul" min="0" max="100"></label>
+        <button onclick="launchBoat()">Launch</button>
+      </div>
+
+      <!-- Running Rig Controls -->
+      <div id="runningRigScreen" style="display:none;">
+        <h2>Running Rig</h2>
+        <label>Mainsheet <input type="range" id="sheet" min="0" max="100"></label>
+        <label>Rudder <input type="range" id="rudder" min="-45" max="45"></label>
+        <button onclick="showRigging()">Controls</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
