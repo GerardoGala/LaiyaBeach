@@ -1,0 +1,23 @@
+{
+  "laiyaBeach": {
+    "latitude": 13.676,
+    "longitude": 121.437
+  },
+  "markBouy": {
+    "latitude": 13.690,
+    "longitude": 121.450
+  },
+  "updateIntervals": {
+    "windApi": 30000,
+    "ilcaBoat": 30000
+  },
+  "weatherApiKey": "2ae1f247f2de797baacea07fe09b19b6",
+  "mapOptions": {
+    "zoom": 14,
+    "mapType": "terrain"
+  },
+  "simulation": {
+    "boatSpeedFactor": 1.0,
+    "windVectorLength": 0.01
+  }
+}

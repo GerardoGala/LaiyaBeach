@@ -4,42 +4,53 @@
   <meta charset="UTF-8">
   <title>Laiya Beach ILCA Simulator</title>
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
-  <div id="app">
-    <!-- Left Side: Map View -->
-    <div id="mapView" class="view">
-      <div id="map"></div>
-      <div id="windInfo">Wind: Loading...</div>
-      <div id="timer">Timer: 0s</div>
-    </div>
 
-    <!-- Right Side: Controls View -->
-    <div id="controlsView" class="view">
-      <!-- Challenge Screen -->
-      <div id="challengeScreen">
-        <h2>Challenge</h2>
-        <p>Sail from Laiya Beach to the moored boat 3 km offshore and round it.</p>
-        <button onclick="showRigging()">Rig</button>
-      </div>
+<!-- Toolbar at top -->
+  <div id="toolbar">
+<!-- Toolbar -->
+<div id="toolbar">
+  <span class="material-icons" id="riggingIcon">build</span>
+  <span class="material-icons" id="launchIcon">sailing</span>
+  <span class="material-icons" id="runningIcon">directions_boat</span>
+  <span class="material-icons" id="leaderboardIcon">leaderboard</span>
+</div>
+  </div>
 
-      <!-- Standing Rig Controls -->
-      <div id="riggingScreen" style="display:none;">
-        <h2>Rigging Setup</h2>
-        <label>Vang <input type="range" id="vang" min="0" max="100"></label>
-        <label>Cunningham <input type="range" id="cunningham" min="0" max="100"></label>
-        <label>Outhaul <input type="range" id="outhaul" min="0" max="100"></label>
-        <button onclick="launchBoat()">Launch</button>
-      </div>
+  <!-- Fullscreen Map -->
+  <div id="map"></div>
 
-      <!-- Running Rig Controls -->
-      <div id="runningRigScreen" style="display:none;">
-        <h2>Running Rig</h2>
-        <label>Mainsheet <input type="range" id="sheet" min="0" max="100"></label>
-        <label>Rudder <input type="range" id="rudder" min="-45" max="45"></label>
-        <button onclick="showRigging()">Controls</button>
-      </div>
-    </div>
+  <!-- Modals -->
+  <div id="riggingModal" class="modal">
+    <h2>Rigging Controls</h2>
+    <label>Vang <input type="range"></label>
+    <label>Cunningham <input type="range"></label>
+    <label>Outhaul <input type="range"></label>
+    <button onclick="closeModal('riggingModal')">Close</button>
+  </div>
+
+  <div id="launchModal" class="modal">
+    <h2>Launch Command</h2>
+    <button onclick="launchBoat()">Launch ILCA</button>
+    <button onclick="closeModal('launchModal')">Close</button>
+  </div>
+
+  <div id="runningModal" class="modal">
+    <h2>Running Controls</h2>
+    <label>Mainsheet <input type="range"></label>
+    <label>Rudder <input type="range"></label>
+    <button onclick="closeModal('runningModal')">Close</button>
+  </div>
+
+  <div id="leaderboardModal" class="modal">
+    <h2>Top Ten Finishers</h2>
+    <ol>
+      <li>Player 1</li>
+      <li>Player 2</li>
+      <!-- etc -->
+    </ol>
+    <button onclick="closeModal('leaderboardModal')">Close</button>
   </div>
 
   <script src="js/app.js"></script>

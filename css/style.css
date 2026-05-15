@@ -1,0 +1,103 @@
+/* Global dark theme */
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #1e1e1e; /* deep gray */
+  color: #d4d4d4;            /* light gray text */
+  display: flex;
+  height: 100vh;
+}
+
+/* Map on left, controls on right */
+#mapView {
+  flex: 3;
+  background: #1e1e1e;
+}
+
+#controlsView {
+  flex: 1;
+  background: #252526; /* slightly lighter gray */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Toolbar icons */
+#toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+#toolbar img {
+  width: 48px;
+  height: 48px;
+  margin: 12px;
+  cursor: pointer;
+  filter: invert(80%);
+  transition: transform 0.2s, filter 0.2s;
+}
+
+#toolbar img:hover {
+  transform: scale(1.1);
+  filter: invert(100%) sepia(100%) saturate(200%) hue-rotate(180deg);
+}
+
+/* Modal styling */
+.modal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #252526;
+  padding: 20px;
+  border: 1px solid #3c3c3c;
+  border-radius: 6px;
+  z-index: 1000;
+  width: 320px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+}
+
+.modal h2 {
+  color: #007acc; /* VS Code blue accent */
+}
+
+#toolbar {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+}
+
+.material-icons {
+  font-size: 48px;
+  color: #d4d4d4;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.material-icons:hover {
+  transform: scale(1.2);
+  color: #007acc; /* VS Code blue accent */
+}
+
+.modal button {
+  background: #007acc;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.modal button:hover {
+  background: #3399ff;
+}
