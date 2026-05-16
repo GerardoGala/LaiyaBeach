@@ -1,3 +1,4 @@
+// app.js
 let config = {};
 let map;
 
@@ -45,8 +46,17 @@ async function getWindData() {
     const windSpeed = data.wind.speed;   // m/s
     const windDirection = data.wind.deg; // degrees
 
+    // ✅ Get local time in Laiya Beach (Asia/Manila timezone)
+    const now = new Date();
+    const localTime = now.toLocaleTimeString("en-PH", {
+      timeZone: "Asia/Manila",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
+
     document.getElementById("windInfo").innerText =
-      `Wind: ${windSpeed} m/s @ ${windDirection}°`;
+      `Wind: ${windSpeed.toFixed(2)} m/s @ ${windDirection}° | Time: ${localTime}`;
 
     // TODO: update wind vector overlay on map
   } catch (err) {
@@ -54,10 +64,9 @@ async function getWindData() {
   }
 }
 
-
 function initWeatherLoop() {
-//  getWindData(); // initial call
-//  setInterval(getWindData, config.updateIntervals.windApi);
+  getWindData(); // initial call
+  setInterval(getWindData, config.updateIntervals.windApi);
 }
 
 // --- Boat Loop (placeholder for ILCA updates) ---
