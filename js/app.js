@@ -1,4 +1,8 @@
 // app.js
+
+// Declare L as coming from Leaflet
+/* eslint-disable no-undef */
+
 let config = {};
 let map;
 
@@ -6,7 +10,15 @@ let map;
 async function loadConfig() {
   try {
     const response = await fetch('config.json');
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     config = await response.json();
+    console.log("config object at initMap:", config);
+console.log("config.markBuoy at initMap:", config.markBuoy);
+
+    console.log("Loaded config:", config);  // 👀 should show full object
+    console.log("markBuoy:", config.markBuoy); // 👀 should show lat/lng
+
+    // ✅ Only call after config is ready
     initMap();
     initWeatherLoop();
     initBoatLoop();
@@ -15,26 +27,42 @@ async function loadConfig() {
   }
 }
 
+
 function initMap() {
-  // Coordinates from config
-  const laiya = {
-    lat: config.laiyaBeach.latitude,
-    lng: config.laiyaBeach.longitude
-  };
+    if (!config.laiyaBeach || !config.markBuoy) {
+    console.error("Missing laiyaBeach or markBuoy in config.json:", config);
+    return;
+  }
+  const laiya = [config.laiyaBeach.latitude, config.laiyaBeach.longitude];
+  const buoy = [config.markBuoy.latitude, config.markBuoy.longitude];
 
-  // Create the map
+  // Create Leaflet map
+  map = L.map('map').setView(laiya, config.mapOptions.zoom);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // ILCA launch point marker
+  L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
+
+  // Buoy marker
+  L.marker(buoy).addTo(map).bindPopup("Mark Buoy");
+}
 
 
-  // Add a marker for ILCA launch point
+
+
+
+ 
 
 
   // Add buoy marker
   const buoy = {
-    lat: config.markBouy.latitude,
-    lng: config.markBouy.longitude
+
   };
 
-}
+
 
 // --- Weather API ---
 async function getWindData() {
