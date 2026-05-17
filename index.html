@@ -2,71 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Laiya Beach ILCA Simulator</title>
+  <title>Welcome to Laiya Beach ILCA Simulator</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
-<body>
-  <!-- Left Pane -->
-  <div class="left-pane">
-    <!-- Icon Tabs (Top Left) -->
-    <div class="tabs">
-      <span class="material-icons tab-button active" data-tab="standing" data-label="Standing Rig">build</span>
-      <span class="material-icons tab-button" data-tab="launch" data-label="Launch">sailing</span>
-      <span class="material-icons tab-button" data-tab="leaderboard" data-label="Leaderboard">leaderboard</span>
-      <span class="material-icons tab-button" data-tab="help" data-label="Help">help_outline</span>
-    </div>
-
-    <!-- Tab Contents -->
-    <div id="standing" class="tab-content active">
-      <h2>Standing Rig Controls</h2>
-      <label>Vang <input type="range"></label><br>
-      <label>Cunningham <input type="range"></label><br>
-      <label>Outhaul <input type="range"></label>
-    </div>
-
-    <div id="launch" class="tab-content">
-      <h2>Running Rig Controls</h2>
-      <label>Mainsheet <input type="range"></label><br>
-      <label>Rudder <input type="range"></label>
-    </div>
-
-    <div id="leaderboard" class="tab-content">
-      <h2>Top Ten Finishers</h2>
-      <ol>
-        <li>Player 1</li>
-        <li>Player 2</li>
-        <!-- etc -->
-      </ol>
-    </div>
-
-    <div id="help" class="tab-content">
-      <h2>Help</h2>
-      <p>Instructions on how to use the simulator...</p>
-    </div>
-
-    <!-- Permanent Status (Bottom Left) -->
-    <div class="status">
-      <h2>Wind</h2>
-      <p id="wind">Wind data loading...</p>
-    </div>
-    <div class="status">
-      <h2>ILCA</h2>
-      <p id="ilca">ILCA data loading...</p>
-    </div>
+<body class="welcome">
+  <div class="welcome-container">
+    <h1>🏖️ Laiya Beach ILCA Simulator</h1>
+    <p>Experience the thrill of sailing with interactive rig controls, live wind data, and a dynamic map view.</p>
+    <button onclick="location.href='game.html'">Enter Simulator</button>
   </div>
-
-  <!-- Right Pane (Map) -->
-  <div class="right-pane">
-    <div id="map"></div>
-  </div>
-
-  <!-- Load Leaflet -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- Root orchestrator as ES module -->
-  <script type="module" src="js/app.js"></script>
-  <!-- Tab logic separated -->
-  <script type="module" src="js/tabs.js"></script>
 </body>
 </html>

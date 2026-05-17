@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Laiya Beach ILCA Simulator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+  <!-- Left Pane -->
+  <div class="left-pane">
+    <!-- Icon Buttons (Top Left) -->
+    <div class="tabs">
+      <span class="material-icons open-dialog" data-target="leaderboardDialog">leaderboard</span>
+      <span class="material-icons open-dialog" data-target="helpDialog">help_outline</span>
+    </div>
+
+    <!-- Rigging Controls -->
+    <div id="rigging" class="tab-content active">
+      <h2>Standing Rig Controls</h2>
+      <label>Vang <input type="range"></label><br>
+      <label>Cunningham <input type="range"></label><br>
+      <label>Outhaul <input type="range"></label><br>
+      <h2>Running Rig Controls</h2>
+      <label>Mainsheet <input type="range"></label><br>
+      <label>Rudder <input type="range"></label>
+    </div>
+
+    <!-- Permanent Status (Bottom Left) -->
+    <div class="status">
+      <h2>Wind</h2>
+      <p id="wind">Wind data loading...</p>
+    </div>
+    <div class="status">
+      <h2>ILCA</h2>
+      <p id="ilca">ILCA data loading...</p>
+    </div>
+  </div>
+
+  <!-- Right Pane (Map) -->
+  <div class="right-pane">
+    <div id="map"></div>
+    <button id="mapLaunchBtn" class="map-launch">Launch</button>
+  </div>
+
+  <!-- Fullscreen Dialogs -->
+  <div id="helpDialog" class="dialog">
+    <div class="dialog-content">
+      <h2>Help</h2>
+      <p>Instructions on how to use the simulator...</p>
+      <button class="close-dialog" data-target="helpDialog">Close</button>
+    </div>
+  </div>
+
+  <div id="leaderboardDialog" class="dialog">
+    <div class="dialog-content">
+      <h2>Top Ten Finishers</h2>
+      <ol>
+        <li>Player 1</li>
+        <li>Player 2</li>
+        <!-- etc -->
+      </ol>
+      <button class="close-dialog" data-target="leaderboardDialog">Close</button>
+    </div>
+  </div>
+
+  <!-- Load Leaflet -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Root orchestrator as ES module -->
+  <script type="module" src="js/app.js"></script>
+  <!-- Tab/Dialog logic separated -->
+  <script type="module" src="js/tabs.js"></script>
+</body>
+</html>
