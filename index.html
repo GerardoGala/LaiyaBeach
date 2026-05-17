@@ -6,95 +6,6 @@
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #1e1e1e;
-      color: #ddd;
-      height: 100vh;
-      display: flex;
-      flex-direction: row;
-    }
-
-    .left-pane {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: #252525;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: space-around;
-      background: #2a2a2a;
-      border-bottom: 2px solid #333;
-      padding: 10px;
-    }
-
-    .tab-button {
-      cursor: pointer;
-      color: #ddd;
-      font-size: 32px;
-      position: relative;
-    }
-
-    .tab-button:hover {
-      color: #fff;
-    }
-
-    /* Tooltip styling */
-    .tab-button::after {
-      content: attr(data-label);
-      position: absolute;
-      bottom: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #444;
-      color: #fff;
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-
-    .tab-button:hover::after {
-      opacity: 1;
-    }
-
-    .tab-content {
-      flex: 2;
-      padding: 15px;
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .status {
-      flex: 1;
-      padding: 15px;
-      border-top: 2px solid #333;
-    }
-
-    .status h2 {
-      margin-top: 0;
-      color: #fff;
-    }
-
-    .right-pane {
-      flex: 3;
-      display: flex;
-    }
-
-    #map {
-      flex: 1;
-    }
-  </style>
 </head>
 <body>
   <!-- Left Pane -->
@@ -140,7 +51,7 @@
       <h2>Wind</h2>
       <p id="wind">Wind data loading...</p>
     </div>
-      <div class="status">
+    <div class="status">
       <h2>ILCA</h2>
       <p id="ilca">ILCA data loading...</p>
     </div>

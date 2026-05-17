@@ -3,7 +3,7 @@ let position;
 
 export function initBoatLoop(map, config) {
   // start at launch point
-  position = [config.laiyaBeach.latitude, config.laiyaBeach.longitude];
+  position = [13.669100, 121.401117];
 
   setInterval(() => {
     heading = (heading + 5) % 360; // rotate mockup

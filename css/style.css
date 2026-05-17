@@ -2,33 +2,106 @@
 body {
   margin: 0;
   font-family: "Segoe UI", sans-serif;
-  background-color: #1e1e1e; /* deep gray */
-  color: #d4d4d4;            /* light gray text */
-  display: flex;
+  background-color: #1e1e1e;
+  color: #d4d4d4;
   height: 100vh;
+  display: flex;
+  flex-direction: row;
 }
 
-/* Map on left, controls on right */
-#mapView {
-  flex: 3;
-  background: #1e1e1e;
-}
-
-#controlsView {
+/* Left Pane */
+.left-pane {
   flex: 1;
-  background: #252526; /* slightly lighter gray */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 1rem;
+  background: #252525;
 }
 
-/* Toolbar icons */
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  background: #2a2a2a;
+  border-bottom: 2px solid #333;
+  padding: 10px;
+}
+
+.tab-button {
+  cursor: pointer;
+  color: #d4d4d4;
+  font-size: 32px;
+  position: relative;
+}
+
+.tab-button:hover {
+  color: #fff;
+}
+
+/* Tooltip styling */
+.tab-button::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #444;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.tab-button:hover::after {
+  opacity: 1;
+}
+
+/* Tab content */
+.tab-content {
+  flex: 2;
+  padding: 15px;
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Status section */
+.status {
+  flex: 1;
+  padding: 15px;
+  border-top: 2px solid #333;
+}
+
+.status h2 {
+  margin-top: 0;
+  color: #fff;
+}
+
+/* Right Pane */
+.right-pane {
+  flex: 3;
+  display: flex;
+}
+
+#map {
+  flex: 1;
+}
+
+/* Toolbar icons (optional future use) */
 #toolbar {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 1rem;
+  gap: 20px;
+  z-index: 1000;
 }
 
 #toolbar img {
@@ -43,6 +116,19 @@ body {
 #toolbar img:hover {
   transform: scale(1.1);
   filter: invert(100%) sepia(100%) saturate(200%) hue-rotate(180deg);
+}
+
+/* Material icons */
+.material-icons {
+  font-size: 48px;
+  color: #d4d4d4;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.material-icons:hover {
+  transform: scale(1.2);
+  color: #007acc;
 }
 
 /* Modal styling */
@@ -62,30 +148,7 @@ body {
 }
 
 .modal h2 {
-  color: #007acc; /* VS Code blue accent */
-}
-
-#toolbar {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  z-index: 1000;
-}
-
-.material-icons {
-  font-size: 48px;
-  color: #d4d4d4;
-  cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
-}
-
-.material-icons:hover {
-  transform: scale(1.2);
-  color: #007acc; /* VS Code blue accent */
+  color: #007acc;
 }
 
 .modal button {
