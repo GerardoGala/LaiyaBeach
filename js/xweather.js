@@ -1,20 +1,15 @@
-export async function initWind() {
-  // Step 1: Define constants
-  const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
-  const latitude = 13.676;
-  const longitude = 121.437;
-  const apiKey = "2ae1f247f2de797baacea07fe09b19b6";
-  const units = "metric";
+import { updateTelemetry } from './telemetry.js';
 
-  // Step 2: Build query parameters
-  const queryParams = `lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`;
-
-  // Step 3: Concatenate into full URL
-  const url = `${baseUrl}?${queryParams}`;
+export async function initWeatherLoop(config) {
+  const apiKey = config.openWeatherApiKey;
+  const lat = config.laiyaBeach.latitude;
+  const lon = config.laiyaBeach.longitude;
 
   async function fetchWind() {
     try {
-      const response = await fetch(url);
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      );
       const data = await response.json();
 
       const windSpeedMS = data.wind.speed;   // meters per second
@@ -24,11 +19,8 @@ export async function initWind() {
       const windKnots = (windSpeedMS * 1.94384).toFixed(1);
       const compassDir = degToCompass(windDeg);
 
-      // Update Wind display
-      const windDiv = document.getElementById("wind");
-      if (windDiv) {
-        windDiv.textContent = `${compassDir} ${windKnots} knots`;
-      }
+      // Push live wind into telemetry panel
+      updateTelemetry(null, null, compassDir, windKnots);
     } catch (err) {
       console.error("Failed to fetch wind data:", err);
     }

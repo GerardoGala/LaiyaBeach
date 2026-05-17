@@ -6,59 +6,156 @@
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #1e1e1e;
+      color: #ddd;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .left-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #252525;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      background: #2a2a2a;
+      border-bottom: 2px solid #333;
+      padding: 10px;
+    }
+
+    .tab-button {
+      cursor: pointer;
+      color: #ddd;
+      font-size: 32px;
+      position: relative;
+    }
+
+    .tab-button:hover {
+      color: #fff;
+    }
+
+    /* Tooltip styling */
+    .tab-button::after {
+      content: attr(data-label);
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #444;
+      color: #fff;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .tab-button:hover::after {
+      opacity: 1;
+    }
+
+    .tab-content {
+      flex: 2;
+      padding: 15px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .status {
+      flex: 1;
+      padding: 15px;
+      border-top: 2px solid #333;
+    }
+
+    .status h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    .right-pane {
+      flex: 3;
+      display: flex;
+    }
+
+    #map {
+      flex: 1;
+    }
+  </style>
 </head>
+<body>
+  <!-- Left Pane -->
+  <div class="left-pane">
+    <!-- Icon Tabs (Top Left) -->
+    <div class="tabs">
+      <span class="material-icons tab-button active" data-tab="standing" data-label="Standing Rig">build</span>
+      <span class="material-icons tab-button" data-tab="launch" data-label="Launch">sailing</span>
+      <span class="material-icons tab-button" data-tab="leaderboard" data-label="Leaderboard">leaderboard</span>
+      <span class="material-icons tab-button" data-tab="help" data-label="Help">help_outline</span>
+    </div>
 
-<!-- Toolbar -->
-<div id="toolbar">
-  <span class="material-icons" id="riggingIcon">build</span>
-  <span class="material-icons" id="launchIcon">sailing</span>
-  <span class="material-icons" id="runningIcon">directions_boat</span>
-  <span class="material-icons" id="leaderboardIcon">leaderboard</span>
-</div>
+    <!-- Tab Contents -->
+    <div id="standing" class="tab-content active">
+      <h2>Standing Rig Controls</h2>
+      <label>Vang <input type="range"></label><br>
+      <label>Cunningham <input type="range"></label><br>
+      <label>Outhaul <input type="range"></label>
+    </div>
 
-<!-- Somewhere in index.html -->
-<div id="windInfo">Wind data loading...</div>
+    <div id="launch" class="tab-content">
+      <h2>Running Rig Controls</h2>
+      <label>Mainsheet <input type="range"></label><br>
+      <label>Rudder <input type="range"></label>
+    </div>
 
+    <div id="leaderboard" class="tab-content">
+      <h2>Top Ten Finishers</h2>
+      <ol>
+        <li>Player 1</li>
+        <li>Player 2</li>
+        <!-- etc -->
+      </ol>
+    </div>
 
+    <div id="help" class="tab-content">
+      <h2>Help</h2>
+      <p>Instructions on how to use the simulator...</p>
+    </div>
 
-  <!-- Fullscreen Map -->
-  <div id="map" style="width:100%; height:100vh;"></div>
-
-  <!-- Modals -->
-  <div id="riggingModal" class="modal">
-    <h2>Rigging Controls</h2>
-    <label>Vang <input type="range"></label>
-    <label>Cunningham <input type="range"></label>
-    <label>Outhaul <input type="range"></label>
-    <button onclick="closeModal('riggingModal')">Close</button>
+    <!-- Permanent Status (Bottom Left) -->
+    <div class="status">
+      <h2>Wind</h2>
+      <p id="wind">Wind data loading...</p>
+    </div>
+      <div class="status">
+      <h2>ILCA</h2>
+      <p id="ilca">ILCA data loading...</p>
+    </div>
   </div>
 
-  <div id="launchModal" class="modal">
-    <h2>Launch Command</h2>
-    <button onclick="launchBoat()">Launch ILCA</button>
-    <button onclick="closeModal('launchModal')">Close</button>
+  <!-- Right Pane (Map) -->
+  <div class="right-pane">
+    <div id="map"></div>
   </div>
 
-  <div id="runningModal" class="modal">
-    <h2>Running Controls</h2>
-    <label>Mainsheet <input type="range"></label>
-    <label>Rudder <input type="range"></label>
-    <button onclick="closeModal('runningModal')">Close</button>
-  </div>
-
-  <div id="leaderboardModal" class="modal">
-    <h2>Top Ten Finishers</h2>
-    <ol>
-      <li>Player 1</li>
-      <li>Player 2</li>
-      <!-- etc -->
-    </ol>
-    <button onclick="closeModal('leaderboardModal')">Close</button>
-  </div>
-
-  <!-- Load Leaflet first -->
+  <!-- Load Leaflet -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- Then your app.js -->
-  <script src="js/app.js"></script>
+  <!-- Root orchestrator as ES module -->
+  <script type="module" src="js/app.js"></script>
+  <!-- Tab logic separated -->
+  <script type="module" src="js/tabs.js"></script>
 </body>
 </html>
