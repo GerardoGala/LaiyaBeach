@@ -1,8 +1,8 @@
 export function initMap(config) {
-  const laiya = [config.laiyaBeach.latitude, config.laiyaBeach.longitude];
-  const buoy = [config.markBuoy.latitude, config.markBuoy.longitude];
+  const laiya = [13.676, 121.437];
+  const buoy = [13.690, 121.450];
 
-  const map = L.map('map').setView(laiya, config.mapOptions.zoom);
+  const map = L.map('map').setView(laiya, 14);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
