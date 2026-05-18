@@ -75,17 +75,24 @@ body {
   display: block;
 }
 
-/* Status section */
 .status {
-  flex: 1;
-  padding: 15px;
-  border-top: 2px solid #333;
+  display: flex;             /* put children side by side */
+  align-items: baseline;     /* align text neatly */
+  gap: 8px;                  /* small space between label and value */
 }
 
-.status h2 {
-  margin-top: 0;
-  color: #fff;
+.status h4 {
+  font-size: 1.4rem;         /* bigger label (Wind, ILCA) */
+  font-weight: bold;
+  margin: 0;
 }
+
+.status p {
+  margin: 0;
+  font-size: 1rem;           /* smaller value text */
+  color: #d4d4d4;
+}
+
 
 
 
