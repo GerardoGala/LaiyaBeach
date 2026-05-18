@@ -1,18 +1,18 @@
 let heading = 180; 
 let position;      
 
-export function initBoatLoop(map, config) {
+export function initBoatLoop(map) {
   // start at launch point
   position = [13.669100, 121.401117];
 
   setInterval(() => {
     heading = (heading + 5) % 360; // rotate mockup
-    moveBoatEast(config);          // update position eastward
-    plotBoat(map, config, heading, position);
+    moveBoatEast();          // update position eastward
+    plotBoat(map, heading, position);
   }, 2000); // still every 2 seconds
 }
 
-function moveBoatEast(config) {
+function moveBoatEast() {
   // Increase speed to make boats farther apart
   const speedKnots = 200; // try 20 knots instead of 8
   const speedMS = speedKnots * 0.5144; // convert to m/s
@@ -26,7 +26,7 @@ function moveBoatEast(config) {
   position[1] += deltaLon; // update longitude eastward
 }
 
-function plotBoat(map, config, headingDeg, pos) {
+function plotBoat(map, headingDeg, pos) {
   // keep adding new overlays, don’t remove old ones
   const boatSvgMarkup = `
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">

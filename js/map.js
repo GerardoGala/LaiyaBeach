@@ -1,4 +1,4 @@
-export function initMap(config) {
+export function initMap() {
   const laiya = [13.670464, 121.401286];
   const buoyLat = 13.657641;
   const buoyLng = 121.407058;
@@ -18,7 +18,7 @@ export function initMap(config) {
     popupAnchor: [0, -48]
   });
 
-  const map = L.map('map').setView(laiya, 14);
+  const map = L.map('map');
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -31,6 +31,10 @@ export function initMap(config) {
   L.marker([buoyLat, buoyLng], { icon: buoyIcon })
     .addTo(map)
     .bindPopup("Race Buoy");
+
+  // Fit map to show both markers, with padding
+  const bounds = L.latLngBounds([laiya, [buoyLat, buoyLng]]);
+  map.fitBounds(bounds, { padding: [50, 50] });
 
   return map;
 }

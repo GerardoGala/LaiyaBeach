@@ -1,47 +1,61 @@
 import { initMap } from './map.js';
 import { initBoatLoop } from './boat.js';
-import { initWind } from './wind.js';
+import { fetchWind } from './wind.js';
 import { updateILCA } from './ilca.js';
 
-let config;
 let map;
 let launched = false;
-let spawnIntervalId = null;
+let simulationIntervalId = null;
 
 async function loadConfig() {
-  const response = await fetch('config.json');
-  config = await response.json();
-
   // Initialize map
-  map = initMap(config);
+  map = initMap();
 
-  // Wind can run immediately
-  initWind(config);
+  // Initialize global state
+  window.simulationData.tillerAngle = 0;
+  window.simulationData.windDeg = 180;   // default heading
+  window.simulationData.windKnots = 0;
+  window.simulationData.speedKnots = 0;
 
-  // Do NOT start ILCA loop yet
+  // Start unified loop immediately
+  simulationIntervalId = setInterval(async () => {
+    // Refresh wind
+    const { windDeg, windKnots } = await fetchWind();
+    window.simulationData.windDeg = windDeg;
+    window.simulationData.windKnots = windKnots;
+
+    // If not launched, keep speed at 0
+    if (!launched) {
+      window.simulationData.speedKnots = 0;
+    }
+
+    // Update ILCA status (always)
+    updateILCA(map);
+
+    // Spawn ILCA marker only after launch
+    if (launched) {
+      // speedKnots can be set to a fixed value or calculated
+      window.simulationData.speedKnots = 20;
+      updateILCA(map);
+    }
+  }, 5000);
 }
 
 // Called when player clicks Launch
 export function launchSimulation() {
-  if (launched) return; // prevent double launch
+  if (launched) return;
   launched = true;
 
   // Start ILCA boat loop
-  initBoatLoop(map, config);
-
-  // Spawn new ILCA instances periodically
-  spawnIntervalId = setInterval(() => {
-    // Example: heading east at 20 knots
-    updateILCA(180, 20);
-  }, 5000); // every 5 seconds
+  initBoatLoop(map);
 }
 
-// Optional: stop spawning if needed
+// Optional: stop simulation
 export function stopSimulation() {
   launched = false;
-  if (spawnIntervalId) {
-    clearInterval(spawnIntervalId);
-    spawnIntervalId = null;
+  if (simulationIntervalId) {
+    clearInterval(simulationIntervalId);
+    simulationIntervalId = null;
   }
 }
 

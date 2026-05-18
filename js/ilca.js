@@ -1,4 +1,4 @@
-export function updateILCA(headingDeg = 0, speedKnots = 0) {
+export function updateILCA(map) {
   const ilcaDiv = document.getElementById("ilca");
 
   const now = new Date();
@@ -6,8 +6,10 @@ export function updateILCA(headingDeg = 0, speedKnots = 0) {
   const localTime = now.toLocaleTimeString("en-US", options);
 
   ilcaDiv.innerHTML = `
-    Heading: ${headingDeg}°
-    <br>Speed: ${speedKnots} knots
+    Heading: ${window.simulationData.heading}°
+    <br>Speed: ${window.simulationData.speed} knots
     <br>${localTime}
   `;
+
+  // Spawn ILCA marker...
 }
