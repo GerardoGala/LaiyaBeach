@@ -9,12 +9,17 @@ body {
   flex-direction: row;
 }
 
-/* Left Pane */
 .left-pane {
-  flex: 1;
+  width: 310px;          /* fixed width, adjust to taste */
+  flex: 0 0 310px;       /* don’t let flexbox shrink or grow it */
   display: flex;
   flex-direction: column;
   background: #252525;
+}
+
+.right-pane {
+  flex: 1;               /* takes up the remaining space */
+  display: flex;
 }
 
 /* Tabs */
@@ -82,11 +87,7 @@ body {
   color: #fff;
 }
 
-/* Right Pane */
-.right-pane {
-  flex: 3;
-  display: flex;
-}
+
 
 #map {
   flex: 1;
@@ -235,3 +236,42 @@ button:active, .map-launch:active, .modal button:active, .close-dialog:active {
   font-size: 48px;
   color: orange;   /* buoy color */
 }
+
+#leftPane {
+  display: grid;              /* or flex */
+  grid-template-columns: 1fr; /* single column */
+  grid-auto-rows: min-content;
+  gap: 12px;                  /* spacing between groups */
+  padding: 12px;
+  background: rgba(20,20,20,0.8); /* dark background */
+  border-radius: 8px;
+}
+
+.cell {
+  background: rgba(40,40,40,0.6);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+}
+
+.control-button {
+  margin: 4px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+
+#tuningControlsGroup {
+  display: flex;              /* switch to flexbox */
+  flex-direction: row;        /* lay children side by side */
+  justify-content: space-around; /* spread them evenly */
+  gap: 12px;                  /* spacing between controls */
+}
+

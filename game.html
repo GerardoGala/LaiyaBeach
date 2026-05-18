@@ -18,13 +18,108 @@
 
     <!-- Rigging Controls -->
     <div id="rigging" class="tab-content active">
-      <h2>Standing Rig Controls</h2>
-      <label>Vang <input type="range"></label><br>
-      <label>Cunningham <input type="range"></label><br>
-      <label>Outhaul <input type="range"></label><br>
-      <h2>Running Rig Controls</h2>
-      <label>Mainsheet <input type="range"></label><br>
-      <label>Rudder <input type="range"></label>
+        <div id="sheetControl" class="right-4col cell" data-angle="15" 
+            style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+
+          <!-- Group label spans all columns -->
+          <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+            SHEET CONTROL
+          </div>
+
+          <!-- Buttons -->
+          <button id="btnSheet90" class="control-button" onclick="executeSheet90()">90</button>
+          
+          <button id="btnSheetPlus" class="control-button" 
+                  onclick="window.adjustSheet(1)" 
+                  style="background: white; color: black; font-weight: bold;">
+            +1°
+          </button>
+          
+          <button id="btnSheetMinus" class="control-button" 
+                  onclick="window.adjustSheet(-1)" 
+                  style="background: white; color: black; font-weight: bold;">
+            -1°
+          </button>
+          
+          <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
+        </div>
+
+        <div id="tillerControl" class="right-4col cell" data-angle="0" 
+            style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+
+          <!-- Group label spans all columns -->
+          <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+            TILLER CONTROL
+          </div>
+
+          <!-- Buttons -->
+          <button id="btnTack" class="control-button" onclick="executeTack()">Tack</button>
+          
+          <button id="btnPlus" class="control-button" 
+                  onclick="window.adjustHeading(1)" 
+                  style="background: white; color: black; font-weight: bold;">
+            +1°
+          </button>
+          
+          <button id="btnMinus" class="control-button" 
+                  onclick="window.adjustHeading(-1)" 
+                  style="background: white; color: black; font-weight: bold;">
+            -1°
+          </button>
+          
+          <button id="btnGybe" class="control-button" onclick="executeGybe()">Gybe</button>
+        </div>
+
+        <div id="tuningControlsGroup" class="right-3col">
+          <div class="cell">
+            <svg id="vangControl" width="60" height="150" viewBox="0 0 60 150">
+              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
+              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 9px; font-weight: bold;">VANG</text>
+              <g style="cursor: pointer;" onclick="updateControl('vang', 1)">
+                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
+                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+              </g>
+              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
+              <text id="vangValue" data-vang="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+              <g style="cursor: pointer;" onclick="updateControl('vang', -1)">
+                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
+                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+              </g>
+            </svg>
+          </div>
+          <div class="cell">
+            <svg id="downhaulControl" width="60" height="150" viewBox="0 0 60 150">
+              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
+              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 8px; font-weight: bold;">DOWNHAUL</text>
+              <g style="cursor: pointer;" onclick="updateControl('downhaul', 1)">
+                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
+                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+              </g>
+              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
+              <text id="downhaulValue" data-downhaul="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+              <g style="cursor: pointer;" onclick="updateControl('downhaul', -1)">
+                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
+                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+              </g>
+            </svg>
+          </div>
+          <div class="cell">
+            <svg id="outhaulControl" width="60" height="150" viewBox="0 0 60 150">
+              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
+              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 9px; font-weight: bold;">OUTHAUL</text>
+              <g style="cursor: pointer;" onclick="updateControl('outhaul', 1)">
+                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
+                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+              </g>
+              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
+              <text id="outhaulValue" data-outhaul="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+              <g style="cursor: pointer;" onclick="updateControl('outhaul', -1)">
+                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
+                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+              </g>
+            </svg>
+          </div>
+        </div>
     </div>
 
     <!-- Permanent Status (Bottom Left) -->

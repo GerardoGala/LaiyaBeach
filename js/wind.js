@@ -22,7 +22,7 @@ export async function initWind() {
 
       // Convert to knots
       const windKnots = (windSpeedMS * 1.94384).toFixed(1);
-      const compassDir = degToCompass(windDeg);
+      const compassDir = windDeg;
 
       // Update Wind display
       const windDiv = document.getElementById("wind");
