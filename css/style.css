@@ -92,7 +92,7 @@ body {
   flex: 1;
 }
 
-/* Toolbar icons (optional future use) */
+/* Toolbar icons */
 #toolbar {
   position: absolute;
   top: 50%;
@@ -131,6 +131,31 @@ body {
   color: #007acc;
 }
 
+/* Google Material-style buttons */
+button, .map-launch, .modal button, .close-dialog {
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #007acc;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+button:hover, .map-launch:hover, .modal button:hover, .close-dialog:hover {
+  background-color: #3399ff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+  transform: scale(1.05);
+}
+
+button:active, .map-launch:active, .modal button:active, .close-dialog:active {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  transform: scale(0.98);
+}
+
 /* Modal styling */
 .modal {
   display: none;
@@ -151,43 +176,18 @@ body {
   color: #007acc;
 }
 
-.modal button {
-  background: #007acc;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  margin-top: 10px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.modal button:hover {
-  background: #3399ff;
-}
-
+/* Map Launch button (center bottom) */
 .map-launch {
   position: absolute;
-  bottom: 30px;       /* lower center */
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background: #007acc;
-  color: #fff;
-  border: none;
-  padding: 16px 32px;
   font-size: 1.2rem;
   font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(0,0,0,0.6);
-  transition: background 0.3s, transform 0.2s;
 }
 
-.map-launch:hover {
-  background: #3399ff;
-  transform: translateX(-50%) scale(1.05);
-}
-
+/* Dialog overlay */
 .dialog {
   display: none;
   position: fixed;
@@ -207,17 +207,31 @@ body {
   text-align: center;
 }
 
-.close-dialog {
-  margin-top: 20px;
-  padding: 10px 20px;
+#mapLaunchBtn {
+  position: absolute;
+  bottom: 30px;       /* lower center */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
   background: #007acc;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
   cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  transition: background 0.3s, transform 0.2s;
 }
-.close-dialog:hover {
+
+#mapLaunchBtn:hover {
   background: #3399ff;
+  transform: translateX(-50%) scale(1.05);
 }
 
-
+.buoy-icon {
+  font-family: 'Material Icons';
+  font-size: 48px;
+  color: orange;   /* buoy color */
+}
