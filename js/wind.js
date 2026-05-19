@@ -25,8 +25,8 @@ export async function fetchWind() {
     const windDiv = document.getElementById("windStatus");
     if (windDiv) {
       windDiv.innerHTML = `
-        Direction: ${windDeg}°
-        <br>Speed: ${windKnots} knots
+        ${windDeg}°
+        <br>${windKnots} knots
       `;
     }
 

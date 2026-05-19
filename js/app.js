@@ -49,23 +49,23 @@ function refreshStatusPanels() {
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
     windDiv.innerHTML = `
-      Direction: ${window.globalSimulationData.windDirection}°
-      <br>Speed: ${window.globalSimulationData.windSpeed} knots
+      ${window.globalSimulationData.windDirection}°
+      at ${window.globalSimulationData.windSpeed} knots
     `;
   }
 
   const ilcaDiv = document.getElementById("ilcaStatus");
   if (ilcaDiv) {
     ilcaDiv.innerHTML = `
-      Heading: ${window.globalSimulationData.heading}°
-      <br>Speed: ${window.globalSimulationData.speed} knots
+      ${window.globalSimulationData.heading}°
+      at ${window.globalSimulationData.speed} knots
     `;
   }
 
   const laiyaDiv = document.getElementById("laiyaTime");
   if (laiyaDiv) {
     laiyaDiv.innerHTML = `
-      Laiya Time: ${window.globalSimulationData.localTime}
+      ${window.globalSimulationData.localTime}
     `;
   }
 }
