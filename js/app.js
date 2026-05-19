@@ -12,17 +12,18 @@ async function loadConfig() {
   map = initMap();
 
   // Initialize global state
-  window.globalSimulationData.tillerAngle = 0;
-  window.globalSimulationData.windDeg = 180;   // default heading
-  window.globalSimulationData.windKnots = 0;
-  window.globalSimulationData.speedKnots = 0;
+  window.globalSimulationData.windDirection = 180;   // default heading
+  window.globalSimulationData.windSpeed = 0;
+  window.globalSimulationData.heading = 180;  //ILCA heading
+  window.globalSimulationData.speed = 0;      //ILCA speed
+  window.globalSimulationData.tillerAngle = 0;//ILCA tiller
 
   // Start unified loop immediately
   simulationIntervalId = setInterval(async () => {
     // Refresh wind
     const { windDeg, windKnots } = await fetchWind();
-    window.globalSimulationData.windDeg = windDeg;
-    window.globalSimulationData.windKnots = windKnots;
+    window.globalSimulationData.windDirection = windDeg;
+    window.globalSimulationData.windSpeed = windKnots;
 
     // If not launched, keep speed at 0
     if (!launched) {
@@ -35,7 +36,7 @@ async function loadConfig() {
     // Spawn ILCA marker only after launch
     if (launched) {
       // speedKnots can be set to a fixed value or calculated
-      window.simuglobalSimulationData.speedKnots = 20;
+      window.globalSimulationData.speed = 20;
       updateILCA(map);
     }
   }, 5000);
