@@ -21,15 +21,6 @@ export async function fetchWind() {
     window.globalSimulationData.windDirection = windDeg;
     window.globalSimulationData.windSpeed = windKnots;
 
-    // ✅ Update Wind Status panel
-    const windDiv = document.getElementById("windStatus");
-    if (windDiv) {
-      windDiv.innerHTML = `
-        ${windDeg}°
-        <br>${windKnots} knots
-      `;
-    }
-
     // ✅ Return values so destructuring works
     return { windDeg, windKnots };
   } catch (err) {

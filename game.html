@@ -175,5 +175,28 @@
 
 <!-- Tab/Dialog logic separated -->
 <script type="module" src="js/tabs.js"></script>
+
+<script>
+  // Adjust ILCA heading by delta (+1 or -1)
+  window.adjustHeading = function(delta) {
+    // Increment or decrement the heading
+    window.globalSimulationData.heading += delta;
+
+    // Wrap heading between 0–359 degrees
+    if (window.globalSimulationData.heading < 0) {
+      window.globalSimulationData.heading += 360;
+    }
+    if (window.globalSimulationData.heading >= 360) {
+      window.globalSimulationData.heading -= 360;
+    }
+
+    console.log("New heading:", window.globalSimulationData.heading);
+  };
+</script>
+
+
+
+
+
 </body>
 </html>

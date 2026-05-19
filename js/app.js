@@ -4,7 +4,8 @@ import { updateILCA } from './ilca.js';
 
 let map;
 let launched = false;
-let simulationIntervalId = null;
+let windIntervalId = null;
+let ilcaIntervalId = null;
 
 async function loadConfig() {
   map = initMap();
@@ -24,24 +25,22 @@ async function loadConfig() {
   // ✅ Show initial status immediately
   refreshStatusPanels();
 
-  // Unified loop every 5 seconds
-  simulationIntervalId = setInterval(async () => {
+  // Wind update loop (every 5 seconds)
+  windIntervalId = setInterval(async () => {
     await fetchWind();
+  }, 5000);
 
-    // Update Laiya local time every tick
+  // ILCA + Time update loop (every 1 second)
+  ilcaIntervalId = setInterval(() => {
     const now = new Date();
     window.globalSimulationData.localTime = now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
-    // If launched, update speed/heading and draw ILCA
     if (launched) {
-      window.globalSimulationData.speed = 20;
-      window.globalSimulationData.heading = (window.globalSimulationData.heading + 5) % 360;
       updateILCA(map);
     }
 
-    // ✅ Always refresh status panels
     refreshStatusPanels();
-  }, 5000);
+  }, 1000);
 }
 
 // Helper function to update all status panels
@@ -76,9 +75,13 @@ export function launchSimulation() {
 
 export function stopSimulation() {
   launched = false;
-  if (simulationIntervalId) {
-    clearInterval(simulationIntervalId);
-    simulationIntervalId = null;
+  if (windIntervalId) {
+    clearInterval(windIntervalId);
+    windIntervalId = null;
+  }
+  if (ilcaIntervalId) {
+    clearInterval(ilcaIntervalId);
+    ilcaIntervalId = null;
   }
 }
 
