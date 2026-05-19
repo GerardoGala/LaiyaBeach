@@ -1,5 +1,4 @@
 import { initMap } from './map.js';
-import { initBoatLoop } from './boat.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilca.js';
 
@@ -8,50 +7,73 @@ let launched = false;
 let simulationIntervalId = null;
 
 async function loadConfig() {
-  // Initialize map
   map = initMap();
 
   // Initialize global state
-  window.globalSimulationData.windDirection = 180;   // default heading
-  window.globalSimulationData.windSpeed = 0;
-  window.globalSimulationData.heading = 180;  //ILCA heading
-  window.globalSimulationData.speed = 0;      //ILCA speed
-  window.globalSimulationData.tillerAngle = 0;//ILCA tiller
+  window.globalSimulationData = {
+    windDirection: 180,
+    windSpeed: 0,
+    heading: 180,
+    speed: 0,
+    tillerAngle: 0,
+    lat: 13.669100,
+    lon: 121.401117,
+    localTime: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" })
+  };
 
-  // Start unified loop immediately
+  // ✅ Show initial status immediately
+  refreshStatusPanels();
+
+  // Unified loop every 5 seconds
   simulationIntervalId = setInterval(async () => {
-    // Refresh wind
-    const { windDeg, windKnots } = await fetchWind();
-    window.globalSimulationData.windDirection = windDeg;
-    window.globalSimulationData.windSpeed = windKnots;
+    await fetchWind();
 
-    // If not launched, keep speed at 0
-    if (!launched) {
-      window.globalSimulationData.speedKnots = 0;
-    }
+    // Update Laiya local time every tick
+    const now = new Date();
+    window.globalSimulationData.localTime = now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
-    // Update ILCA status (always)
-    updateILCA(map);
-
-    // Spawn ILCA marker only after launch
+    // If launched, update speed/heading and draw ILCA
     if (launched) {
-      // speedKnots can be set to a fixed value or calculated
       window.globalSimulationData.speed = 20;
+      window.globalSimulationData.heading = (window.globalSimulationData.heading + 5) % 360;
       updateILCA(map);
     }
+
+    // ✅ Always refresh status panels
+    refreshStatusPanels();
   }, 5000);
 }
 
-// Called when player clicks Launch
-export function launchSimulation() {
-  if (launched) return;
-  launched = true;
+// Helper function to update all status panels
+function refreshStatusPanels() {
+  const windDiv = document.getElementById("windStatus");
+  if (windDiv) {
+    windDiv.innerHTML = `
+      Direction: ${window.globalSimulationData.windDirection}°
+      <br>Speed: ${window.globalSimulationData.windSpeed} knots
+    `;
+  }
 
-  // Start ILCA boat loop
-  initBoatLoop(map);
+  const ilcaDiv = document.getElementById("ilcaStatus");
+  if (ilcaDiv) {
+    ilcaDiv.innerHTML = `
+      Heading: ${window.globalSimulationData.heading}°
+      <br>Speed: ${window.globalSimulationData.speed} knots
+    `;
+  }
+
+  const laiyaDiv = document.getElementById("laiyaTime");
+  if (laiyaDiv) {
+    laiyaDiv.innerHTML = `
+      Laiya Time: ${window.globalSimulationData.localTime}
+    `;
+  }
 }
 
-// Optional: stop simulation
+export function launchSimulation() {
+  launched = true;
+}
+
 export function stopSimulation() {
   launched = false;
   if (simulationIntervalId) {
