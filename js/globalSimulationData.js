@@ -1,6 +1,5 @@
 // Global simulation state
 // === Global simulation state ===
-// === Global simulation state ===
 window.globalSimulationData = {
   // --- Wind state ---
   windDirection: 0,
@@ -21,7 +20,7 @@ window.globalSimulationData = {
     lat: 13.681,
     lon: 121.437,
     maneuver: null,
-    localTime: null
+    timer: 0
   }
 };
 

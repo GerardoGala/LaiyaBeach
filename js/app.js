@@ -84,21 +84,44 @@ function refreshStatusPanels() {
     `;
   }
 
-  const laiyaDiv = document.getElementById("laiyaTime");
-  if (laiyaDiv) {
-    laiyaDiv.innerHTML = `
-      ${window.globalSimulationData.ILCA.localTime}
-    `;
-  }
+
 }
 
 export function launchSimulation() {
   launched = true;
-  //console.log("window.globalSimulationData.ILCA.speed at app.js launchSimulation:", window.globalSimulationData.ILCA.speed);
+  window.globalSimulationData.ILCA.speed = 5;
+  window.globalSimulationData.ILCA.timer = 0;
+  window.globalSimulationData.ILCA.displayTimer = "0:00";
+
+  const timerDiv = document.getElementById("timer");
+
+  window.globalSimulationData.ILCA._timerInterval = setInterval(() => {
+    if (launched) {
+      // increment raw seconds
+      window.globalSimulationData.ILCA.timer++;
+
+      // format for display
+      const minutes = Math.floor(window.globalSimulationData.ILCA.timer / 60);
+      const seconds = window.globalSimulationData.ILCA.timer % 60;
+      window.globalSimulationData.ILCA.displayTimer = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+      // update DOM
+      if (timerDiv) {
+        timerDiv.textContent = window.globalSimulationData.ILCA.displayTimer;
+      }
+    }
+  }, 1000);
 }
+
+
+
+
+
+
 
 export function stopSimulation() {
   launched = false;
+    clearInterval(window.globalSimulationData.ILCA._timerInterval);
   if (windIntervalId) {
     clearInterval(windIntervalId);
     windIntervalId = null;
@@ -108,5 +131,7 @@ export function stopSimulation() {
     ilcaIntervalId = null;
   }
 }
+
+
 
 loadConfig();

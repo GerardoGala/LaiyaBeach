@@ -131,7 +131,7 @@ overlay.bindPopup(
    Speed: ${speedKnots} knots<br>
    Lat: ${window.globalSimulationData.ILCA.lat.toFixed(5)}<br>
    Lon: ${window.globalSimulationData.ILCA.lon.toFixed(5)}<br>
-   Laiya Time: ${window.globalSimulationData.ILCA.localTime}`
+   Timer: ${window.globalSimulationData.ILCA.timer}`
 );
 
 }
