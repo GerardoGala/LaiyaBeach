@@ -59,6 +59,7 @@ async function loadConfig() {
     if (launched) {
       updateILCA(map);
       window.globalSimulationData.ILCA.speed = 5; // start moving at 5 knots
+      //TODO calculate initial speed
     }
 
     refreshStatusPanels();
@@ -93,8 +94,7 @@ function refreshStatusPanels() {
 
 export function launchSimulation() {
   launched = true;
-  console.log("window.globalSimulationData.ILCA.speed at app.js launchSimulation:", window.globalSimulationData.ILCA.speed);
-  //window.globalSimulationData.ILCA.speed = 5; // start moving
+  //console.log("window.globalSimulationData.ILCA.speed at app.js launchSimulation:", window.globalSimulationData.ILCA.speed);
 }
 
 export function stopSimulation() {

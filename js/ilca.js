@@ -13,14 +13,17 @@ export function updateILCA(map) {
   const tillerDelta = window.globalSimulationData.ILCA.tillerAngle; // -1, 0, +1
 
 
+
+//console.log("ILCA speed at ilca.js line 17:", window.globalSimulationData.ILCA.speed);
 // #4A) Handle Tack maneuver
-console.log("ILCA speed at ilca.js line 17:", window.globalSimulationData.ILCA.speed);
 if (window.globalSimulationData.ILCA.maneuver === "tack-port") {
+  console.log("Executing Port Tack...");
+
   // Port Tack = bow through wind, rotate -90°
   window.globalSimulationData.ILCA.heading =
     (window.globalSimulationData.ILCA.heading - 90 + 360) % 360;
 
-  // Apply a small speed penalty
+  // Apply a small speed penalty (simulate loss of momentum)
   window.globalSimulationData.ILCA.speed *= 0.9;
 
   // Reset maneuver flag
@@ -28,6 +31,8 @@ if (window.globalSimulationData.ILCA.maneuver === "tack-port") {
 }
 
 if (window.globalSimulationData.ILCA.maneuver === "tack-starboard") {
+  console.log("Executing Starboard Tack...");
+
   // Starboard Tack = bow through wind, rotate +90°
   window.globalSimulationData.ILCA.heading =
     (window.globalSimulationData.ILCA.heading + 90) % 360;
@@ -39,24 +44,43 @@ if (window.globalSimulationData.ILCA.maneuver === "tack-starboard") {
   window.globalSimulationData.ILCA.maneuver = null;
 }
 
+// #4B) Handle Gybe maneuver
+if (window.globalSimulationData.ILCA.maneuver === "gybe-port") {
+  console.log("Executing Port Gybe...");
 
-if (window.globalSimulationData.ILCA.maneuver === "tack-starboard") {
-  // Starboard Tack = bow through wind, rotate +90°
+  // Port Gybe = stern through wind, rotate -90°
   window.globalSimulationData.ILCA.heading =
-    (window.globalSimulationData.ILCA.heading + 90) % 360;
+    (window.globalSimulationData.ILCA.heading - 90 + 360) % 360;
 
-  // Apply a small speed penalty
-  window.globalSimulationData.ILCA.speed *= 0.9;
+  // Apply a slightly larger speed penalty (gybes are less efficient)
+  window.globalSimulationData.ILCA.speed *= 0.85;
 
   // Reset maneuver flag
   window.globalSimulationData.ILCA.maneuver = null;
 }
+
+if (window.globalSimulationData.ILCA.maneuver === "gybe-starboard") {
+  console.log("Executing Starboard Gybe...");
+
+  // Starboard Gybe = stern through wind, rotate +90°
+  window.globalSimulationData.ILCA.heading =
+    (window.globalSimulationData.ILCA.heading + 90) % 360;
+
+  // Apply a slightly larger speed penalty
+  window.globalSimulationData.ILCA.speed *= 0.85;
+
+  // Reset maneuver flag
+  window.globalSimulationData.ILCA.maneuver = null;
+}
+
+
+
 
 //#5 Calculate the new ILCA position
 const speedKnots = window.globalSimulationData.ILCA.speed; // keep whatever is set in state
 let lat = window.globalSimulationData.ILCA.lat;
 let lon = window.globalSimulationData.ILCA.lon;
-console.log("speedKnots:",speedKnots);
+//console.log("speedKnots:",speedKnots);
 if (speedKnots > 0) {
   const speedMS = speedKnots * 0.5144; // knots → m/s
   const dt = 1; // seconds per tick
@@ -71,8 +95,8 @@ if (speedKnots > 0) {
   // Calculate deltas
   const deltaLat = (distance * Math.cos(headingRad)) / metersPerDegLat;
   const deltaLon = (distance * Math.sin(headingRad)) / metersPerDegLon;
-    console.log("deltaLat:",deltaLat);
-    console.log("deltaLon:", deltaLon);
+  //  console.log("deltaLat:",deltaLat);
+  //  console.log("deltaLon:", deltaLon);
   lat += deltaLat;
   lon += deltaLon;
 
