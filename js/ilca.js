@@ -13,11 +13,19 @@ export function updateILCA(map) {
   const tillerDelta = window.globalSimulationData.tillerAngle; // -1, 0, +1
 
   // #4) Update heading based on tiller clicks
-  if (tillerDelta === -1) {
-    window.globalSimulationData.heading -= 1;
-  } else if (tillerDelta === +1) {
-    window.globalSimulationData.heading += 1;
-  }
+// #4A) Handle Tack maneuver
+if (window.globalSimulationData.maneuver === "tack") {
+  // Tack = bow through the wind, rotate +90°
+  window.globalSimulationData.heading = 
+    (window.globalSimulationData.heading + 90) % 360;
+
+  // Apply a small speed penalty
+  window.globalSimulationData.speed *= 0.9;
+
+  // Reset maneuver flag so it only happens once
+  window.globalSimulationData.maneuver = null;
+}
+
 
   // Wrap heading between 0–359
   if (window.globalSimulationData.heading < 0) {
