@@ -1,3 +1,4 @@
+// app.js
 import { initMap } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilca.js';
@@ -10,16 +11,33 @@ let ilcaIntervalId = null;
 async function loadConfig() {
   map = initMap();
 
-  // Initialize global state
+  // === Global simulation state ===
   window.globalSimulationData = {
     windDirection: 180,
     windSpeed: 0,
-    heading: 180,
-    speed: 0,
-    tillerAngle: 0,
-    lat: 13.669100,
-    lon: 121.401117,
-    localTime: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" })
+
+    ILCA: {
+      heading: 180,   // default heading out to sea
+      speed: 0,       // stationary until launch
+      tillerAngle: 0,
+      lat: 13.669100,
+      lon: 121.401117,
+      maneuver: null,
+      localTime: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
+
+      standingRig: {
+        mastHeight: 6.0,
+        sailType: "ILCA Standard",
+        boomLength: 2.7
+      },
+
+      runningRig: {
+        sheetTension: 0.0,
+        vangTension: 0.0,
+        cunninghamTension: 0.0,
+        rudderAngle: 0
+      }
+    }
   };
 
   // ✅ Show initial status immediately
@@ -33,7 +51,8 @@ async function loadConfig() {
   // ILCA + Time update loop (every 1 second)
   ilcaIntervalId = setInterval(() => {
     const now = new Date();
-    window.globalSimulationData.localTime = now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
+    window.globalSimulationData.ILCA.localTime =
+      now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
     if (launched) {
       updateILCA(map);
@@ -56,15 +75,15 @@ function refreshStatusPanels() {
   const ilcaDiv = document.getElementById("ilcaStatus");
   if (ilcaDiv) {
     ilcaDiv.innerHTML = `
-      ${window.globalSimulationData.heading}°
-      at ${window.globalSimulationData.speed} knots
+      ${window.globalSimulationData.ILCA.heading}°
+      at ${window.globalSimulationData.ILCA.speed} knots
     `;
   }
 
   const laiyaDiv = document.getElementById("laiyaTime");
   if (laiyaDiv) {
     laiyaDiv.innerHTML = `
-      ${window.globalSimulationData.localTime}
+      ${window.globalSimulationData.ILCA.localTime}
     `;
   }
 }

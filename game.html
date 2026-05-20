@@ -44,31 +44,41 @@
           <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
         </div>
 
-        <div id="tillerControl" class="right-4col cell" data-tillerAngle="0" 
-            style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+<div class="maneuver-controls">
+  <h3>ILCA HEADING</h3>
 
-          <!-- Group label spans all columns -->
-          <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
-            ILCA HEADING
-          </div>
+  <!-- Row 1: Tack -->
+  <div class="row">
+    <button onclick="window.globalSimulationData.maneuver = 'tack-port'">
+      Port Tack
+    </button>
+    <button onclick="window.globalSimulationData.maneuver = 'tack-starboard'">
+      Starboard Tack
+    </button>
+  </div>
 
-          <!-- Buttons -->
-          <button id="btnTack" class="control-button" onclick="executeTack()">Tack</button>
-          
-          <button id="btnPlus" class="control-button" 
-                  onclick="window.adjustHeading(1)" 
-                  style="background: white; color: black; font-weight: bold;">
-            +1°
-          </button>
-          
-          <button id="btnMinus" class="control-button" 
-                  onclick="window.adjustHeading(-1)" 
-                  style="background: white; color: black; font-weight: bold;">
-            -1°
-          </button>
-          
-          <button id="btnGybe" class="control-button" onclick="executeGybe()">Gybe</button>
-        </div>
+
+  <!-- Row 2: Fine Heading Adjustments -->
+  <div class="row">
+    <button onclick="window.globalSimulationData.ILCA.heading = 
+      (window.globalSimulationData.ILCA.heading - 1 + 360) % 360">-1°</button>
+
+    <button onclick="window.globalSimulationData.ILCA.heading = 
+      (window.globalSimulationData.ILCA.heading + 1) % 360">+1°</button>
+  </div>
+
+
+  <!-- Row 3: Gybe -->
+  <div class="row">
+    <button onclick="window.globalSimulationData.maneuver = 'gybe-port'">
+      Port Gybe
+    </button>
+    <button onclick="window.globalSimulationData.maneuver = 'gybe-starboard'">
+      Starboard Gybe
+    </button>
+  </div>
+</div>
+
 
         <div id="tuningControlsGroup" class="right-3col">
           <div class="cell">

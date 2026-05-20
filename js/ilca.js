@@ -4,48 +4,48 @@ export function updateILCA(map) {
   const windSpeed = window.globalSimulationData.windSpeed;
 
   // #2) Read the sail controls (vang, downhaul, outhaul)
-  const vang = window.globalSimulationData.vang || 0;
-  const downhaul = window.globalSimulationData.downhaul || 0;
-  const outhaul = window.globalSimulationData.outhaul || 0;
+  const vang = window.globalSimulationData.ILCA.runningRig.vangTension || 0;
+  const downhaul = window.globalSimulationData.ILCA.runningRig.cunninghamTension || 0;
+  const outhaul = window.globalSimulationData.ILCA.runningRig.sheetTension || 0;
 
   // #3) Read the sheet and tiller control
-  const sheetAngle = window.globalSimulationData.sheetAngle || 90;
-  const tillerDelta = window.globalSimulationData.tillerAngle; // -1, 0, +1
+  const sheetAngle = window.globalSimulationData.ILCA.sheetAngle || 90;
+  const tillerDelta = window.globalSimulationData.ILCA.tillerAngle; // -1, 0, +1
 
-  // #4) Update heading based on tiller clicks
-// #4A) Handle Tack maneuver
-if (window.globalSimulationData.maneuver === "tack") {
-  // Tack = bow through the wind, rotate +90°
-  window.globalSimulationData.heading = 
-    (window.globalSimulationData.heading + 90) % 360;
+  // #4A) Handle Tack maneuver
+  if (window.globalSimulationData.ILCA.maneuver === "tack-port") {
+    window.globalSimulationData.ILCA.heading =
+      (window.globalSimulationData.ILCA.heading - 90 + 360) % 360;
+    window.globalSimulationData.ILCA.speed *= 0.9;
+    window.globalSimulationData.ILCA.maneuver = null;
+  }
 
-  // Apply a small speed penalty
-  window.globalSimulationData.speed *= 0.9;
-
-  // Reset maneuver flag so it only happens once
-  window.globalSimulationData.maneuver = null;
-}
-
+  if (window.globalSimulationData.ILCA.maneuver === "tack-starboard") {
+    window.globalSimulationData.ILCA.heading =
+      (window.globalSimulationData.ILCA.heading + 90) % 360;
+    window.globalSimulationData.ILCA.speed *= 0.9;
+    window.globalSimulationData.ILCA.maneuver = null;
+  }
 
   // Wrap heading between 0–359
-  if (window.globalSimulationData.heading < 0) {
-    window.globalSimulationData.heading += 360;
+  if (window.globalSimulationData.ILCA.heading < 0) {
+    window.globalSimulationData.ILCA.heading += 360;
   }
-  if (window.globalSimulationData.heading >= 360) {
-    window.globalSimulationData.heading -= 360;
+  if (window.globalSimulationData.ILCA.heading >= 360) {
+    window.globalSimulationData.ILCA.heading -= 360;
   }
 
-  // Give the boat a fixed speed for testing
-  window.globalSimulationData.speed = 20;
+  // Give the ILCA a fixed speed for testing
+  window.globalSimulationData.ILCA.speed = 20;
 
-  const headingDeg = window.globalSimulationData.heading;
-  const speedKnots = window.globalSimulationData.speed;
-  let lat = window.globalSimulationData.lat;
-  let lon = window.globalSimulationData.lon;
+  const headingDeg = window.globalSimulationData.ILCA.heading;
+  const speedKnots = window.globalSimulationData.ILCA.speed;
+  let lat = window.globalSimulationData.ILCA.lat;
+  let lon = window.globalSimulationData.ILCA.lon;
 
   if (speedKnots > 0) {
     const speedMS = speedKnots * 0.5144;
-    const dt = 1; // seconds per tick (since ILCA updates every 1s now)
+    const dt = 1; // seconds per tick
     const distance = speedMS * dt;
 
     const headingRad = headingDeg * Math.PI / 180;
@@ -61,8 +61,8 @@ if (window.globalSimulationData.maneuver === "tack") {
     lat += deltaLat;
     lon += deltaLon;
 
-    window.globalSimulationData.lat = lat;
-    window.globalSimulationData.lon = lon;
+    window.globalSimulationData.ILCA.lat = lat;
+    window.globalSimulationData.ILCA.lon = lon;
   }
 
   // #5) Update ILCA on the map
@@ -78,8 +78,8 @@ if (window.globalSimulationData.maneuver === "tack") {
   const boatSvgElement = parser.parseFromString(boatSvgMarkup, "image/svg+xml").documentElement;
 
   const bounds = [
-    [window.globalSimulationData.lat - 0.0002, window.globalSimulationData.lon - 0.0002],
-    [window.globalSimulationData.lat + 0.0002, window.globalSimulationData.lon + 0.0002]
+    [window.globalSimulationData.ILCA.lat - 0.0002, window.globalSimulationData.ILCA.lon - 0.0002],
+    [window.globalSimulationData.ILCA.lat + 0.0002, window.globalSimulationData.ILCA.lon + 0.0002]
   ];
 
   const overlay = L.svgOverlay(boatSvgElement, bounds).addTo(map);
@@ -87,8 +87,8 @@ if (window.globalSimulationData.maneuver === "tack") {
     `ILCA Sailboat<br>
      Heading: ${headingDeg}°<br>
      Speed: ${speedKnots} knots<br>
-     Lat: ${window.globalSimulationData.lat.toFixed(5)}<br>
-     Lon: ${window.globalSimulationData.lon.toFixed(5)}<br>
-     Laiya Time: ${window.globalSimulationData.localTime}`
+     Lat: ${window.globalSimulationData.ILCA.lat.toFixed(5)}<br>
+     Lon: ${window.globalSimulationData.ILCA.lon.toFixed(5)}<br>
+     Laiya Time: ${window.globalSimulationData.ILCA.localTime}`
   );
 }
