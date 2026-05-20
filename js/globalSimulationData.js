@@ -8,21 +8,14 @@ window.globalSimulationData = {
 
   // --- ILCA state ---
   ILCA: {
-    tillerAngle: 0,
-    heading: 180,   // <-- this is what the buttons will update
-    speed: 0,
-
-    standingRig: {
-      mastHeight: 6.0,
-      sailType: "ILCA Standard",
-      boomLength: 2.7
-    },
+    heading: 180,
+    speed: 5,
 
     runningRig: {
       sheetTension: 0.0,
       vangTension: 0.0,
       cunninghamTension: 0.0,
-      rudderAngle: 0
+      outhaulTension: 0
     },
 
     lat: 13.681,

@@ -39,6 +39,8 @@ async function loadConfig() {
       }
     }
   };
+  console.log("Initial ILCA speed at app.js line 42:", window.globalSimulationData.ILCA.speed);
+
 
   // ✅ Show initial status immediately
   refreshStatusPanels();
@@ -56,6 +58,7 @@ async function loadConfig() {
 
     if (launched) {
       updateILCA(map);
+      window.globalSimulationData.ILCA.speed = 5; // start moving at 5 knots
     }
 
     refreshStatusPanels();
@@ -90,6 +93,8 @@ function refreshStatusPanels() {
 
 export function launchSimulation() {
   launched = true;
+  console.log("window.globalSimulationData.ILCA.speed at app.js launchSimulation:", window.globalSimulationData.ILCA.speed);
+  //window.globalSimulationData.ILCA.speed = 5; // start moving
 }
 
 export function stopSimulation() {
