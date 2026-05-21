@@ -41,7 +41,6 @@ async function loadConfig() {
   };
   console.log("Initial ILCA speed at app.js line 42:", window.globalSimulationData.ILCA.speed);
 
-
   // ✅ Show initial status immediately
   refreshStatusPanels();
 
@@ -59,7 +58,7 @@ async function loadConfig() {
     if (launched) {
       updateILCA(map);
       window.globalSimulationData.ILCA.speed = 5; // start moving at 5 knots
-      //TODO calculate initial speed
+      // TODO: calculate initial speed based on wind + tack
     }
 
     refreshStatusPanels();
@@ -83,10 +82,9 @@ function refreshStatusPanels() {
       at ${window.globalSimulationData.ILCA.speed} knots
     `;
   }
-
-
 }
 
+// Launch simulation
 export function launchSimulation() {
   launched = true;
   window.globalSimulationData.ILCA.speed = 5;
@@ -103,7 +101,8 @@ export function launchSimulation() {
       // format for display
       const minutes = Math.floor(window.globalSimulationData.ILCA.timer / 60);
       const seconds = window.globalSimulationData.ILCA.timer % 60;
-      window.globalSimulationData.ILCA.displayTimer = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      window.globalSimulationData.ILCA.displayTimer =
+        `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
       // update DOM
       if (timerDiv) {
@@ -113,15 +112,10 @@ export function launchSimulation() {
   }, 1000);
 }
 
-
-
-
-
-
-
+// Stop simulation
 export function stopSimulation() {
   launched = false;
-    clearInterval(window.globalSimulationData.ILCA._timerInterval);
+  clearInterval(window.globalSimulationData.ILCA._timerInterval);
   if (windIntervalId) {
     clearInterval(windIntervalId);
     windIntervalId = null;
@@ -132,6 +126,8 @@ export function stopSimulation() {
   }
 }
 
-
+// Expose launchSimulation globally so inline scripts can call it
+window.launchSimulation = launchSimulation;
+window.stopSimulation = stopSimulation;
 
 loadConfig();
