@@ -1,33 +1,41 @@
-// ilca.js
-
-// Helper: compute bearing between two lat/lon points
-function bearingBetween(lat1, lon1, lat2, lon2) {
-  const toRad = deg => deg * Math.PI / 180;
-  const toDeg = rad => rad * 180 / Math.PI;
-
-  const dLon = toRad(lon2 - lon1);
-  const y = Math.sin(dLon) * Math.cos(toRad(lat2));
-  const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
-            Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLon);
-  return (toDeg(Math.atan2(y, x)) + 360) % 360;
-}
-
 export function updateILCA(map) {
+  // #1) Read the wind
   const windDir = window.globalSimulationData.windDirection;
   const windSpeed = window.globalSimulationData.windSpeed;
 
-  // Launch logic: always beam reach, choose tack toward buoy
-if (window.globalSimulationData.ILCA.timer === 0) {
-  const buoyLat = 13.668500;
-  const buoyLon = 121.402000;
-  const launchLat = window.globalSimulationData.ILCA.lat;
-  const launchLon = window.globalSimulationData.ILCA.lon;
+  // #2) Read the sail controls (vang, downhaul, outhaul)
+  const vang = window.globalSimulationData.ILCA.runningRig.vangTension || 0;
+  const downhaul = window.globalSimulationData.ILCA.runningRig.cunninghamTension || 0;
+  const outhaul = window.globalSimulationData.ILCA.runningRig.sheetTension || 0;
 
-  const bearingToBuoy = bearingBetween(launchLat, launchLon, buoyLat, buoyLon);
-  const windDir = window.globalSimulationData.windDirection;
+  // #3) Read the sheet and tiller control
+  const sheetAngle = window.globalSimulationData.ILCA.sheetAngle || 90;
+  const tillerDelta = window.globalSimulationData.ILCA.tillerAngle; // -1, 0, +1
 
-  const portHeading = (windDir - 90 + 360) % 360;
-  const starboardHeading = (windDir + 90) % 360;
+
+
+//console.log("ILCA speed at ilca.js line 17:", window.globalSimulationData.ILCA.speed);
+// #4A) Handle Tack maneuver
+if (window.globalSimulationData.ILCA.maneuver === "tack-port") {
+  console.log("Executing Port Tack...");
+
+  // Port Tack = bow through wind, rotate -90°
+  window.globalSimulationData.ILCA.heading =
+    (window.globalSimulationData.ILCA.heading - 90 + 360) % 360;
+
+  // Apply a small speed penalty (simulate loss of momentum)
+  window.globalSimulationData.ILCA.speed *= 0.9;
+
+  // Reset maneuver flag
+  window.globalSimulationData.ILCA.maneuver = null;
+}
+
+if (window.globalSimulationData.ILCA.maneuver === "tack-starboard") {
+  console.log("Executing Starboard Tack...");
+
+  // Starboard Tack = bow through wind, rotate +90°
+  window.globalSimulationData.ILCA.heading =
+    (window.globalSimulationData.ILCA.heading + 90) % 360;
 
   const diffPort = Math.abs((bearingToBuoy - portHeading + 540) % 360 - 180);
   const diffStarboard = Math.abs((bearingToBuoy - starboardHeading + 540) % 360 - 180);
