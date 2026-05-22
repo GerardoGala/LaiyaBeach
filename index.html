@@ -45,6 +45,13 @@
       line-height: 1.5em;
     }
 
+    .forecast {
+      margin-top: 15px;
+      font-size: 1.1em;
+      color: #0066cc;
+      font-weight: bold;
+    }
+
     /* Tooltip styling */
     .tooltip {
       position: relative;
@@ -61,9 +68,9 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 12px;
-      position: fixed; /* fixed so it centers on the page */
-      top: 20%;        /* above the text block */
-      left: 50%;       /* center horizontally on page */
+      position: fixed;
+      top: 20%;
+      left: 50%;
       transform: translateX(-50%);
       opacity: 0;
       transition: opacity 0.3s;
@@ -94,6 +101,9 @@
 <body class="welcome">
   <div class="welcome-container">
     <h1>🏖️ Laiya Beach ILCA Simulator</h1>
+    <!-- Forecast banner -->
+    <div id="forecast" class="forecast">Loading today's wind forecast...</div>
+
     <p>
       Experience the thrill of sailing with interactive rig controls, live wind data, and a dynamic map view.<br><br>
       Hone your skill using this simulator. Learn to recognize when you are being 
@@ -111,5 +121,57 @@
     </p>
     <button onclick="location.href='game.html'">Enter Simulator</button>
   </div>
+
+  <script>
+    // Global simulation state
+    window.globalSimulationData = {
+      windDirection: 0,
+      windSpeed: 0,
+      ILCA: {
+        heading: 180,
+        speed: 5,
+        runningRig: {
+          sheetTension: 0.0,
+          vangTension: 0.0,
+          cunninghamTension: 0.0,
+          outhaulTension: 0
+        },
+        lat: 13.681,
+        lon: 121.437,
+        maneuver: null,
+        timer: 0
+      }
+    };
+
+    async function preloadWind() {
+      try {
+        const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
+        const latitude = 13.676;
+        const longitude = 121.437;
+        const apiKey = "2ae1f247f2de797baacea07fe09b19b6"; // replace with your key
+        const units = "metric";
+
+        const url = `${baseUrl}?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const windSpeedMS = data.wind.speed;
+        const windDeg = data.wind.deg;
+        const windKnots = (windSpeedMS * 1.94384).toFixed(1);
+
+        window.globalSimulationData.windDirection = windDeg;
+        window.globalSimulationData.windSpeed = windKnots;
+
+        document.getElementById("forecast").textContent =
+          `🌬️ Today's wind forecast is ${windDeg}° at ${windKnots} knots.`;
+      } catch (err) {
+        document.getElementById("forecast").textContent =
+          "⚠️ Unable to load today's wind forecast.";
+        console.error(err);
+      }
+    }
+
+    preloadWind();
+  </script>
 </body>
 </html>

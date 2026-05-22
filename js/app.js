@@ -41,12 +41,16 @@ async function loadConfig() {
   };
   console.log("Initial ILCA speed at app.js line 42:", window.globalSimulationData.ILCA.speed);
 
+  // ✅ Fetch wind immediately so it's visible right away
+  await fetchWind();
+
   // ✅ Show initial status immediately
   refreshStatusPanels();
 
   // Wind update loop (every 5 seconds)
   windIntervalId = setInterval(async () => {
     await fetchWind();
+    refreshStatusPanels(); // keep panels in sync
   }, 5000);
 
   // ILCA + Time update loop (every 1 second)
