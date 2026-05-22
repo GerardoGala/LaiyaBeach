@@ -121,27 +121,14 @@
     </p>
     <button onclick="location.href='game.html'">Enter Simulator</button>
   </div>
+<!-- Leaflet library -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+
+
+  
   <script>
-    // Global simulation state
-    window.globalSimulationData = {
-      windDirection: 0,
-      windSpeed: 0,
-      ILCA: {
-        heading: 180,
-        speed: 5,
-        runningRig: {
-          sheetTension: 0.0,
-          vangTension: 0.0,
-          cunninghamTension: 0.0,
-          outhaulTension: 0
-        },
-        lat: 13.681,
-        lon: 121.437,
-        maneuver: null,
-        timer: 0
-      }
-    };
+
 
     async function preloadWind() {
       try {
