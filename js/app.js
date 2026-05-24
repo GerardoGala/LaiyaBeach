@@ -1,7 +1,7 @@
 // app.js
 import { initMap } from './map.js';
 import { fetchWind } from './wind.js';
-import { updateILCA } from './ilca.js';
+import { updateILCA } from './ilcaMain.js';
 
 let map;
 let launched = false;
