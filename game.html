@@ -190,11 +190,16 @@
   const mapLaunchBtn = document.getElementById('mapLaunchBtn');
   if (mapLaunchBtn) {
     mapLaunchBtn.addEventListener('click', () => {
-      launchSimulation(); // defined in app.js
-      mapLaunchBtn.style.display = 'none';
-      document.getElementById('map').style.display = 'block';
-    });
-  }
+    window.globalSimulationData.ILCA.maneuver = "launch";
+
+    // Start simulation
+    launchSimulation();
+
+    // Hide button and show map
+    mapLaunchBtn.style.display = 'none';
+    document.getElementById('map').style.display = 'block';
+      });
+    }
 </script>
 
 
