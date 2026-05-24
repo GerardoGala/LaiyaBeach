@@ -5,6 +5,10 @@ window.globalSimulationData = {
   windDirection: 0,
   windSpeed: 0,
 
+  // --- Buoy state ---
+  buoyLat: 13.657641,
+  buoyLon: 121.407058,
+
   // --- ILCA state ---
   ILCA: {
     heading: 180,
@@ -23,4 +27,3 @@ window.globalSimulationData = {
     timer: 0
   }
 };
-

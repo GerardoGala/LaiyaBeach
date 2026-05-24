@@ -12,15 +12,15 @@ export function updateILCA(map) {
   const sheetAngle = window.globalSimulationData.ILCA.sheetAngle || 90;
   const tillerDelta = window.globalSimulationData.ILCA.tillerAngle; // -1, 0, +1
 
-  // #4) Launch logic — set heading to beam reach
+
+// #4) Launch logic — set heading to beam reach toward buoy
 if (window.globalSimulationData.ILCA.maneuver === "launch") {
   console.log("Launching ILCA...");
 
-  // Beam reach = windDir ± 90°
   const portBeamReach = (windDir - 90 + 360) % 360;
   const starboardBeamReach = (windDir + 90) % 360;
 
-  let chosenHeading = starboardBeamReach; // default
+  let chosenHeading = starboardBeamReach; // fallback
 
   if (window.globalSimulationData.buoyLat && window.globalSimulationData.buoyLon) {
     const buoyLat = window.globalSimulationData.buoyLat;
@@ -32,13 +32,22 @@ if (window.globalSimulationData.ILCA.maneuver === "launch") {
       buoyLon
     );
 
-    const diffPort = Math.abs((bearingToBuoy - portBeamReach + 540) % 360 - 180);
-    const diffStarboard = Math.abs((bearingToBuoy - starboardBeamReach + 540) % 360 - 180);
+    // Angular difference helper
+    function angleDiff(a, b) {
+      const d = Math.abs(a - b) % 360;
+      return d > 180 ? 360 - d : d;
+    }
 
-    chosenHeading = diffPort < diffStarboard ? portBeamReach : starboardBeamReach;
-    console.log(`Beam reach options: Port=${portBeamReach}°, Starboard=${starboardBeamReach}°. 
-                 Buoy bearing=${bearingToBuoy}°. 
-                 Launching on ${chosenHeading}°`);
+    const diffPort = angleDiff(bearingToBuoy, portBeamReach);
+    const diffStarboard = angleDiff(bearingToBuoy, starboardBeamReach);
+
+    if (diffPort < diffStarboard) {
+      chosenHeading = portBeamReach;
+      console.log(`Buoy bearing=${bearingToBuoy}°. Launching on Port Beam Reach (${portBeamReach}°)`);
+    } else {
+      chosenHeading = starboardBeamReach;
+      console.log(`Buoy bearing=${bearingToBuoy}°. Launching on Starboard Beam Reach (${starboardBeamReach}°)`);
+    }
   } else {
     console.log(`No buoy defined. Launching on Starboard Beam Reach (${starboardBeamReach}°)`);
   }
@@ -47,6 +56,10 @@ if (window.globalSimulationData.ILCA.maneuver === "launch") {
   window.globalSimulationData.ILCA.speed = 5; // initial push-off
   window.globalSimulationData.ILCA.maneuver = null;
 }
+
+
+
+
 
 
   // #4) Tack, Gybe & fine-tune maneuvers

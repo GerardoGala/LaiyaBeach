@@ -1,7 +1,7 @@
 export function initMap() {
   const laiya = [13.670464, 121.401286];
-  const buoyLat = 13.657641;
-  const buoyLng = 121.407058;
+  const buoyLat = window.globalSimulationData.buoyLat;
+  const buoyLng = window.globalSimulationData.buoyLon;
 
   // Tomato buoy SVG (yellow with orange outline)
   const buoySVG = `
