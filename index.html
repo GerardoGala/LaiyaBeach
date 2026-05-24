@@ -22,32 +22,35 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: url("images/ilca-dinghy-sailor.png") no-repeat center center;
       background-size: cover;
-      opacity: 0.3;
+      opacity: 0.25;
       z-index: -1;
     }
 
     .welcome-container {
       position: relative;
-      padding: 50px;
+      padding: 25px;
       background: rgba(255,255,255,0.85);
-      border-radius: 12px;
+      border-radius: 10px;
       display: inline-block;
-      margin-top: 10%;
-      max-width: 700px;
+      margin-top: 5%;
+      max-width: 650px;
     }
 
     h1 {
       color: #0066cc;
+      font-size: 1.6em;
+      margin-bottom: 10px;
     }
 
     p {
-      font-size: 1.2em;
-      line-height: 1.5em;
+      font-size: 0.95em;
+      line-height: 1.4em;
+      margin: 10px 0;
     }
 
     .forecast {
-      margin-top: 15px;
-      font-size: 1.1em;
+      margin-top: 10px;
+      font-size: 0.9em;
       color: #0066cc;
       font-weight: bold;
     }
@@ -58,26 +61,28 @@
       cursor: pointer;
       color: #d35400;
       font-weight: bold;
+      font-size: 0.95em;
     }
     .tooltip .tooltiptext {
       visibility: hidden;
-      width: 320px;
+      width: 260px;
       background-color: #fff8dc;
       color: #333;
       text-align: left;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 12px;
+      border-radius: 6px;
+      padding: 8px;
       position: fixed;
       top: 20%;
       left: 50%;
       transform: translateX(-50%);
       opacity: 0;
       transition: opacity 0.3s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       white-space: normal;
-      line-height: 1.4em;
+      line-height: 1.3em;
       z-index: 10;
+      font-size: 0.85em;
     }
     .tooltip:hover .tooltiptext {
       visibility: visible;
@@ -85,16 +90,37 @@
     }
 
     button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 1em;
+      margin-top: 15px;
+      padding: 8px 16px;
+      font-size: 0.9em;
       background-color: #ffcc00;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
     }
     button:hover {
       background-color: #ffdb4d;
+    }
+
+    .rules {
+      margin-top: 15px;
+      background: #eef7ff;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #cce0ff;
+      font-size: 0.9em;
+    }
+    .rules h2 {
+      color: #0066cc;
+      margin-bottom: 6px;
+      font-size: 1.1em;
+    }
+    .rules ul {
+      text-align: left;
+      font-size: 0.9em;
+      line-height: 1.4em;
+      margin: 0;
+      padding-left: 18px;
     }
   </style>
 </head>
@@ -109,29 +135,48 @@
       Hone your skill using this simulator. Learn to recognize when you are being 
       <span class="tooltip">Lifted
         <span class="tooltiptext">
-          <strong>Lifted:</strong> The wind shifts so your current heading is closer to the wind. You can point higher without losing speed — a chance to gain advantage.
+          <strong>Lifted:</strong> Wind shifts so your heading is closer to the wind. You can point higher without losing speed — a chance to gain advantage.
         </span>
       </span> 
       or 
       <span class="tooltip">Headed
         <span class="tooltiptext">
-          <strong>Headed:</strong> The wind shifts so your current heading is more downwind. You can’t point as high anymore, and if you don’t adjust, you’ll lose ground.
+          <strong>Headed:</strong> Wind shifts so your heading is more downwind. You can’t point as high anymore, and if you don’t adjust, you’ll lose ground.
         </span>
       </span>.
     </p>
+
+    <div class="rules">
+      <h2>🎯 Objective</h2>
+      <p>
+        Launch your ILCA dinghy, round the buoy, and return to the start in the shortest possible time.
+      </p>
+
+      <h2>⏱️ Scoring Rules</h2>
+      <ul>
+        <li>Base time is measured from <strong>launch</strong> to <strong>finish</strong>.</li>
+        <li>Each tack or gybe adds <em>+10 seconds</em>.</li>
+        <li>Overshooting the <span class="tooltip">Layline
+          <span class="tooltiptext">
+            <strong>Layline:</strong> The optimal course to the mark. Overshooting means sailing extra distance.
+          </span>
+        </span> adds <em>+5 seconds per degree</em>.</li>
+        <li>Missing a lift opportunity adds <em>+15 seconds</em>.</li>
+        <li>Correct vang, cunningham, and outhaul trim improves speed efficiency.</li>
+        <li>Poor trim reduces speed and increases finish time.</li>
+      </ul>
+    </div>
+
     <button onclick="location.href='game.html'">Enter Simulator</button>
   </div>
-<!-- Leaflet library -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-<!-- Global state must be loaded first, as a plain script -->
-<script src="js/globalSimulationData.js"></script>
+  <!-- Leaflet library -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+  <!-- Global state must be loaded first -->
+  <script src="js/globalSimulationData.js"></script>
 
-  
   <script>
-
-
     async function preloadWind() {
       try {
         const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
