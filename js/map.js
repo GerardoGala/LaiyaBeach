@@ -1,9 +1,10 @@
+// map.js
+let windControlDiv; // keep reference so we can update later
+
 export function initMap() {
   const laiya = [13.670464, 121.401286];
   const buoyLat = window.globalSimulationData.buoyLat;
   const buoyLng = window.globalSimulationData.buoyLon;
-  // Get the wind direction from the global state
-  const windDir = window.globalSimulationData.windDirection;
 
   // Tomato buoy SVG (yellow with orange outline)
   const buoySVG = `
@@ -38,35 +39,19 @@ export function initMap() {
   const WindControl = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function() {
-      const div = L.DomUtil.create('div', 'wind-indicator-container');
-      
-      div.style.background = 'white';
-      div.style.padding = '8px';
-      div.style.borderRadius = '5px';
-      div.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
-      div.style.textAlign = 'center';
-      div.style.fontFamily = 'sans-serif';
-      div.style.fontSize = '12px';
-      div.style.fontWeight = 'bold';
+      windControlDiv = L.DomUtil.create('div', 'wind-indicator-container');
+      windControlDiv.style.background = 'white';
+      windControlDiv.style.padding = '8px';
+      windControlDiv.style.borderRadius = '5px';
+      windControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
+      windControlDiv.style.textAlign = 'center';
+      windControlDiv.style.fontFamily = 'sans-serif';
+      windControlDiv.style.fontSize = '12px';
+      windControlDiv.style.fontWeight = 'bold';
 
-      div.innerHTML = `
-        <div style="margin-bottom: 4px;">WIND</div>
-        <svg xmlns="http://w3.org" width="50" height="50" viewBox="0 0 50 50">
-          <!-- Compass ring -->
-          <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
-          <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
-          
-          <!-- Wind Arrow (Now points straight down at 0 degrees) -->
-          <g transform="rotate(${windDir}, 25, 25)">
-            <!-- Arrow shaft moving from top to bottom -->
-            <line x1="25" y1="5" x2="25" y2="40" stroke="blue" stroke-width="3" stroke-linecap="round"/>
-            <!-- Arrow head shifted to the bottom end pointing downward -->
-            <polygon points="25,45 20,35 30,35" fill="blue" />
-          </g>
-        </svg>
-        <div style="margin-top: 4px; color: blue;">${windDir}°</div>
-      `;
-      return div;
+      // draw initial arrow
+      updateWindControl(map);
+      return windControlDiv;
     }
   });
 
@@ -78,4 +63,24 @@ export function initMap() {
   map.fitBounds(bounds, { padding: [50, 50] });
 
   return map;
+}
+
+// --- Refresh function to update wind arrow dynamically ---
+export function updateWindControl(map) {
+  if (!windControlDiv) return;
+
+  const windDir = window.globalSimulationData.windDirection || 0;
+
+  windControlDiv.innerHTML = `
+    <div style="margin-bottom: 4px;">WIND</div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
+      <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
+      <g transform="rotate(${windDir}, 25, 25)">
+        <line x1="25" y1="5" x2="25" y2="40" stroke="blue" stroke-width="3" stroke-linecap="round"/>
+        <polygon points="25,45 20,35 30,35" fill="blue" />
+      </g>
+    </svg>
+    <div style="margin-top: 4px; color: blue;">${windDir}°</div>
+  `;
 }

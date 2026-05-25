@@ -1,5 +1,5 @@
 // app.js
-import { initMap } from './map.js';
+import { initMap, updateWindControl  } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
 
@@ -7,6 +7,12 @@ let map;
 let launched = false;
 let windIntervalId = null;
 let ilcaIntervalId = null;
+
+windIntervalId = setInterval(async () => {
+  await fetchWind();
+  refreshStatusPanels();
+  updateWindControl(map); // refresh arrow here
+}, 5000);
 
 async function loadConfig() {
   map = initMap();

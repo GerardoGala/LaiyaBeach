@@ -15,9 +15,11 @@ export async function fetchWind() {
     const windDeg = data.wind.deg;
     const windKnots = (windSpeedMS * 1.94384).toFixed(1);
 
+    // 🔑 update global state
     window.globalSimulationData.windDirection = windDeg;
     window.globalSimulationData.windSpeed = windKnots;
-
+   
+  
     const windDiv = document.getElementById("windStatus");
     if (windDiv) {
       windDiv.textContent = `🌬️ Wind: ${windKnots} knots from ${windDeg}°`;
