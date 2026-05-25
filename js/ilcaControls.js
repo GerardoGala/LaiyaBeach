@@ -6,7 +6,7 @@ export function handleControls(windDir, windSpeed) {
 
   switch (ilca.maneuver) {
     case "launch":
-      launchILCA(windDir);
+      launchILCA(windDir, windSpeed);
       break;
     case "tack-port":
       ilca.heading = (windDir + 45) % 360;
@@ -35,7 +35,7 @@ export function handleControls(windDir, windSpeed) {
   ilca.maneuver = null;
 }
 
-function launchILCA(windDir) {
+function launchILCA(windDir, windSpeed) {
   const ilca = window.globalSimulationData.ILCA;
   const portBeamReach = (windDir - 90 + 360) % 360;
   const starboardBeamReach = (windDir + 90) % 360;
@@ -43,9 +43,12 @@ function launchILCA(windDir) {
   let chosenHeading = starboardBeamReach;
 
   if (window.globalSimulationData.buoyLat && window.globalSimulationData.buoyLon) {
-    const bearingToBuoy = computeBearing(ilca.lat, ilca.lon,
+    const bearingToBuoy = computeBearing(
+      ilca.lat,
+      ilca.lon,
       window.globalSimulationData.buoyLat,
-      window.globalSimulationData.buoyLon);
+      window.globalSimulationData.buoyLon
+    );
 
     const diffPort = angleDiff(bearingToBuoy, portBeamReach);
     const diffStarboard = angleDiff(bearingToBuoy, starboardBeamReach);
@@ -54,7 +57,15 @@ function launchILCA(windDir) {
   }
 
   ilca.heading = chosenHeading;
-  ilca.speed = 5;
+
+  // Initial speed based on wind speed (beam reach efficiency ~50%)
+  const efficiency = 0.5; // mid-range controls baseline
+  const baseSpeed = windSpeed * efficiency;
+  ilca.speed = Math.min(Math.max(baseSpeed, 0), 12); // clamp to realistic range
+
+  console.log(
+    `Launching ILCA on heading ${chosenHeading}° with wind ${windSpeed} knots → initial speed ${ilca.speed.toFixed(1)} knots`
+  );
 }
 
 function angleDiff(a, b) {

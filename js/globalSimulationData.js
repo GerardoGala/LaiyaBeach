@@ -12,7 +12,7 @@ window.globalSimulationData = {
   // --- ILCA state ---
   ILCA: {
     heading: 180,
-    speed: 5,
+    speed: 0,
 
     runningRig: {
       sheetTension: 0.0,
