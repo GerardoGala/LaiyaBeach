@@ -8,146 +8,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <!-- Left Pane -->
-  <div class="left-pane">
-    <!-- Icon Buttons (Top Left) -->
-    <div class="tabs">
-      <span class="material-icons open-dialog" data-target="leaderboardDialog">leaderboard</span>
-      <span class="material-icons open-dialog" data-target="helpDialog">help_outline</span>
-    </div>
-
-    <!-- Permanent Status (Top of Left Pane) -->
-    <div class="status">
-      <h4>Wind</h4>
-      <p id="windStatus">Wind data loading...</p>
-    </div>
-    <div class="status">
-      <h4>ILCA</h4>
-      <p id="ilcaStatus">ILCA data loading...</p>
-    </div>
-    <div class="status">
-      <h4>Timer:</h4>
-      <p id="timer"></p>
-    </div>
-
-    <!-- Rigging Controls -->
-    <div id="rigging" class="tab-content active">
-        <div id="sheetControl" class="right-4col cell" data-angle="15" 
-            style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
-
-          <!-- Group label spans all columns -->
-          <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
-            SHEET CONTROL
-          </div>
-
-          <!-- Buttons -->
-          <button id="btnSheet90" class="control-button" onclick="executeSheet90()">90</button>
-          
-          <button id="btnSheetPlus" class="control-button" 
-                  onclick="window.adjustSheet(1)" 
-                  style="background: white; color: black; font-weight: bold;">
-            +1°
-          </button>
-          
-          <button id="btnSheetMinus" class="control-button" 
-                  onclick="window.adjustSheet(-1)" 
-                  style="background: white; color: black; font-weight: bold;">
-            -1°
-          </button>
-          
-          <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
-        </div>
-
-<div class="maneuver-controls">
-  <h3>ILCA HEADING</h3>
-
-  <!-- Row 1: Tack -->
-  <div class="row">
-    <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-port'">
-      Port Tack
-    </button>
-    <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">
-      Starboard Tack
-    </button>
-  </div>
-
-
-  <!-- Row 2: Fine Heading Adjustments -->
-  <div class="row">
-    <button onclick="window.globalSimulationData.ILCA.heading = 
-      (window.globalSimulationData.ILCA.heading - 1 + 360) % 360">-1°</button>
-
-    <button onclick="window.globalSimulationData.ILCA.heading = 
-      (window.globalSimulationData.ILCA.heading + 1) % 360">+1°</button>
-  </div>
-
-
-  <!-- Row 3: Gybe -->
-  <div class="row">
-    <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-port'">
-      Port Gybe
-    </button>
-    <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">
-      Starboard Gybe
-    </button>
-  </div>
-</div>
-
-
-        <div id="tuningControlsGroup" class="right-3col">
-          <div class="cell">
-            <svg id="vangControl" width="60" height="150" viewBox="0 0 60 150">
-              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
-              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 9px; font-weight: bold;">VANG</text>
-              <g style="cursor: pointer;" onclick="updateControl('vang', 1)">
-                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
-                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-              </g>
-              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
-              <text id="vangValue" data-vang="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-              <g style="cursor: pointer;" onclick="updateControl('vang', -1)">
-                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
-                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-              </g>
-            </svg>
-          </div>
-          <div class="cell">
-            <svg id="downhaulControl" width="60" height="150" viewBox="0 0 60 150">
-              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
-              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 8px; font-weight: bold;">DOWNHAUL</text>
-              <g style="cursor: pointer;" onclick="updateControl('downhaul', 1)">
-                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
-                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-              </g>
-              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
-              <text id="downhaulValue" data-downhaul="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-              <g style="cursor: pointer;" onclick="updateControl('downhaul', -1)">
-                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
-                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-              </g>
-            </svg>
-          </div>
-          <div class="cell">
-            <svg id="outhaulControl" width="60" height="150" viewBox="0 0 60 150">
-              <rect x="0" y="0" width="60" height="20" rx="4" fill="#333" />
-              <text x="30" y="14" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 9px; font-weight: bold;">OUTHAUL</text>
-              <g style="cursor: pointer;" onclick="updateControl('outhaul', 1)">
-                <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745" />
-                <text x="30" y="52" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-              </g>
-              <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc" />
-              <text id="outhaulValue" data-outhaul="0" x="30" y="92" text-anchor="middle" fill="#333" style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-              <g style="cursor: pointer;" onclick="updateControl('outhaul', -1)">
-                <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545" />
-                <text x="30" y="132" text-anchor="middle" fill="white" style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-              </g>
-            </svg>
-          </div>
-        </div>
-    </div>
-
-
-  </div>
+  <!-- Placeholder for controls -->
+  <div id="controls"></div>
 
   <!-- Right Pane (Map) -->
   <div class="right-pane">
@@ -176,37 +38,30 @@
     </div>
   </div>
 
-<!-- Leaflet library -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="js/globalSimulationData.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/dialogs.js"></script>
 
-<!-- Global state must be loaded first, as a plain script -->
-<script src="js/globalSimulationData.js"></script>
+  <!-- Loader for controls partial -->
+  <script>
+    async function loadPartial(id, file) {
+      const res = await fetch(file);
+      document.getElementById(id).innerHTML = await res.text();
+    }
+    loadPartial("controls", "partials/controls.html");
 
-<!-- Root orchestrator as ES module -->
-<script type="module" src="js/app.js"></script>
-
-<!-- Dialog logic -->
-<script src="js/dialogs.js"></script>
-
-<script>
-  const mapLaunchBtn = document.getElementById('mapLaunchBtn');
-  if (mapLaunchBtn) {
-    mapLaunchBtn.addEventListener('click', () => {
-    window.globalSimulationData.ILCA.maneuver = "launch";
-
-    // Start simulation
-    launchSimulation();
-
-    // Hide button and show map
-    mapLaunchBtn.style.display = 'none';
-    document.getElementById('map').style.display = 'block';
+    // Map launch button logic
+    const mapLaunchBtn = document.getElementById('mapLaunchBtn');
+    if (mapLaunchBtn) {
+      mapLaunchBtn.addEventListener('click', () => {
+        window.globalSimulationData.ILCA.maneuver = "launch";
+        launchSimulation();
+        mapLaunchBtn.style.display = 'none';
+        document.getElementById('map').style.display = 'block';
       });
     }
-</script>
-
-
-
-
-
+  </script>
 </body>
 </html>
