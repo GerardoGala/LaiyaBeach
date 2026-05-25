@@ -65,11 +65,16 @@ async function loadConfig() {
     window.globalSimulationData.ILCA.localTime =
       now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
-    if (launched) {
-      updateILCA(map);
-      window.globalSimulationData.ILCA.speed = 5; // start moving at 5 knots
-      // TODO: calculate initial speed based on wind + tack
-    }
+  if (launched) {
+    updateILCA(map);
+
+    const windSpeed = window.globalSimulationData.windSpeed; // knots
+    const efficiency = 0.6; // ~60% of wind speed on beam reach
+    const initialSpeed = Math.min(windSpeed * efficiency, 12); // clamp to max realistic speed
+
+    window.globalSimulationData.ILCA.speed = initialSpeed;
+  }
+
 
     refreshStatusPanels();
   }, 1000);
