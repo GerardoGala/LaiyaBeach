@@ -17,6 +17,13 @@ body {
   background: #252525;
 }
 
+.right-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+
 .right-pane {
   flex: 1;               /* takes up the remaining space */
   display: flex;

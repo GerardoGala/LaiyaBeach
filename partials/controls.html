@@ -1,4 +1,4 @@
-<!-- Controls Partial -->
+<!-- controls.html -->
 <div class="left-pane">
   <!-- Icon Buttons (Top Left) -->
   <div class="tabs">
@@ -42,8 +42,71 @@
     </div>
 
     <div id="tuningControlsGroup" class="right-3col">
-      <!-- Vang, Downhaul, Outhaul SVG blocks -->
-      <!-- (keep the full SVG markup here as in your original file) -->
+      <div class="cell">
+        <!-- VANG -->
+        <svg id="vangControl" width="60" height="150" viewBox="0 0 60 150">
+          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
+          <text x="30" y="14" text-anchor="middle" fill="white"
+                style="font-family: Arial; font-size: 9px; font-weight: bold;">VANG</text>
+          <g style="cursor: pointer;" onclick="updateControl('vang', 1)">
+            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
+            <text x="30" y="52" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+          </g>
+          <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
+          <text id="vangValue" data-vang="0" x="30" y="92" text-anchor="middle" fill="#333"
+                style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+          <g style="cursor: pointer;" onclick="updateControl('vang', -1)">
+            <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
+            <text x="30" y="132" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cell">
+        <!-- DOWNHAUL -->
+        <svg id="downhaulControl" width="60" height="150" viewBox="0 0 60 150">
+          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
+          <text x="30" y="14" text-anchor="middle" fill="white"
+                style="font-family: Arial; font-size: 8px; font-weight: bold;">DOWNHAUL</text>
+          <g style="cursor: pointer;" onclick="updateControl('downhaul', 1)">
+            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
+            <text x="30" y="52" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+          </g>
+          <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
+          <text id="downhaulValue" data-downhaul="0" x="30" y="92" text-anchor="middle" fill="#333"
+                style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+          <g style="cursor: pointer;" onclick="updateControl('downhaul', -1)">
+            <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
+            <text x="30" y="132" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="cell">
+        <!-- OUTHAUL -->
+        <svg id="outhaulControl" width="60" height="150" viewBox="0 0 60 150">
+          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
+          <text x="30" y="14" text-anchor="middle" fill="white"
+                style="font-family: Arial; font-size: 9px; font-weight: bold;">OUTHAUL</text>
+          <g style="cursor: pointer;" onclick="updateControl('outhaul', 1)">
+            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
+            <text x="30" y="52" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
+          </g>
+          <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
+          <text id="outhaulValue" data-outhaul="0" x="30" y="92" text-anchor="middle" fill="#333"
+                style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
+          <g style="cursor: pointer;" onclick="updateControl('outhaul', -1)">
+            <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
+            <text x="30" y="132" text-anchor="middle" fill="white"
+                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
+          </g>
+        </svg>
+      </div>
     </div>
   </div>
 
