@@ -100,6 +100,36 @@ body {
   color: #d4d4d4;
 }
 
+/* Put this in css/style.css or inside <style> in game.html */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;   /* stop the whole page from scrolling */
+}
+
+#controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;       /* fixed width for left pane */
+  overflow-y: auto;   /* scroll only inside controls */
+  background-color: #111;
+}
+
+.right-pane {
+  position: absolute;
+  top: 0;
+  left: 300px;        /* same as controls width */
+  right: 0;
+  bottom: 0;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
 
 
 

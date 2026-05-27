@@ -17,9 +17,10 @@
     <div class="status">
       <p id="timer"></p>
     </div>
-
+  </div>
 
   <!-- Rigging Controls -->
+
 
     <div id="sheetControl" class="right-4col cell" data-angle="15"
          style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
@@ -34,6 +35,23 @@
               onclick="window.adjustSheet(-1)"
               style="background: white; color: black; font-weight: bold;">-1°</button>
       <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
+    </div>
+    <br>
+            <!-- Sailor Position Control -->
+    <div class="sailor-position-control">
+      <h3>Sailor Position</h3>
+      <div class="cockpit">
+        <div class="row">
+          <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'out'">&lt;-</button>
+          <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'in'">-&gt;</button>
+        </div>
+        <div class="row">
+          <button onclick="window.globalSimulationData.ILCA.sailor.position = 'forward'">^</button>
+        </div>
+        <div class="row">
+          <button onclick="window.globalSimulationData.ILCA.sailor.position = 'aft'">v</button>
+        </div>
+      </div>
     </div>
     <br>
     <div class="maneuver-controls">
@@ -53,6 +71,7 @@
       </div>
     </div>
     <br>
+
     <div id="tuningControlsGroup" class="right-3col">
       <div class="cell">
         <!-- VANG -->
@@ -120,29 +139,95 @@
         </svg>
       </div>
     </div>
-  </div>
+
+
+
+    <div class="maneuver-controls">
+        test
+    </div>
+    <div class="tab-content active">
+      <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'out'">Nudge</button>
+    </div>
+</div>
 
 
 <style>
-
-
-  .status {
-  display: flex;             /* put children side by side */
-  align-items: baseline;     /* align text neatly */
-  gap: 8px;                  /* small space between label and value */
-  }
+/* Status styles */
+.status {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
 
 .status h4 {
-  font-size: 1.4rem;         /* bigger label (Wind, ILCA) */
+  font-size: 1.4rem;
   font-weight: bold;
   margin: 0;
 }
 
 .status p {
   margin: 0;
-  font-size: 1rem;           /* smaller value text */
+  font-size: 1rem;
   color: #d4d4d4;
 }
 
+/* Sailor Position Control */
+.sailor-position-control {
+  margin-top: 16px;
+}
+
+.cockpit {
+  display: flex;
+  flex-direction: column;   /* stack rows vertically */
+  gap: 8px;
+  border: 2px solid #888;
+  padding: 12px;
+  width: 160px;
+  background-color: #222;
+}
+
+.cockpit .row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cockpit button {
+  font-size: 1.2rem;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+/* Reset page defaults and prevent whole-page scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;          /* stop the entire page from scrolling */
+}
+
+/* Left pane: fixed width, full height, scrollable */
+.left-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;                 /* stretch full height */
+  width: 300px;              /* fixed width for controls */
+  overflow-y: auto;          /* scroll only inside left pane */
+  background-color: #111;
+}
+
+/* Map fills the rest of the screen */
+#map {
+  position: absolute;
+  top: 0;
+  left: 300px;               /* same as left-pane width */
+  right: 0;
+  bottom: 0;
+}
+
+
 </style>
-</div>
+
+
+
