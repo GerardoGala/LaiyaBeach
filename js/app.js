@@ -84,7 +84,7 @@ async function loadConfig() {
 function refreshStatusPanels() {
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
-    windDiv.innerHTML = `
+    windDiv.innerHTML = `Wind Status: 
       ${window.globalSimulationData.windDirection}°
       at ${window.globalSimulationData.windSpeed} knots
     `;
@@ -92,7 +92,7 @@ function refreshStatusPanels() {
 
   const ilcaDiv = document.getElementById("ilcaStatus");
   if (ilcaDiv) {
-    ilcaDiv.innerHTML = `
+    ilcaDiv.innerHTML = `IlCA: 
       ${window.globalSimulationData.ILCA.heading}°
       at ${window.globalSimulationData.ILCA.speed} knots
     `;
@@ -121,7 +121,7 @@ export function launchSimulation() {
 
       // update DOM
       if (timerDiv) {
-        timerDiv.textContent = window.globalSimulationData.ILCA.displayTimer;
+        timerDiv.textContent ="Timer: " + window.globalSimulationData.ILCA.displayTimer;
       }
     }
   }, 1000);

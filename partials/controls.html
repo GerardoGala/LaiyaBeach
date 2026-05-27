@@ -6,8 +6,21 @@
     <span class="material-icons open-dialog" data-target="helpDialog">help_outline</span>
   </div>
 
-  <!-- Rigging Controls -->
+    <!-- Status -->
   <div id="rigging" class="tab-content active">
+    <div class="status">
+      <p id="windStatus">Wind data loading...</p>
+    </div>
+    <div class="status">
+      <p id="ilcaStatus">ILCA data loading...</p>
+    </div>
+    <div class="status">
+      <p id="timer"></p>
+    </div>
+
+
+  <!-- Rigging Controls -->
+
     <div id="sheetControl" class="right-4col cell" data-angle="15"
          style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
@@ -22,9 +35,8 @@
               style="background: white; color: black; font-weight: bold;">-1°</button>
       <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
     </div>
-
+    <br>
     <div class="maneuver-controls">
-      <h3>ILCA HEADING</h3>
       <div class="row">
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">Starboard Tack</button>
@@ -40,7 +52,7 @@
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
       </div>
     </div>
-
+    <br>
     <div id="tuningControlsGroup" class="right-3col">
       <div class="cell">
         <!-- VANG -->
@@ -110,17 +122,27 @@
     </div>
   </div>
 
-  <!-- Permanent Status -->
-  <div class="status">
-    <h4>Wind</h4>
-    <p id="windStatus">Wind data loading...</p>
-  </div>
-  <div class="status">
-    <h4>ILCA</h4>
-    <p id="ilcaStatus">ILCA data loading...</p>
-  </div>
-  <div class="status">
-    <h4>Timer:</h4>
-    <p id="timer"></p>
-  </div>
+
+<style>
+
+
+  .status {
+  display: flex;             /* put children side by side */
+  align-items: baseline;     /* align text neatly */
+  gap: 8px;                  /* small space between label and value */
+  }
+
+.status h4 {
+  font-size: 1.4rem;         /* bigger label (Wind, ILCA) */
+  font-weight: bold;
+  margin: 0;
+}
+
+.status p {
+  margin: 0;
+  font-size: 1rem;           /* smaller value text */
+  color: #d4d4d4;
+}
+
+</style>
 </div>
