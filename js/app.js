@@ -5,8 +5,7 @@ import { updateILCA } from './ilcaMain.js';
 
 let map;
 let launched = false;
-let windIntervalId = null;
-let ilcaIntervalId = null;
+let masterIntervalId = null;
 
 async function loadConfig() {
   map = initMap();
@@ -14,7 +13,7 @@ async function loadConfig() {
   // === Global simulation state ===
   window.globalSimulationData = {
     windDirection: 180,
-    windSpeed: 0, // always numeric
+    windSpeed: 0,
 
     ILCA: {
       heading: 180,
@@ -40,7 +39,7 @@ async function loadConfig() {
     }
   };
 
-  // ✅ Fetch wind immediately so it's visible right away
+  // ✅ Fetch wind immediately so overlays show something
   await updateWindFromAPI();
 
   // ✅ Show initial status immediately
@@ -48,31 +47,35 @@ async function loadConfig() {
   updateWindControl(map);
   updateILCAControl();
 
-  // Wind update loop (every 5 seconds)
-  windIntervalId = setInterval(async () => {
-    await updateWindFromAPI();
-    refreshStatusPanels();
-    updateWindControl(map);
-    updateILCAControl();
-  }, 5000);
+  // --- Unified master loop (every 1 second) ---
+  let tick = 0;
+  masterIntervalId = setInterval(async () => {
+    tick++;
 
-  // ILCA + Time update loop (every 1 second)
-  ilcaIntervalId = setInterval(() => {
+    // Update wind every 5 seconds
+    if (tick % 5 === 0) {
+      await updateWindFromAPI();
+    }
+
+    // Update ILCA local time
     const now = new Date();
     window.globalSimulationData.ILCA.localTime =
       now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
+    // Update ILCA physics if launched
     if (launched) {
       updateILCA(map);
 
-      const windSpeed = window.globalSimulationData.windSpeed; // numeric
+      const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
       const efficiency = 0.6;
       const initialSpeed = Math.min(windSpeed * efficiency, 12);
 
       window.globalSimulationData.ILCA.speed = initialSpeed;
     }
 
+    // Refresh overlays + panels
     refreshStatusPanels();
+    updateWindControl(map);
     updateILCAControl();
   }, 1000);
 }
@@ -80,8 +83,7 @@ async function loadConfig() {
 // --- Helper to fetch wind and update global state ---
 async function updateWindFromAPI() {
   try {
-    const windData = await fetchWind(); 
-    // Ensure numeric assignment
+    const windData = await fetchWind(); // should return { direction, speed }
     if (windData) {
       window.globalSimulationData.windDirection = Number(windData.direction) || 0;
       window.globalSimulationData.windSpeed = Number(windData.speed) || 0;
@@ -92,7 +94,7 @@ async function updateWindFromAPI() {
   }
 }
 
-// Helper function to update all status panels
+// Helper function to update left-pane DOM panels
 function refreshStatusPanels() {
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
@@ -139,13 +141,9 @@ export function launchSimulation() {
 export function stopSimulation() {
   launched = false;
   clearInterval(window.globalSimulationData.ILCA._timerInterval);
-  if (windIntervalId) {
-    clearInterval(windIntervalId);
-    windIntervalId = null;
-  }
-  if (ilcaIntervalId) {
-    clearInterval(ilcaIntervalId);
-    ilcaIntervalId = null;
+  if (masterIntervalId) {
+    clearInterval(masterIntervalId);
+    masterIntervalId = null;
   }
 }
 
