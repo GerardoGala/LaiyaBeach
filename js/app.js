@@ -1,5 +1,5 @@
 // app.js
-import { initMap, updateWindControl  } from './map.js';
+import { initMap, updateWindControl, updateILCAControl } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
 
@@ -8,23 +8,17 @@ let launched = false;
 let windIntervalId = null;
 let ilcaIntervalId = null;
 
-windIntervalId = setInterval(async () => {
-  await fetchWind();
-  refreshStatusPanels();
-  updateWindControl(map); // refresh arrow here
-}, 5000);
-
 async function loadConfig() {
   map = initMap();
 
   // === Global simulation state ===
   window.globalSimulationData = {
     windDirection: 180,
-    windSpeed: 0,
+    windSpeed: 0, // always numeric
 
     ILCA: {
-      heading: 180,   // default heading out to sea
-      speed: 0,       // stationary until launch
+      heading: 180,
+      speed: 0,
       tillerAngle: 0,
       lat: 13.669100,
       lon: 121.401117,
@@ -45,18 +39,21 @@ async function loadConfig() {
       }
     }
   };
-  console.log("Initial ILCA speed at app.js line 42:", window.globalSimulationData.ILCA.speed);
 
   // ✅ Fetch wind immediately so it's visible right away
-  await fetchWind();
+  await updateWindFromAPI();
 
   // ✅ Show initial status immediately
   refreshStatusPanels();
+  updateWindControl(map);
+  updateILCAControl();
 
   // Wind update loop (every 5 seconds)
   windIntervalId = setInterval(async () => {
-    await fetchWind();
-    refreshStatusPanels(); // keep panels in sync
+    await updateWindFromAPI();
+    refreshStatusPanels();
+    updateWindControl(map);
+    updateILCAControl();
   }, 5000);
 
   // ILCA + Time update loop (every 1 second)
@@ -65,19 +62,34 @@ async function loadConfig() {
     window.globalSimulationData.ILCA.localTime =
       now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
-  if (launched) {
-    updateILCA(map);
+    if (launched) {
+      updateILCA(map);
 
-    const windSpeed = window.globalSimulationData.windSpeed; // knots
-    const efficiency = 0.6; // ~60% of wind speed on beam reach
-    const initialSpeed = Math.min(windSpeed * efficiency, 12); // clamp to max realistic speed
+      const windSpeed = window.globalSimulationData.windSpeed; // numeric
+      const efficiency = 0.6;
+      const initialSpeed = Math.min(windSpeed * efficiency, 12);
 
-    window.globalSimulationData.ILCA.speed = initialSpeed;
-  }
-
+      window.globalSimulationData.ILCA.speed = initialSpeed;
+    }
 
     refreshStatusPanels();
+    updateILCAControl();
   }, 1000);
+}
+
+// --- Helper to fetch wind and update global state ---
+async function updateWindFromAPI() {
+  try {
+    const windData = await fetchWind(); 
+    // Ensure numeric assignment
+    if (windData) {
+      window.globalSimulationData.windDirection = Number(windData.direction) || 0;
+      window.globalSimulationData.windSpeed = Number(windData.speed) || 0;
+      console.log("Wind updated:", window.globalSimulationData.windDirection, window.globalSimulationData.windSpeed);
+    }
+  } catch (err) {
+    console.error("Wind fetch failed:", err);
+  }
 }
 
 // Helper function to update all status panels
@@ -92,7 +104,7 @@ function refreshStatusPanels() {
 
   const ilcaDiv = document.getElementById("ilcaStatus");
   if (ilcaDiv) {
-    ilcaDiv.innerHTML = `IlCA: 
+    ilcaDiv.innerHTML = `ILCA: 
       ${window.globalSimulationData.ILCA.heading}°
       at ${window.globalSimulationData.ILCA.speed} knots
     `;
@@ -110,18 +122,14 @@ export function launchSimulation() {
 
   window.globalSimulationData.ILCA._timerInterval = setInterval(() => {
     if (launched) {
-      // increment raw seconds
       window.globalSimulationData.ILCA.timer++;
-
-      // format for display
       const minutes = Math.floor(window.globalSimulationData.ILCA.timer / 60);
       const seconds = window.globalSimulationData.ILCA.timer % 60;
       window.globalSimulationData.ILCA.displayTimer =
         `${minutes}:${seconds.toString().padStart(2, "0")}`;
 
-      // update DOM
       if (timerDiv) {
-        timerDiv.textContent ="Timer: " + window.globalSimulationData.ILCA.displayTimer;
+        timerDiv.textContent = "Timer: " + window.globalSimulationData.ILCA.displayTimer;
       }
     }
   }, 1000);
@@ -141,7 +149,6 @@ export function stopSimulation() {
   }
 }
 
-// Expose launchSimulation globally so inline scripts can call it
 window.launchSimulation = launchSimulation;
 window.stopSimulation = stopSimulation;
 

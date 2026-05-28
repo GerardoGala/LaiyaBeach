@@ -1,5 +1,6 @@
 // map.js
 let windControlDiv; // keep reference so we can update later
+let ilcaControlDiv; // keep reference so we can update later
 
 export function initMap() {
   const laiya = [13.670464, 121.401286];
@@ -48,15 +49,33 @@ export function initMap() {
       windControlDiv.style.fontFamily = 'sans-serif';
       windControlDiv.style.fontSize = '12px';
       windControlDiv.style.fontWeight = 'bold';
+      windControlDiv.style.color = '#222';   // darker font color
 
-      // draw initial arrow
       updateWindControl(map);
       return windControlDiv;
     }
   });
-
   map.addControl(new WindControl());
-  // -------------------------------------
+
+  // --- ILCA Status + Time Overlay ---
+  const ILCAControl = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd: function() {
+      ilcaControlDiv = L.DomUtil.create('div', 'ilca-status-container');
+      ilcaControlDiv.style.background = 'white';
+      ilcaControlDiv.style.padding = '8px';
+      ilcaControlDiv.style.borderRadius = '5px';
+      ilcaControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
+      ilcaControlDiv.style.fontFamily = 'sans-serif';
+      ilcaControlDiv.style.fontSize = '12px';
+      ilcaControlDiv.style.lineHeight = '1.4em';
+      ilcaControlDiv.style.color = '#222';   // darker font color
+
+      updateILCAControl();
+      return ilcaControlDiv;
+    }
+  });
+  map.addControl(new ILCAControl());
 
   // Fit map to show both markers, with padding
   const bounds = L.latLngBounds([laiya, [buoyLat, buoyLng]]);
@@ -70,6 +89,8 @@ export function updateWindControl(map) {
   if (!windControlDiv) return;
 
   const windDir = window.globalSimulationData.windDirection || 0;
+  const windSpeed = Number(window.globalSimulationData.windSpeed)?.toFixed(1) || "0.0";
+
 
   windControlDiv.innerHTML = `
     <div style="margin-bottom: 4px;">WIND</div>
@@ -81,6 +102,27 @@ export function updateWindControl(map) {
         <polygon points="25,45 20,35 30,35" fill="blue" />
       </g>
     </svg>
-    <div style="margin-top: 4px; color: blue;">${windDir}°</div>
+    <div style="margin-top: 4px; color: blue;">
+      ${windDir}° at ${windSpeed} kn
+    </div>
+  `;
+}
+
+// --- Refresh function to update ILCA status + time ---
+export function updateILCAControl() {
+  if (!ilcaControlDiv) return;
+
+  const ilca = window.globalSimulationData.ILCA || {};
+  const speed = ilca.speed?.toFixed(1) || 0;
+  const heading = ilca.heading?.toFixed(0) || 0;
+  const timer = ilca.displayTimer || "0:00";
+  const laiyaTime = ilca.localTime || "--:--:--";
+
+  ilcaControlDiv.innerHTML = `
+    <div><strong>ILCA Status</strong></div>
+    <div>Speed: ${speed} kn</div>
+    <div>Heading: ${heading}°</div>
+    <div>Timer: ${timer}</div>
+    <div style="margin-top:4px;"><strong>Laiya Time:</strong> ${laiyaTime}</div>
   `;
 }
