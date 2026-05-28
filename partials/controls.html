@@ -20,8 +20,6 @@
   </div>
 
   <!-- Rigging Controls -->
-
-
     <div id="sheetControl" class="right-4col cell" data-angle="15"
          style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
@@ -36,8 +34,8 @@
               style="background: white; color: black; font-weight: bold;">-1°</button>
       <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
     </div>
-    <br>
-            <!-- Sailor Position Control -->
+    
+    <!-- Sailor Position Control -->
     <div class="sailor-position-control">
       <h3>Sailor Position</h3>
       <div class="cockpit">
@@ -53,7 +51,7 @@
         </div>
       </div>
     </div>
-    <br>
+
     <div class="maneuver-controls">
       <div class="row">
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
@@ -70,7 +68,6 @@
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
       </div>
     </div>
-    <br>
 
     <div id="tuningControlsGroup" class="right-3col">
       <div class="cell">
@@ -140,11 +137,6 @@
       </div>
     </div>
 
-
-
-    <div class="maneuver-controls">
-        test
-    </div>
     <div class="tab-content active">
       <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'out'">Nudge</button>
     </div>
@@ -152,24 +144,7 @@
 
 
 <style>
-/* Status styles */
-.status {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
 
-.status h4 {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin: 0;
-}
-
-.status p {
-  margin: 0;
-  font-size: 1rem;
-  color: #d4d4d4;
-}
 
 /* Sailor Position Control */
 .sailor-position-control {
