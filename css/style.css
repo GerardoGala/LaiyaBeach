@@ -7,6 +7,7 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: row;
+  overflow: hidden;   /* stop the whole page from scrolling */
 }
 
 .left-pane {
@@ -80,32 +81,6 @@ body {
 
 .tab-content.active {
   display: block;
-}
-
-.status {
-  display: flex;             /* put children side by side */
-  align-items: baseline;     /* align text neatly */
-  gap: 8px;                  /* small space between label and value */
-}
-
-.status h4 {
-  font-size: 1.4rem;         /* bigger label (Wind, ILCA) */
-  font-weight: bold;
-  margin: 0;
-}
-
-.status p {
-  margin: 0;
-  font-size: 1rem;           /* smaller value text */
-  color: #d4d4d4;
-}
-
-/* Put this in css/style.css or inside <style> in game.html */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;   /* stop the whole page from scrolling */
 }
 
 #controls {
@@ -291,33 +266,7 @@ button:active, .map-launch:active, .modal button:active, .close-dialog:active {
   border-radius: 8px;
 }
 
-.cell {
-  background: rgba(40,40,40,0.6);
-  border-radius: 8px;
-  padding: 8px;
-  text-align: center;
-}
 
-.control-button {
-  margin: 4px;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.control-button:hover {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-#tuningControlsGroup {
-  display: flex;              /* switch to flexbox */
-  flex-direction: row;        /* lay children side by side */
-  justify-content: space-around; /* spread them evenly */
-  gap: 12px;                  /* spacing between controls */
-}
 
 .dialog {
   display: none;             /* hidden by default */
