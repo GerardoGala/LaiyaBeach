@@ -9,39 +9,57 @@
 
 
   <!-- Rigging Controls -->
-    <div id="sheetControl" class="right-4col cell" data-angle="15"
+    <div id="sheetControl"
          style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
         SHEET CONTROL
       </div>
-      <button id="btnSheet90" class="control-button" onclick="executeSheet90()">90</button>
+      <button id="btnSheet90" class="control-button" onclick="executeSheet20()">20</button>
       <button id="btnSheetPlus" class="control-button"
-              onclick="window.adjustSheet(1)"
-              style="background: white; color: black; font-weight: bold;">+1°</button>
-      <button id="btnSheetMinus" class="control-button"
               onclick="window.adjustSheet(-1)"
               style="background: white; color: black; font-weight: bold;">-1°</button>
-      <button id="btnSheet20" class="control-button" onclick="executeSheet20()">20</button>
-    </div>
-    
-    <!-- Sailor Position Control -->
-    <div class="sailor-position-control">
-      <h3>Sailor Position</h3>
-      <div class="cockpit">
-        <div class="row">
-          <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'out'">&lt;-</button>
-          <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'in'">-&gt;</button>
-        </div>
-        <div class="row">
-          <button onclick="window.globalSimulationData.ILCA.sailor.position = 'forward'">^</button>
-        </div>
-        <div class="row">
-          <button onclick="window.globalSimulationData.ILCA.sailor.position = 'aft'">v</button>
-        </div>
-      </div>
+      <button id="btnSheetMinus" class="control-button"
+              onclick="window.adjustSheet(+1)"
+              style="background: white; color: black; font-weight: bold;">+1°</button>
+      <button id="btnSheet20" class="control-button" onclick="executeSheet90()">90</button>
     </div>
 
-    <div class="maneuver-controls">
+    <div id="daggerboardControl"
+         style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+      <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+        DAGGERBOARD CONTROL
+      </div>
+      <button id="btnSheet90" class="control-button" onclick="executeSheet90()">-2</button>
+      <button id="btnSheet90" class="control-button" onclick="executeSheet90()">-1</button>
+      <button id="btnSheetPlus" class="control-button" onclick="window.adjustSheet(1)">0</button>
+      <button id="btnSheetMinus" class="control-button" onclick="window.adjustSheet(-1)">1</button>
+      <button id="btnSheet20" class="control-button" onclick="executeSheet20()">2</button>
+    </div>
+
+    <div id="sailorPositionControl" style="background: rgba(0,0,0,0.1); padding: 2px; text-align: center;">
+      <div style="font-weight: bold; color: white; margin-top: 6px; grid-column: 1 / -1;">
+        SAILOR POSITION
+      </div>
+      <div>
+        <button id="btnSheet90" class="control-button" onclick="executeSailorPosition(-2)">Aft</button>
+      </div>
+      <div>
+        <button id="btnSheet90" class="control-button" onclick="executeSailorPosition(-1)">Hike Out</button>
+        <button id="btnSheetPlus" class="control-button" onclick="executeSailorPosition(0)">Mid Center</button>
+        <button id="btnSheetMinus" class="control-button" onclick="executeSailorPosition(1)">Leeward</button>
+      </div>
+      <div>
+        <button id="btnSheet20" class="control-button" onclick="executeSailorPosition(2)">Fore</button>
+      </div>
+    </div>
+    <br>
+    <div style="background: rgba(0,0,0,0.1); padding: 2px; text-align: center;">
+      <button id="btnSheet20" class="control-button" onclick="executePump">PUMP</button>
+    </div>
+    <div class="maneuver-controls" style="background: rgba(0,0,0,0.1); padding: 2px; text-align: center;">
+      <div style="font-weight: bold; color: white; margin-top: 6px; grid-column: 1 / -1;">
+        ILCA HEADING
+      </div>
       <div class="row">
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
         <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">Starboard Tack</button>
