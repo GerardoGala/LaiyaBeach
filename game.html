@@ -11,6 +11,8 @@
   <!-- Placeholder for controls -->
   <div id="controls"></div>
 
+  <div id="notification-container"></div>
+
   <!-- Right Pane (Map) -->
   <div class="right-pane">
     <div id="map"></div>
@@ -63,6 +65,18 @@
       });
     }
   </script>
+
+  <script>
+  function showNotification(message) {
+    const container = document.getElementById('notification-container');
+    const note = document.createElement('div');
+    note.className = 'notification';
+    note.textContent = message;
+    container.appendChild(note);
+
+    setTimeout(() => note.remove(), 2500);
+  }
+</script>
 </body>
 
 </html>
@@ -132,5 +146,36 @@ body {
   overflow-y: auto;   /* scroll only inside controls */
   background-color: #111;
 }
+
+</style>
+
+<style>
+#notification-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+.notification {
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  animation: slideUpFade 2.5s forwards;
+}
+
+@keyframes slideUpFade {
+  0% { transform: translateY(30px); opacity: 0; }
+  20% { transform: translateY(0); opacity: 1; }
+  80% { transform: translateY(-10px); opacity: 1; }
+  100% { transform: translateY(-20px); opacity: 0; }
+}
+
+
 
 </style>

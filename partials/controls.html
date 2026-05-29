@@ -1,23 +1,20 @@
 <!-- controls.html -->
 <div class="left-pane">
+  <div id="notification-container"></div>
   <!-- Rigging Controls -->
-    <div id="sheetControl"
-         style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+    <div id="sheetControl" style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
         SHEET CONTROL
       </div>
-      <button id="btnSheet90" class="control-button" onclick="executeSheet20()">20</button>
-      <button id="btnSheetPlus" class="control-button"
-              onclick="window.adjustSheet(-1)"
+      <button id="btnSheet90" class="control-button" onclick="executeSheet(20)">20</button>
+      <button id="btnSheetPlus" class="control-button" onclick="window.adjustSheet(-1)"
               style="background: white; color: black; font-weight: bold;">-1°</button>
-      <button id="btnSheetMinus" class="control-button"
-              onclick="window.adjustSheet(+1)"
+      <button id="btnSheetMinus" class="control-button" onclick="window.adjustSheet(+1)"
               style="background: white; color: black; font-weight: bold;">+1°</button>
-      <button id="btnSheet20" class="control-button" onclick="executeSheet90()">90</button>
+      <button id="btnSheet20" class="control-button" onclick="executeSheet(90)">90</button>
     </div>
 
-    <div id="daggerboardControl"
-         style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+    <div id="daggerboardControl" style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
         DAGGERBOARD CONTROL
       </div>
@@ -53,18 +50,18 @@
         ILCA HEADING
       </div>
       <div class="row">
-        <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
-        <button onclick="window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">Starboard Tack</button>
+        <button onclick="showNotification('Port Tack!'); window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
+        <button onclick="showNotification('Starboard Tack!'); window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">Starboard Tack</button>
       </div>
       <div class="row">
-        <button onclick="window.globalSimulationData.ILCA.heading =
+        <button onclick="showNotification('-1 Heading'); window.globalSimulationData.ILCA.heading =
           (window.globalSimulationData.ILCA.heading - 1 + 360) % 360">-1°</button>
-        <button onclick="window.globalSimulationData.ILCA.heading =
+        <button onclick="showNotification('+1 Heading'); window.globalSimulationData.ILCA.heading =
           (window.globalSimulationData.ILCA.heading + 1) % 360">+1°</button>
       </div>
       <div class="row">
-        <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-port'">Port Gybe</button>
-        <button onclick="window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
+        <button onclick="showNotification('Port Gybe!'); window.globalSimulationData.ILCA.maneuver = 'gybe-port'">Port Gybe</button>
+        <button onclick="showNotification('Starboard Tack!'); window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
       </div>
     </div>
 
@@ -138,11 +135,8 @@
 </div>
 
 
-<style>
 
 
-
-</style>
 
 
 
