@@ -37,7 +37,15 @@ export function initMap() {
     options: { position: 'topright' },
     onAdd: function() {
       windControlDiv = L.DomUtil.create('div', 'wind-indicator-container');
-      // styling...
+      windControlDiv.style.background = 'white';
+      windControlDiv.style.padding = '8px';
+      windControlDiv.style.borderRadius = '5px';
+      windControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
+      windControlDiv.style.textAlign = 'center';
+      windControlDiv.style.fontFamily = 'sans-serif';
+      windControlDiv.style.fontSize = '12px';
+      windControlDiv.style.fontWeight = 'bold';
+      windControlDiv.style.color = '#222';   // darker font color
       updateWindControl(map);
       return windControlDiv;
     }
@@ -49,7 +57,14 @@ export function initMap() {
     options: { position: 'bottomright' },
     onAdd: function() {
       ilcaControlDiv = L.DomUtil.create('div', 'ilca-status-container');
-      // styling...
+            ilcaControlDiv.style.background = 'white';
+      ilcaControlDiv.style.padding = '8px';
+      ilcaControlDiv.style.borderRadius = '5px';
+      ilcaControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
+      ilcaControlDiv.style.fontFamily = 'sans-serif';
+      ilcaControlDiv.style.fontSize = '12px';
+      ilcaControlDiv.style.lineHeight = '1.4em';
+      ilcaControlDiv.style.color = '#222';   // darker font color
       updateILCAControl();
       return ilcaControlDiv;
     }
