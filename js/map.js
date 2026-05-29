@@ -9,7 +9,6 @@ export function initMap() {
   const buoyLat = window.globalSimulationData.buoyLat;
   const buoyLng = window.globalSimulationData.buoyLon;
 
-  // Tomato buoy SVG (yellow with orange outline)
   const buoySVG = `
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
       <circle cx="24" cy="24" r="20" fill="yellow" stroke="orange" stroke-width="4"/>
@@ -30,29 +29,15 @@ export function initMap() {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  // Launch point marker
   L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
-
-  // Buoy marker
-  L.marker([buoyLat, buoyLng], { icon: buoyIcon })
-    .addTo(map)
-    .bindPopup("Race Buoy");
+  L.marker([buoyLat, buoyLng], { icon: buoyIcon }).addTo(map).bindPopup("Race Buoy");
 
   // --- Wind Direction Indicator ---
   const WindControl = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function() {
       windControlDiv = L.DomUtil.create('div', 'wind-indicator-container');
-      windControlDiv.style.background = 'white';
-      windControlDiv.style.padding = '8px';
-      windControlDiv.style.borderRadius = '5px';
-      windControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
-      windControlDiv.style.textAlign = 'center';
-      windControlDiv.style.fontFamily = 'sans-serif';
-      windControlDiv.style.fontSize = '12px';
-      windControlDiv.style.fontWeight = 'bold';
-      windControlDiv.style.color = '#222';   // darker font color
-
+      // styling...
       updateWindControl(map);
       return windControlDiv;
     }
@@ -64,97 +49,94 @@ export function initMap() {
     options: { position: 'bottomright' },
     onAdd: function() {
       ilcaControlDiv = L.DomUtil.create('div', 'ilca-status-container');
-      ilcaControlDiv.style.background = 'white';
-      ilcaControlDiv.style.padding = '8px';
-      ilcaControlDiv.style.borderRadius = '5px';
-      ilcaControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
-      ilcaControlDiv.style.fontFamily = 'sans-serif';
-      ilcaControlDiv.style.fontSize = '12px';
-      ilcaControlDiv.style.lineHeight = '1.4em';
-      ilcaControlDiv.style.color = '#222';   // darker font color
-
+      // styling...
       updateILCAControl();
       return ilcaControlDiv;
     }
   });
   map.addControl(new ILCAControl());
 
-const LeaderboardControl = L.Control.extend({
-  options: { position: 'topleft' },
-  onAdd: function() {
-    leaderboardBtnDiv = L.DomUtil.create('button', 'leaderboard-btn');
-    leaderboardBtnDiv.innerHTML = "🏆 Leaderboard";
-    leaderboardBtnDiv.style.cssText = `
-      background:#007bff;color:white;border:none;
-      padding:6px 10px;border-radius:4px;
-      cursor:pointer;font-size:12px;
-    `;
-    leaderboardBtnDiv.onclick = () =>
-      showDialog("Leaderboard", "<p>Here goes leaderboard content...</p>");
-    return leaderboardBtnDiv;
-  }
-});
-map.addControl(new LeaderboardControl());
+  // --- Leaderboard Button ---
+  const LeaderboardControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function() {
+      const btn = L.DomUtil.create('button', 'leaderboard-btn');
+      btn.innerHTML = "🏆 Leaderboard";
+      btn.style.cssText = `
+        background:#007bff;color:white;border:none;
+        padding:6px 10px;border-radius:4px;
+        cursor:pointer;font-size:12px;
+      `;
+      btn.onclick = () => showDialogFromFile("Leaderboard", "partials/leaderboard.html");
+      return btn;
+    }
+  });
+  map.addControl(new LeaderboardControl());
 
-const PhysicsControl = L.Control.extend({
-  options: { position: 'topleft' },
-  onAdd: function() {
-    physicsBtnDiv = L.DomUtil.create('button', 'physics-btn');
-    physicsBtnDiv.innerHTML = "⚓ Physics of Sailing";
-    physicsBtnDiv.style.cssText = `
-      background:#28a745;color:white;border:none;
-      padding:6px 10px;border-radius:4px;
-      cursor:pointer;font-size:12px;margin-top:5px;
-    `;
-    physicsBtnDiv.onclick = () =>
-      showDialog("Physics of Sailing", "<p>Explain sailing physics here...</p>");
-    return physicsBtnDiv;
-  }
-});
-map.addControl(new PhysicsControl());
+  // --- Physics Button ---
+  const PhysicsControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function() {
+      const btn = L.DomUtil.create('button', 'physics-btn');
+      btn.innerHTML = "⚓ Physics of Sailing";
+      btn.style.cssText = `
+        background:#28a745;color:white;border:none;
+        padding:6px 10px;border-radius:4px;
+        cursor:pointer;font-size:12px;margin-top:5px;
+      `;
+      btn.onclick = () => showDialogFromFile("Physics of Sailing", "partials/physics.html");
+      return btn;
+    }
+  });
+  map.addControl(new PhysicsControl());
 
-function showDialog(title, content) {
-  // backdrop
-  const backdrop = document.createElement('div');
-  backdrop.className = 'dialog-backdrop';
-  backdrop.style.cssText = `
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    background:rgba(0,0,0,0.5);z-index:9998;
-  `;
-
-  // dialog
-  const dialog = document.createElement('div');
-  dialog.className = 'popup-dialog';
-  dialog.style.cssText = `
-    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-    background:white;padding:20px;border-radius:8px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.5);
-    max-width:400px;max-height:300px;overflow-y:auto;z-index:9999;
-  `;
-  dialog.innerHTML = `
-    <h3>${title}</h3>
-    <div>${content}</div>
-    <button style="margin-top:10px;">Close</button>
-  `;
-
-  // close logic
-  dialog.querySelector('button').onclick = () => {
-    dialog.remove();
-    backdrop.remove();
-  };
-
-  // add both to DOM
-  document.body.appendChild(backdrop);
-  document.body.appendChild(dialog);
-}
-
-
-  // Fit map to show both markers, with padding
   const bounds = L.latLngBounds([laiya, [buoyLat, buoyLng]]);
   map.fitBounds(bounds, { padding: [50, 50] });
 
   return map;
 }
+
+// --- Define the modal loader function here ---
+async function showDialogFromFile(title, filePath) {
+  try {
+    const response = await fetch(filePath);
+    if (!response.ok) throw new Error("Failed to load " + filePath);
+    const content = await response.text();
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'dialog-backdrop';
+    backdrop.style.cssText = `
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.5);z-index:9998;
+    `;
+
+    const dialog = document.createElement('div');
+    dialog.className = 'popup-dialog';
+    dialog.style.cssText = `
+      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      background:white;padding:20px;border-radius:8px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.5);
+      max-width:400px;max-height:300px;overflow-y:auto;z-index:9999;
+    `;
+    dialog.innerHTML = `
+      <h3>${title}</h3>
+      ${content}
+      <button style="margin-top:10px;">Close</button>
+    `;
+
+    dialog.querySelector('button').onclick = () => {
+      dialog.remove();
+      backdrop.remove();
+    };
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(dialog);
+  } catch (err) {
+    console.error(err);
+    alert("Could not load dialog content.");
+  }
+}
+
 
 // --- Refresh function to update wind arrow dynamically ---
 export function updateWindControl(map) {
