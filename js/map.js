@@ -67,7 +67,7 @@ export function initMap() {
         padding:6px 10px;border-radius:4px;
         cursor:pointer;font-size:12px;
       `;
-      btn.onclick = () => showDialogFromFile("Leaderboard", "partials/leaderboard.html");
+      btn.onclick = () => showDialogFromFile("Leaderboard", "partials/leaderBoard.html");
       return btn;
     }
   });
