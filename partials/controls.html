@@ -1,13 +1,5 @@
 <!-- controls.html -->
 <div class="left-pane">
-  <!-- Icon Buttons (Top Left) -->
-  <div class="tabs">
-    <span class="material-icons open-dialog" data-target="leaderboardDialog">leaderboard</span>
-    <span class="material-icons open-dialog" data-target="helpDialog">help_outline</span>
-  </div>
-
-
-
   <!-- Rigging Controls -->
     <div id="sheetControl"
          style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
@@ -143,97 +135,11 @@
         </svg>
       </div>
     </div>
-
-    <div class="tab-content active">
-      <button onclick="window.globalSimulationData.ILCA.sailor.hike = 'out'">Nudge</button>
-    </div>
 </div>
 
 
 <style>
 
-
-/* Sailor Position Control */
-.sailor-position-control {
-  margin-top: 16px;
-}
-
-.cockpit {
-  display: flex;
-  flex-direction: column;   /* stack rows vertically */
-  gap: 8px;
-  border: 2px solid #888;
-  padding: 12px;
-  width: 160px;
-  background-color: #222;
-}
-
-.cockpit .row {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.cockpit button {
-  font-size: 1.2rem;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-
-
-
-/* Tabs */
-.tabs {
-  display: flex;
-  justify-content: space-around;
-  background: #2a2a2a;
-  border-bottom: 2px solid #333;
-  padding: 10px;
-}
-
-.tab-button {
-  cursor: pointer;
-  color: #d4d4d4;
-  font-size: 32px;
-  position: relative;
-}
-
-.tab-button:hover {
-  color: #fff;
-}
-
-/* Tooltip styling */
-.tab-button::after {
-  content: attr(data-label);
-  position: absolute;
-  bottom: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #444;
-  color: #fff;
-  padding: 3px 6px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-.tab-button:hover::after {
-  opacity: 1;
-}
-
-/* Tab content */
-.tab-content {
-  flex: 2;
-  padding: 15px;
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
 
 
 </style>
