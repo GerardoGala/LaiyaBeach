@@ -11,19 +11,19 @@ window.globalSimulationData = {
 
   // --- ILCA state ---
   ILCA: {
+    maneuver: null,
     heading: 180,
     speed: 0,
-
-    runningRig: {
-      sheetTension: 0.0,
-      vangTension: 0.0,
-      cunninghamTension: 0.0,
-      outhaulTension: 0
-    },
+    sailorPosition: "aft",
+  
+    sheet: 0.0,
+    daggerboard: 2,
+    vang: 0.0,
+    cunningham: 0.0,
+    outhaul: 0,
 
     lat: 13.681,
     lon: 121.437,
-    maneuver: null,
     timer: 0
   }
 };
