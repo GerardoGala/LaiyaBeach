@@ -9,11 +9,10 @@
       <button class="control-button" onclick="showNotification('Sheet 20'); window.globalSimulationData.ILCA.sheet = 20">20</button>
       <button class="control-button" onclick="showNotification('Sheet -1'); window.globalSimulationData.ILCA.sheet = window.globalSimulationData.ILCA.sheet - 1"
               style="background: white; color: black; font-weight: bold;">-1°</button>
-      <button class="control-button" onclick="showNotification('Sheet +1'); window.globalSimulationData.ILCA.sheet + 1"
+      <button class="control-button" onclick="showNotification('Sheet +1'); window.globalSimulationData.ILCA.sheet = window.globalSimulationData.ILCA.sheet + 1"
               style="background: white; color: black; font-weight: bold;">+1°</button>
       <button class="control-button" onclick="showNotification('Sheet 90'); window.globalSimulationData.ILCA.sheet = 90">90</button>
     </div>
-window.globalSimulationData.ILCA.sheet
     <div style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
       <div style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
         DAGGERBOARD CONTROL
@@ -33,9 +32,9 @@ window.globalSimulationData.ILCA.sheet
         <button class="control-button" onclick="showNotification('Sailor Position: Fore'); window.globalSimulationData.ILCA.sailorPosition = 'fore'">Fore</button>
       </div>
       <div>
-        <button class="control-button"  onclick="showNotification('Sailor Position: Hike Out'); window.globalSimulationData.ILCA.sailorPosition = 'hikeOut'">Hike Out</button>
+        <button class="control-button" onclick="showNotification('Sailor Position: Hike Out'); window.globalSimulationData.ILCA.sailorPosition = 'hikeOut'">Hike Out</button>
         <button class="control-button" onclick="showNotification('Sailor Position: Mid Center'); window.globalSimulationData.ILCA.sailorPosition = 'midCenter'">Mid Center</button>
-        <button class="control-button"  onclick="showNotification('Sailor Position: Leeward'); window.globalSimulationData.ILCA.sailorPosition = 'leeward'">Leeward</button>
+        <button class="control-button" onclick="showNotification('Sailor Position: Leeward'); window.globalSimulationData.ILCA.sailorPosition = 'leeward'">Leeward</button>
       </div>
       <div>
         <button class="control-button" onclick="showNotification('Sailor Position: Aft'); window.globalSimulationData.ILCA.sailorPosition = 'aft'">Aft</button>
@@ -72,7 +71,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
           <text x="30" y="14" text-anchor="middle" fill="white"
                 style="font-family: Arial; font-size: 9px; font-weight: bold;">VANG</text>
-          <g style="cursor: pointer;" onclick="updateControl('vang', 1)">
+          <g style="cursor: pointer;" onclick="showNotification('Vang +1'); window.globalSimulationData.ILCA.vang += 1">
             <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
             <text x="30" y="52" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
@@ -80,7 +79,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
           <text id="vangValue" data-vang="0" x="30" y="92" text-anchor="middle" fill="#333"
                 style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-          <g style="cursor: pointer;" onclick="updateControl('vang', -1)">
+          <g style="cursor: pointer;" onclick="showNotification('Vang -1'); window.globalSimulationData.ILCA.vang -= 1">
             <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
             <text x="30" y="132" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
@@ -94,7 +93,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
           <text x="30" y="14" text-anchor="middle" fill="white"
                 style="font-family: Arial; font-size: 8px; font-weight: bold;">DOWNHAUL</text>
-          <g style="cursor: pointer;" onclick="updateControl('downhaul', 1)">
+          <g style="cursor: pointer;" onclick="showNotification('Downhaul +1'); window.globalSimulationData.ILCA.downhaul += 1">
             <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
             <text x="30" y="52" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
@@ -102,7 +101,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
           <text id="downhaulValue" data-downhaul="0" x="30" y="92" text-anchor="middle" fill="#333"
                 style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-          <g style="cursor: pointer;" onclick="updateControl('downhaul', -1)">
+          <g style="cursor: pointer;" onclick="showNotification('Downhaul -1'); window.globalSimulationData.ILCA.downhaul -= 1">
             <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
             <text x="30" y="132" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
@@ -116,7 +115,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
           <text x="30" y="14" text-anchor="middle" fill="white"
                 style="font-family: Arial; font-size: 9px; font-weight: bold;">OUTHAUL</text>
-          <g style="cursor: pointer;" onclick="updateControl('outhaul', 1)">
+          <g style="cursor: pointer;" onclick="showNotification('Outhaul +1'); window.globalSimulationData.ILCA.outhaul += 1">
             <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
             <text x="30" y="52" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
@@ -124,7 +123,7 @@ window.globalSimulationData.ILCA.sheet
           <rect x="5" y="70" width="50" height="30" rx="4" fill="white" stroke="#ccc"></rect>
           <text id="outhaulValue" data-outhaul="0" x="30" y="92" text-anchor="middle" fill="#333"
                 style="font-family: monospace; font-size: 20px; font-weight: bold;">0</text>
-          <g style="cursor: pointer;" onclick="updateControl('outhaul', -1)">
+          <g style="cursor: pointer;" onclick="showNotification('Outhaul -1'); window.globalSimulationData.ILCA.outhaul -= 1">
             <rect x="5" y="105" width="50" height="40" rx="8" fill="#dc3545"></rect>
             <text x="30" y="132" text-anchor="middle" fill="white"
                   style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>

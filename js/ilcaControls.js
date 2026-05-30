@@ -8,6 +8,9 @@ export function handleControls(windDir, windSpeed) {
     case "launch":
       launchILCA(windDir, windSpeed);
       break;
+    case "pump":
+      ilca.speed *= 1.05;
+      break;
     case "tack-port":
       ilca.heading = (windDir + 45) % 360;
       ilca.speed *= 0.9;
