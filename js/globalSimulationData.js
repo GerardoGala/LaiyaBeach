@@ -16,10 +16,10 @@ window.globalSimulationData = {
     speed: 0,
     sailorPosition: "aft",
   
-    sheet: 0.0,
+    sheet: 0,
     daggerboard: 2,
-    vang: 0.0,
-    cunningham: 0.0,
+    vang: 0,
+    downhaul: 0,
     outhaul: 0,
 
     lat: 13.681,

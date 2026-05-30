@@ -10,34 +10,9 @@ let masterIntervalId = null;
 async function loadConfig() {
   map = initMap();
 
-  // === Global simulation state ===
-  window.globalSimulationData = {
-    windDirection: 180,
-    windSpeed: 0,
 
-    ILCA: {
-      heading: 180,
-      speed: 0,
-      tillerAngle: 0,
-      lat: 13.669100,
-      lon: 121.401117,
-      maneuver: null,
-      localTime: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
 
-      standingRig: {
-        mastHeight: 6.0,
-        sailType: "ILCA Standard",
-        boomLength: 2.7
-      },
 
-      runningRig: {
-        sheetTension: 0.0,
-        vangTension: 0.0,
-        cunninghamTension: 0.0,
-        rudderAngle: 0
-      }
-    }
-  };
 
   // ✅ Fetch wind immediately so overlays show something
   await updateWindFromAPI();

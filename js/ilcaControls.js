@@ -3,7 +3,8 @@ import { computeBearing } from "./ilcaUtils.js";
 
 export function handleControls(windDir, windSpeed) {
   const ilca = window.globalSimulationData.ILCA;
-
+  console.log(window.globalSimulationData.ILCA.speed);
+  console.log(window.globalSimulationData.ILCA.vang);
   switch (ilca.maneuver) {
     case "launch":
       launchILCA(windDir, windSpeed);
