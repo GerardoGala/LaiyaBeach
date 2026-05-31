@@ -205,14 +205,15 @@ export function updateILCAControl() {
   if (!ilcaControlDiv) return;
 
   const ilca = window.globalSimulationData.ILCA || {};
-  const speed = ilca.speed?.toFixed(1) || 0;
+  const speedKnots = ilca.speed?.toFixed(1) || 0;
+  const speedMS = (ilca.speed ? (ilca.speed * 0.514).toFixed(2) : "0.00");
   const heading = ilca.heading?.toFixed(0) || 0;
   const timer = ilca.displayTimer || "0:00";
   const laiyaTime = ilca.localTime || "--:--:--";
 
   ilcaControlDiv.innerHTML = `
     <div><strong>ILCA Status</strong></div>
-    <div>Speed: ${speed} kn</div>
+    <div>Speed: ${speedKnots} knots (${speedMS} m/s)</div>
     <div>Heading: ${heading}°</div>
     <div>Timer: ${timer}</div>
     <div style="margin-top:4px;"><strong>Laiya Time:</strong> ${laiyaTime}</div>
