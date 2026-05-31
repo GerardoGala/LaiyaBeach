@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+  color: #000; /* pure black for normal text */
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+.dialog-box {
+  width: 95%;
+  height: 95%;
+  margin: 5% auto;
+  padding: 20px;
+  background-color: #fff;
+}
+
+h3 {
+  margin-top: 0;
+  color: #000; /* darker heading */
+}
+
+h4 {
+  margin-bottom: 6px;
+  color: #000; /* darker subheading */
+}
+
+p.intro {
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  color: #000; /* darker intro paragraph */
+}
+
+ul {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+li {
+  margin-bottom: 4px;
+  color: #000; /* darker list items */
+}

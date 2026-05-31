@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wind Condition</title>
+  <link rel="stylesheet" href="/partials/css/partials.css">
+</head>
+<body>
+  <div class="dialog-box">
+    <h3>🌬️ Wind Condition</h3>
+
+    <p class="intro">
+      The forecast may report a steady <strong>9 mph north wind</strong>, but the shoreline tells a different story. 
+      Local terrain reshapes the breeze into zones of calm and acceleration. 
+      Understanding these effects is essential for sailors who want to anticipate how the boat will behave 
+      between the beach and the buoy.
+    </p>
+
+    <section>
+      <h4>The Shoreline Shadow</h4>
+      <p>
+        At the beach, the north wind is muted by houses and trees standing just inland. 
+        These obstacles break the flow into turbulence and pockets of dead air. 
+        Sails hang slack, progress stalls, and pumping may be the only way to escape the calm. 
+        This is the <em>wind shadow zone</em>, where the land itself steals the breeze.
+      </p>
+    </section>
+
+    <section>
+      <h4>The Offshore Funnel</h4>
+      <p>
+        Roughly <strong>500 meters out, near the buoy</strong>, the hills rise behind the shoreline. 
+        As the north wind clears these slopes, it accelerates — funneled and compressed by the terrain. 
+        The breeze that was gentle at the forecast station becomes a driving force offshore. 
+        The boat heels, hiking becomes essential, and the sailor feels the sudden lift in the sail. 
+        This is the <em>acceleration zone</em>, where terrain amplifies the wind.
+      </p>
+    </section>
+
+    <section>
+      <h4>Simulation Rule</h4>
+      <ul>
+        <li><strong>North winds (330°–30°):</strong></li>
+        <ul>
+          <li><strong>Beach zone:</strong> wind reduced (×0.5).</li>
+          <li><strong>Buoy zone (~500 m SE):</strong> wind increased (×1.3).</li>
+        </ul>
+        <li><strong>Other directions:</strong> API wind unchanged.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h4>Notes for Sailors</h4>
+      <p>
+        Expect calm near shore, stronger breeze offshore. 
+        The transition is not gradual — it is a sudden shift, 
+        like stepping from shadow into sunlight. 
+        The <strong>map scale bar</strong> confirms the buoy lies exactly 500 meters out, 
+        making this effect measurable and repeatable in the simulation.
+      </p>
+    </section>
+  </div>
+</body>
+</html>

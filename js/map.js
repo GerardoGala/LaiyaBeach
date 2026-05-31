@@ -1,8 +1,7 @@
 // map.js
 let windControlDiv; // keep reference so we can update later
 let ilcaControlDiv; // keep reference so we can update later
-let leaderboardBtnDiv;
-let physicsBtnDiv;
+
 
 export function initMap() {
   const laiya = [13.670464, 121.401286];
@@ -31,6 +30,12 @@ export function initMap() {
 
   L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
   L.marker([buoyLat, buoyLng], { icon: buoyIcon }).addTo(map).bindPopup("Race Buoy");
+
+  L.control.scale({
+  position: 'bottomleft', // or 'bottomright'
+  imperial: false,        // hide yards/miles
+  metric: true            // show meters/kilometers
+}).addTo(map);
 
   // --- Wind Direction Indicator ---
   const WindControl = L.Control.extend({
@@ -104,6 +109,23 @@ export function initMap() {
     }
   });
   map.addControl(new PhysicsControl());
+
+    // --- Local wind Button ---
+  const LocalWindControl = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function() {
+      const btn = L.DomUtil.create('button', 'localWind-btn');
+      btn.innerHTML = "🌬️ Local Wind";
+      btn.style.cssText = `
+        background:#17a2b8;color:white;border:none;
+        padding:6px 10px;border-radius:4px;
+        cursor:pointer;font-size:12px;margin-top:5px;
+      `;
+      btn.onclick = () => showDialogFromFile("Local wind", "partials/localWind.html");
+      return btn;
+    }
+  });
+  map.addControl(new LocalWindControl());
 
   const bounds = L.latLngBounds([laiya, [buoyLat, buoyLng]]);
   map.fitBounds(bounds, { padding: [50, 50] });
