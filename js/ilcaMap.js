@@ -3,14 +3,27 @@ export function drawILCAOnMap(map) {
   const ilca = window.globalSimulationData.ILCA;
   const heading = ilca.heading;
 
-  const boatSvgMarkup = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <g transform="rotate(${heading}, 50, 50)">
-        <polygon points="50,10 85,85 15,85" fill="white" stroke="black" stroke-width="2"/>
-        <polygon points="30,85 70,85 60,95 40,95 35,90" fill="blue" stroke="black" stroke-width="2"/>
-      </g>
-    </svg>
-  `;
+const boatSvgMarkup = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 168" width="0.375in" height="1.05in">
+  <g transform="rotate(${heading}, 30, 84) scale(0.5)">
+    <g transform="rotate(180, 30, 84)">
+      <path d="M 46,0 
+               C 49,40 54,90 44,130 
+               Q 38,155 30,168 
+               Q 22,155 16,130 
+               C 6,90 11,40 14,0 
+               Z" 
+            fill="#f8f9fa" 
+            stroke="#212529" 
+            stroke-width="0.75" />
+    </g>
+  </g>
+</svg>
+
+
+
+`;
+
   const parser = new DOMParser();
   const boatSvgElement = parser.parseFromString(boatSvgMarkup, "image/svg+xml").documentElement;
 
