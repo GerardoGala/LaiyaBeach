@@ -45,7 +45,7 @@ button, .map-launch, .modal button, .close-dialog {
   font-family: "Segoe UI", sans-serif;
   font-weight: 500;
   border: none;
-  padding: 4px 18px;
+  padding: 4px 16px;
   cursor: pointer;
   background-color: #007acc;
   color: #fff;
