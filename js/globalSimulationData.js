@@ -21,9 +21,9 @@ window.globalSimulationData = {
     vang: 0,
     downhaul: 0,
     outhaul: 0,
-
-      lat: 13.669100,
-      lon: 121.401117,
+    //slightly south of13.670464
+      lat: 13.670264,   
+      lon: 121.401286,
     timer: 0
   }
 };

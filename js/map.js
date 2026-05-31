@@ -127,17 +127,18 @@ async function showDialogFromFile(title, filePath) {
 
     const dialog = document.createElement('div');
     dialog.className = 'popup-dialog';
-    dialog.style.cssText = `
-      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-      background:white;padding:20px;border-radius:8px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.5);
-      max-width:400px;max-height:300px;overflow-y:auto;z-index:9999;
-    `;
+dialog.style.cssText = `
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:white;padding:20px;border-radius:8px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.5);
+  width:80vw;height:80vh;z-index:9999;
+  overflow-y:auto; /* only here */
+`;
+
+
     dialog.innerHTML = `
-      <h3>${title}</h3>
       ${content}
-      <button style="margin-top:10px;">Close</button>
-    `;
+      <button style="margin-top:10px;position: absolute; top: 10px; right: 10px;">Close</button>`;
 
     dialog.querySelector('button').onclick = () => {
       dialog.remove();
