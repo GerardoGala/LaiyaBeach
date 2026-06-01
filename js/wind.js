@@ -11,6 +11,14 @@ export async function fetchWind() {
     if (!response.ok) throw new Error("Network response was not ok");
     const data = await response.json();
 
+    //we can't sail when there is no wind,
+    //so let's beef up the wind.
+    if (data.wind.speed < 4) {
+      data.wind.speed = 4
+    } 
+    // 4 is just a wild guess
+    // 4 is 7.8 knots
+
     const windSpeedMS = data.wind.speed;
     const windDeg = data.wind.deg;
     const windKnots = (windSpeedMS * 1.94384).toFixed(1);
