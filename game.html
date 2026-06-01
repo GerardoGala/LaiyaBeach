@@ -69,6 +69,35 @@
           'SAILOR POSITION = ' + position;
     }
   </script>
+  <script>
+    function updateSheetControl(sheet) {
+      showNotification('Sheet: ' + sheet);
+      window.globalSimulationData.ILCA.sheet = sheet;
+      
+      // Update only the label, not the whole container
+      document.getElementById('sheetControlDiv').textContent = 
+          'SHEET CONTROL = ' + sheet;
+    }
+  </script>
+  <script>
+    function increaseSheetControl(sheet) {
+      window.globalSimulationData.ILCA.sheet = window.globalSimulationData.ILCA.sheet + sheet;
+      showNotification('Sheet: ' + window.globalSimulationData.ILCA.sheet);
+      // Update only the label, not the whole container
+      document.getElementById('sheetControlDiv').textContent = 
+          'SHEET CONTROL = ' + window.globalSimulationData.ILCA.sheet;
+    }
+  </script>
+  <script>
+    function updateDaggerboardControl(daggerboard) {
+      showNotification('Daggerboard: ' + daggerboard);
+      window.globalSimulationData.ILCA.daggerboard = daggerboard;
+      
+      // Update only the label, not the whole container
+      document.getElementById('daggerboardControlDiv').textContent = 
+          'DAGGERBOARD CONTROL = ' + window.globalSimulationData.ILCA.daggerboard;
+    }
+  </script>
 </body>
 
 </html>
