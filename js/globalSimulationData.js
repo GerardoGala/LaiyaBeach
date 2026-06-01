@@ -14,16 +14,15 @@ window.globalSimulationData = {
     maneuver: null,
     heading: 180,
     speed: 0,
-    sailorPosition: "aft",
-  
+    sailorPosition: "Mid Center",
     sheet: 20,
-    daggerboard: 3,
+    daggerboard: 0,
     vang: 0,
     downhaul: 0,
     outhaul: 0,
     //slightly south of13.670464
-      lat: 13.670264,   
-      lon: 121.401286,
+    lat: 13.670264,   
+    lon: 121.401286,
     timer: 0
   }
 };
