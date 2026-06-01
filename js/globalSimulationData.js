@@ -6,8 +6,8 @@ window.globalSimulationData = {
   windSpeed: 0,   //knots
 
   // --- Buoy state ---
-  buoyLat: 13.657641,
-  buoyLon: 121.407058,
+  buoyLat: 13.660641,
+  buoyLon: 121.411058,
 
   // --- ILCA state ---
   ILCA: {
