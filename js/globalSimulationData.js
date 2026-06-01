@@ -16,8 +16,8 @@ window.globalSimulationData = {
     speed: 0,
     sailorPosition: "aft",
   
-    sheet: 0,
-    daggerboard: 2,
+    sheet: 20,
+    daggerboard: 3,
     vang: 0,
     downhaul: 0,
     outhaul: 0,
