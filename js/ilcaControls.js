@@ -60,9 +60,9 @@ function launchILCA(windDir, windSpeed) {
     // If buoy is clockwise from windDir, choose starboard; if counter‑clockwise, choose port
     const clockwiseDiff = (bearingToBuoy - windDir + 360) % 360;
     if (clockwiseDiff <= 180) {
-      chosenHeading = portBeamReach;
-    } else {
       chosenHeading = starboardBeamReach;
+    } else {
+      chosenHeading = portBeamReach;
     }
 
     console.log(
