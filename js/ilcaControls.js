@@ -54,21 +54,33 @@ function launchILCA(windDir, windSpeed) {
       window.globalSimulationData.buoyLon
     );
 
-    const diffPort = angleDiff(bearingToBuoy, portBeamReach);
-    const diffStarboard = angleDiff(bearingToBuoy, starboardBeamReach);
+    // Compute angular difference between buoy and wind
+    const diffBuoyWind = angleDiff(bearingToBuoy, windDir);
 
-    chosenHeading = diffPort < diffStarboard ? portBeamReach : starboardBeamReach;
+    // If buoy is clockwise from windDir, choose starboard; if counter‑clockwise, choose port
+    const clockwiseDiff = (bearingToBuoy - windDir + 360) % 360;
+    if (clockwiseDiff <= 180) {
+      chosenHeading = portBeamReach;
+    } else {
+      chosenHeading = starboardBeamReach;
+    }
+
+    console.log(
+      `Beam reach options: Port=${portBeamReach}°, Starboard=${starboardBeamReach}°. 
+       Buoy bearing=${bearingToBuoy}°. 
+       Launching on ${chosenHeading}°`
+    );
   }
 
   ilca.heading = chosenHeading;
 
   // Initial speed based on wind speed (beam reach efficiency ~50%)
-  const efficiency = 0.5; // mid-range controls baseline
+  const efficiency = 0.5;
   const baseSpeed = windSpeed * efficiency;
-  ilca.speed = Math.min(Math.max(baseSpeed, 0), 12); // clamp to realistic range
+  ilca.speed = Math.min(Math.max(baseSpeed, 0), 12);
 
   console.log(
-    `Launching ILCA on heading ${chosenHeading}° with wind ${windSpeed} knots → initial speed ${ilca.speed.toFixed(1)} knots`
+    `Launching ILCA on heading ${chosenHeading}° with windDir ${windDir}° at ${windSpeed} knots → initial speed ${ilca.speed.toFixed(1)} knots`
   );
 }
 
@@ -76,3 +88,4 @@ function angleDiff(a, b) {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
 }
+
