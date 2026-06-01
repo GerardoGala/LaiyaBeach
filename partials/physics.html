@@ -92,6 +92,100 @@
         <li><strong>Running:</strong> Heading directly downwind; pinching/footing not applicable.</li>
       </ul>
     </section>
+
+    <section>
+      <table class="physics-table">
+        <caption>Beam Reach (fastest point of sail)</caption>
+        <thead>
+          <tr>
+            <th>Wind</th>
+            <th>Mainsheet</th>
+            <th>Daggerboard</th>
+            <th>Outhaul</th>
+            <th>Cunningham</th>
+            <th>Vang</th>
+            <th>Sailor Position</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>6 kn</td><td>Sheet eased, top batten parallel</td><td>¾ down</td><td>Loose, deep foot</td><td>Off</td><td>Loose</td><td>Forward, moderate hike</td></tr>
+          <tr><td>10 kn</td><td>Block-to-block, ease in puffs</td><td>¾ down</td><td>Medium flat</td><td>Slight tension</td><td>Moderate</td><td>Hike flat, balanced</td></tr>
+          <tr><td>14 kn</td><td>Block-to-block, ease in gusts</td><td>½ down</td><td>Flat, tight</td><td>Firm</td><td>Strong</td><td>Hike hard, shift aft</td></tr>
+          <tr><td>20 kn</td><td>Block-to-block, dump in gusts</td><td>½ down</td><td>Max flat</td><td>Max tension</td><td>Max vang</td><td>Extreme hike, aft, survival</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+        <table class="physics-table">
+    <caption>Sail Trim Importance</caption>
+    <thead>
+      <tr><th>Control</th><th>Priority</th><th>Reason</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Mainsheet</td><td>High</td><td>Directly controls power and angle of attack</td></tr>
+      <tr><td>Daggerboard</td><td>Medium</td><td>Balances lift vs. drag, prevents leeway</td></tr>
+      <tr><td>Vang</td><td>Medium</td><td>Controls sail twist, stabilizes gust response</td></tr>
+      <tr><td>Cunningham</td><td>Low</td><td>Fine-tunes draft position in higher winds</td></tr>
+    </tbody>
+  </table>
+    </section>
+
+    <section>
+      <table class="physics-table">
+        <caption>Sail Trim Importance</caption>
+        <thead>
+          <tr><th>Control</th><th>Priority</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mainsheet</td><td>High</td><td>Directly controls power and angle of attack</td></tr>
+          <tr><td>Daggerboard</td><td>Medium</td><td>Balances lift vs. drag, prevents leeway</td></tr>
+          <tr><td>Vang</td><td>Medium</td><td>Controls sail twist, stabilizes gust response</td></tr>
+          <tr><td>Cunningham</td><td>Low</td><td>Fine-tunes draft position in higher winds</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <table class="physics-table">
+        <caption>Crew Actions</caption>
+        <thead>
+          <tr><th>Condition</th><th>Action</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Light Air</td><td>Forward position, gentle hike</td><td>Reduces drag, keeps bow down</td></tr>
+          <tr><td>Moderate Breeze</td><td>Flat hike, balanced trim</td><td>Maximizes speed, steady heel</td></tr>
+          <tr><td>Strong Wind</td><td>Hard hike, shift aft</td><td>Maintains control, prevents nose dive</td></tr>
+          <tr><td>Survival Mode</td><td>Extreme hike, dump sheet</td><td>Prevents capsize, safety priority</td></tr>
+        </tbody>
+      </table>
+    </section>
   </div>
 </body>
 </html>
+<style>
+.physics-section {
+  margin: 2em auto;
+  max-width: 90%;
+  overflow-x: auto;
+  position: relative;
+}
+
+.physics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.physics-table th,
+.physics-table td {
+  border: 1px solid #333;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.importance-dark { background-color: #444; color: #fff; }
+.importance-medium { background-color: #777; color: #fff; }
+.importance-light { background-color: #bbb; color: #000; }
+
+</style>
