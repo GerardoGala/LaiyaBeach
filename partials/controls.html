@@ -61,19 +61,19 @@
     </div>
 
     <div id="sailorPositionControl" style="background: rgba(0,0,0,0.1); padding: 2px; text-align: center;">
-      <div style="font-weight: bold; color: white; margin-top: 6px; grid-column: 1 / -1;">
-        SAILOR POSITION
+      <div id="sailorPositionLabel" style="font-weight: bold; color: white; margin-top: 6px; grid-column: 1 / -1;">
+        SAILOR POSITION = Mid Center
       </div>
       <div>
-        <button class="control-button" onclick="showNotification('Sailor Position: Fore'); window.globalSimulationData.ILCA.sailorPosition = 'fore'">Fore</button>
+        <button class="control-button" onclick="updateSailorPosition('Fore')">Fore</button>
       </div>
       <div>
-        <button class="control-button" onclick="showNotification('Sailor Position: Hike Out'); window.globalSimulationData.ILCA.sailorPosition = 'hikeOut'">Hike Out</button>
-        <button class="control-button" onclick="showNotification('Sailor Position: Mid Center'); window.globalSimulationData.ILCA.sailorPosition = 'midCenter'">Mid Center</button>
-        <button class="control-button" onclick="showNotification('Sailor Position: Leeward'); window.globalSimulationData.ILCA.sailorPosition = 'leeward'">Leeward</button>
+        <button class="control-button" onclick="updateSailorPosition('Hike Out')">Hike Out</button>
+        <button class="control-button" onclick="updateSailorPosition('Mid Center')">Mid Center</button>
+        <button class="control-button" onclick="updateSailorPosition('Leeward')">Leeward</button>
       </div>
       <div>
-        <button class="control-button" onclick="showNotification('Sailor Position: Aft'); window.globalSimulationData.ILCA.sailorPosition = 'aft'">Aft</button>
+        <button class="control-button" onclick="updateSailorPosition('Aft')">Aft</button>
       </div>
     </div>
     <br>

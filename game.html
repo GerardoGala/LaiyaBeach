@@ -48,19 +48,31 @@
   </script>
 
   <script>
-  function showNotification(message) {
-    const container = document.getElementById('notification-container');
-    const note = document.createElement('div');
-    note.className = 'notification';
-    note.textContent = message;
-    container.appendChild(note);
+    function showNotification(message) {
+      const container = document.getElementById('notification-container');
+      const note = document.createElement('div');
+      note.className = 'notification';
+      note.textContent = message;
+      container.appendChild(note);
 
-    setTimeout(() => note.remove(), 2500);
-  }
-</script>
+      setTimeout(() => note.remove(), 2500);
+    }
+  </script>
+
+  <script>
+    function updateSailorPosition(position) {
+      showNotification('Sailor Position: ' + position);
+      window.globalSimulationData.ILCA.sailorPosition = position;
+      
+      // Update only the label, not the whole container
+      document.getElementById('sailorPositionLabel').textContent = 
+          'SAILOR POSITION = ' + position;
+    }
+  </script>
 </body>
 
 </html>
+
 
 <style>
 body {
