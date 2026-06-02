@@ -43,18 +43,12 @@
         ILCA HEADING
       </div>
       <div class="row">
-        <button onclick="showNotification('Port Tack!'); window.globalSimulationData.ILCA.maneuver = 'tack-port'">Port Tack</button>
-        <button onclick="showNotification('Starboard Tack!'); window.globalSimulationData.ILCA.maneuver = 'tack-starboard'">Starboard Tack</button>
+        <button onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
+        <button onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
       </div>
       <div class="row">
-        <button onclick="showNotification('-1 Heading'); window.globalSimulationData.ILCA.heading =
-          (window.globalSimulationData.ILCA.heading - 1 + 360) % 360">-1°</button>
-        <button onclick="showNotification('+1 Heading'); window.globalSimulationData.ILCA.heading =
-          (window.globalSimulationData.ILCA.heading + 1) % 360">+1°</button>
-      </div>
-      <div class="row">
-        <button onclick="showNotification('Port Gybe!'); window.globalSimulationData.ILCA.maneuver = 'gybe-port'">Port Gybe</button>
-        <button onclick="showNotification('Starboard Gybe!'); window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
+        <button onclick="showNotification('Bear Away'); window.globalSimulationData.ILCA.maneuver = 'bear-away'">Bear Away</button>
+        <button onclick="showNotification('Head Up!'); window.globalSimulationData.ILCA.maneuver = 'head-up'">Head Up</button>
       </div>
     </div>
     <div style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
