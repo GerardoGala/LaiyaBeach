@@ -22,14 +22,18 @@ export function initMap() {
     popupAnchor: [0, -48]
   });
 
-// Initialize the Leaflet map, centered on Laiya Beach with zoom ~16
-// Zoom 16 usually shows ~300m scale bar (depending on screen size and latitude)
-const map = L.map('map').setView([13.670464, 121.401286], 16);
+  // Initialize the Leaflet map, centered on Laiya Beach with zoom ~16
+  // Zoom 16 usually shows ~300m scale bar (depending on screen size and latitude)
+  const map = L.map('map').setView([13.670464, 121.401286], 16);
 
-// Add OpenStreetMap tiles as the base layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+
+
+
+
+  // Overlay: Esri World Hillshade (terrain relief, no roads)
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri'
+  }).addTo(map);
 
 // Add marker for ILCA launch point
 L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
