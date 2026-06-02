@@ -18,7 +18,6 @@ async function loadConfig() {
   await updateWindFromAPI();
 
   // ✅ Show initial status immediately
-  refreshStatusPanels();
   updateWindControl(map);
   updateILCAControl();
 
@@ -48,8 +47,7 @@ async function loadConfig() {
       window.globalSimulationData.ILCA.speed = initialSpeed;
     }
 
-    // Refresh overlays + panels
-    refreshStatusPanels();
+    // Refresh overlays
     updateWindControl(map);
     updateILCAControl();
   }, 1000);
@@ -69,24 +67,7 @@ async function updateWindFromAPI() {
   }
 }
 
-// Helper function to update left-pane DOM panels
-function refreshStatusPanels() {
-  const windDiv = document.getElementById("windStatus");
-  if (windDiv) {
-    windDiv.innerHTML = `Wind Status: 
-      ${window.globalSimulationData.windDirection}°
-      at ${window.globalSimulationData.windSpeed} knots
-    `;
-  }
 
-  const ilcaDiv = document.getElementById("ilcaStatus");
-  if (ilcaDiv) {
-    ilcaDiv.innerHTML = `ILCA: 
-      ${window.globalSimulationData.ILCA.heading}°
-      at ${window.globalSimulationData.ILCA.speed} knots
-    `;
-  }
-}
 
 // Launch simulation
 export function launchSimulation() {
