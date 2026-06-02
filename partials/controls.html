@@ -57,89 +57,39 @@
         <button onclick="showNotification('Starboard Gybe!'); window.globalSimulationData.ILCA.maneuver = 'gybe-starboard'">Starboard Gybe</button>
       </div>
     </div>
-
-    <div id="tuningControlsGroup" class="right-3col">
-      <div class="cell">
-        <!-- VANG -->
-        <svg id="vangControl" width="60" height="110" viewBox="0 0 60 110">
-          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
-          <text x="30" y="14" text-anchor="middle" fill="white"
-                style="font-family: Arial; font-size: 9px; font-weight: bold;">VANG</text>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.vang < 5) {
-            window.globalSimulationData.ILCA.vang += 1;
-          }  
-          showNotification('Vang = ' + window.globalSimulationData.ILCA.vang);">
-            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
-            <text x="30" y="52" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-          </g>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.vang > -5) {
-            window.globalSimulationData.ILCA.vang -= 1;
-          }  
-          showNotification('Vang = ' + window.globalSimulationData.ILCA.vang);">
-            <rect x="5" y="65" width="50" height="40" rx="8" fill="#dc3545"></rect>
-            <text x="30" y="92" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-          </g>
-        </svg>
+    <div style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+      <div id="vangControlDiv" style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+        VANG CONTROL = 0
       </div>
-
-      <div class="cell">
-        <!-- DOWNHAUL -->
-        <svg id="downhaulControl" width="60" height="110" viewBox="0 0 60 110">
-          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
-          <text x="30" y="14" text-anchor="middle" fill="white"
-                style="font-family: Arial; font-size: 8px; font-weight: bold;">DOWNHAUL</text>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.downhaul < 5) {
-            window.globalSimulationData.ILCA.downhaul += 1;
-          }  
-          showNotification('Downhaul = ' + window.globalSimulationData.ILCA.downhaul);">
-            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
-            <text x="30" y="52" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-          </g>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.downhaul > -5) {
-            window.globalSimulationData.ILCA.downhaul -= 1;
-          }  
-          showNotification('Downhaul= ' + window.globalSimulationData.ILCA.downhaul);">
-            <rect x="5" y="65" width="50" height="40" rx="8" fill="#dc3545"></rect>
-            <text x="30" y="92" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-          </g>
-        </svg>
-      </div>
-
-      <div class="cell">
-        <!-- OUTHAUL -->
-        <svg id="outhaulControl" width="60" height="110" viewBox="0 0 60 110">
-          <rect x="0" y="0" width="60" height="20" rx="4" fill="#333"></rect>
-          <text x="30" y="14" text-anchor="middle" fill="white"
-                style="font-family: Arial; font-size: 9px; font-weight: bold;">OUTHAUL</text>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.outhaul < 5) {
-            window.globalSimulationData.ILCA.outhaul += 1;
-          }  
-          showNotification('Outhaul = ' + window.globalSimulationData.ILCA.outhaul);">
-            <rect x="5" y="25" width="50" height="40" rx="8" fill="#28a745"></rect>
-            <text x="30" y="52" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 30px; font-weight: bold;">+</text>
-          </g>
-          <g style="cursor: pointer;" onclick="
-          if (window.globalSimulationData.ILCA.outhaul > -5) {
-            window.globalSimulationData.ILCA.outhaul -= 1;
-          }  
-          showNotification('Outhaul = ' + window.globalSimulationData.ILCA.outhaul);">
-            <rect x="5" y="65" width="50" height="40" rx="8" fill="#dc3545"></rect>
-            <text x="30" y="92" text-anchor="middle" fill="white"
-                  style="font-family: Arial; font-size: 35px; font-weight: bold;">-</text>
-          </g>
-        </svg>
-      </div>
+      <button class="control-button" onclick="updateVangControl(-2)">-2</button>
+      <button class="control-button" onclick="updateVangControl(-1)">-1</button>
+      <button class="control-button" onclick="updateVangControl(0)">0</button>
+      <button class="control-button" onclick="updateVangControl(1)">1</button>
+      <button class="control-button" onclick="updateVangControl(2)">2</button>
     </div>
+
+    <div style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+      <div id="downhaulControlDiv" style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+        DOWNHAUL CONTROL = 0
+      </div>
+      <button class="control-button" onclick="updateDownhaulControl(-2)">-2</button>
+      <button class="control-button" onclick="updateDownhaulControl(-1)">-1</button>
+      <button class="control-button" onclick="updateDownhaulControl(0)">0</button>
+      <button class="control-button" onclick="updateDownhaulControl(1)">1</button>
+      <button class="control-button" onclick="updateDownhaulControl(2)">2</button>  
+    </div>
+
+    <div style="background: rgba(0,0,0,0.1); padding: 6px; border-radius: 8px; text-align: center;">
+      <div id="outhaulControlDiv" style="font-weight: bold; color: white; margin-top: 8px; grid-column: 1 / -1;">
+        OUTHAUL CONTROL = 0
+      </div>
+      <button class="control-button" onclick="updateOuthaulControl(-2)">-2</button>
+      <button class="control-button" onclick="updateOuthaulControl(-1)">-1</button>
+      <button class="control-button" onclick="updateOuthaulControl(0)">0</button>
+      <button class="control-button" onclick="updateOuthaulControl(1)">1</button>
+      <button class="control-button" onclick="updateOuthaulControl(2)">2</button>
+    </div>
+  </div>
 </div>
 
 

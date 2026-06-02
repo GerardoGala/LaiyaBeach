@@ -98,6 +98,38 @@
           'DAGGERBOARD CONTROL = ' + window.globalSimulationData.ILCA.daggerboard;
     }
   </script>
+    <script>
+    function updateVangControl(vang) {
+      showNotification('Vang: ' + vang);
+      window.globalSimulationData.ILCA.vang = vang;
+      
+      // Update only the label, not the whole container
+      document.getElementById('vangControlDiv').textContent = 
+          'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
+    }
+  </script>
+    </script>
+    <script>
+    function updateDownhaulControl(downhaul) {
+      showNotification('Downhaul: ' + downhaul);
+      window.globalSimulationData.ILCA.downhaul = downhaul;
+      
+      // Update only the label, not the whole container
+      document.getElementById('downhaulControlDiv').textContent = 
+          'DOWNHAUL CONTROL = ' + window.globalSimulationData.ILCA.downhaul;
+    }
+  </script>
+    </script>
+    <script>
+    function updateOuthaulControl(outhaul) {
+      showNotification('Outhaul: ' + outhaul);
+      window.globalSimulationData.ILCA.outhaul = outhaul;
+      
+      // Update only the label, not the whole container
+      document.getElementById('outhaulControlDiv').textContent = 
+          'OUTHAUL CONTROL = ' + window.globalSimulationData.ILCA.outhaul;
+    }
+  </script>
 </body>
 
 </html>
