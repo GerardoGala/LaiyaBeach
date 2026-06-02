@@ -8,46 +8,34 @@ export function handleControls(windDir, windSpeed) {
       launchILCA(windDir, windSpeed);
       break;
     case "turn-port":
-      decideManeuver(ilca, windDir, -90);
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading - 45 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
       break;
     case "turn-starboard":
-      decideManeuver(ilca, windDir, +90);
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading + 45 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
       break;
-    case "head-up":
-    {
-      let currentHeading = window.globalSimulationData.ILCA.heading;
-      let windDir = window.globalSimulationData.windDirection;
-
-      // Head Up = move 1° closer to the wind direction
-      let diff = (currentHeading - windDir + 360) % 360;
-      if (diff > 180) diff -= 360; // normalize to -180..180
-
-      // Reduce the difference by 1° (closer to wind)
-      let newHeading = (windDir + diff - 1 + 360) % 360;
-
-      window.globalSimulationData.ILCA.heading = newHeading;
-
-      console.log(`Head Up: heading ${currentHeading} → ${newHeading}, windDir ${windDir}`);
-    }
-    break;
-    case "bear-away":
-    {
-      let currentHeading = window.globalSimulationData.ILCA.heading;
-      let windDir = window.globalSimulationData.windDirection;
-
-      // Bear Away = move 1° farther from the wind direction
-      let diff = (currentHeading - windDir + 360) % 360;
-      if (diff > 180) diff -= 360; // normalize to -180..180
-
-      // Increase the difference by 1° (away from wind)
-      let newHeading = (windDir + diff + 1 + 360) % 360;
-
-      window.globalSimulationData.ILCA.heading = newHeading;
-
-      console.log(`Bear Away: heading ${currentHeading} → ${newHeading}, windDir ${windDir}`);
-    }
-    break;
-    }
+    case "heading-minus":
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading - 1 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
+      break;
+    case "heading-plus":
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading + 1 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
+      break;
+      }
   ilca.maneuver = null;
 }
 
@@ -102,21 +90,8 @@ function launchILCA(windDir, windSpeed) {
 function decideManeuver(ilca, windDir, delta) {
   const newHeading = (ilca.heading + delta + 360) % 360;
 
-  // Determine if bow or stern crosses the wind
-  const beforeDiff = angleDiff(ilca.heading, windDir);
-  const afterDiff = angleDiff(newHeading, windDir);
-
-  let maneuverType;
-  if (afterDiff > beforeDiff) {
-    maneuverType = "gybe";
-    ilca.speed *= 0.85; // bigger penalty
-  } else {
-    maneuverType = "tack";
-    ilca.speed *= 0.9;  // smaller penalty
-  }
-
   ilca.heading = newHeading;
-  console.log(`Performed ${maneuverType}, new heading: ${ilca.heading}`);
+
 }
 
 function angleDiff(a, b) {

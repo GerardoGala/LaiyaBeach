@@ -223,7 +223,7 @@ export function updateILCAControl() {
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" style="margin:4px 0;">
       <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
       <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
-      <g transform="rotate(${heading + 180}, 25, 25)">
+      <g transform="rotate(${Number(heading) + 180}, 25, 25)">
         <line x1="25" y1="5" x2="25" y2="40" stroke="red" stroke-width="3" stroke-linecap="round"/>
         <polygon points="25,45 20,35 30,35" fill="red" />
       </g>
