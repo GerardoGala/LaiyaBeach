@@ -56,31 +56,33 @@ function launchILCA(windDir, windSpeed) {
   const portBeamReach = (windDir - 90 + 360) % 360;
   const starboardBeamReach = (windDir + 90) % 360;
 
-  let chosenHeading = starboardBeamReach;
+  let chosenHeading;
 
-  if (window.globalSimulationData.buoyLat && window.globalSimulationData.buoyLon) {
-    const bearingToBuoy = computeBearing(
-      ilca.lat,
-      ilca.lon,
-      window.globalSimulationData.buoyLat,
-      window.globalSimulationData.buoyLon
+  // Buoy is always southeast of launch point
+  const bearingToBuoy = computeBearing(
+    ilca.lat,
+    ilca.lon,
+    window.globalSimulationData.buoyLat,
+    window.globalSimulationData.buoyLon
+  );
+
+  // Step 1: If wind is from land (north quadrant), force downwind launch
+  if (windDir >= 315 || windDir <= 45) {
+    chosenHeading = (windDir + 180) % 360;
+    console.log(
+      `Wind from land (north). Launching downwind on ${chosenHeading}° away from beach.`
     );
+  } else {
+    // Step 2: Otherwise, choose the beam reach closer to the buoy (SE)
+    const diffPort = angleDiff(bearingToBuoy, portBeamReach);
+    const diffStarboard = angleDiff(bearingToBuoy, starboardBeamReach);
 
-    // Compute angular difference between buoy and wind
-    const diffBuoyWind = angleDiff(bearingToBuoy, windDir);
-
-    // If buoy is clockwise from windDir, choose starboard; if counter‑clockwise, choose port
-    const clockwiseDiff = (bearingToBuoy - windDir + 360) % 360;
-    if (clockwiseDiff <= 180) {
-      chosenHeading = starboardBeamReach;
-    } else {
-      chosenHeading = portBeamReach;
-    }
+    chosenHeading = diffPort < diffStarboard ? portBeamReach : starboardBeamReach;
 
     console.log(
       `Beam reach options: Port=${portBeamReach}°, Starboard=${starboardBeamReach}°. 
        Buoy bearing=${bearingToBuoy}°. 
-       Launching on ${chosenHeading}°`
+       Launching on ${chosenHeading}° toward buoy SE.`
     );
   }
 
@@ -95,6 +97,7 @@ function launchILCA(windDir, windSpeed) {
     `Launching ILCA on heading ${chosenHeading}° with windDir ${windDir}° at ${windSpeed} knots → initial speed ${ilca.speed.toFixed(1)} knots`
   );
 }
+
 
 function decideManeuver(ilca, windDir, delta) {
   const newHeading = (ilca.heading + delta + 360) % 360;
