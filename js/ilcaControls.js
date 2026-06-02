@@ -35,7 +35,7 @@ export function handleControls(windDir, windSpeed) {
         window.globalSimulationData.ILCA.heading = newHeading;
       }
       break;
-      }
+  }
   ilca.maneuver = null;
 }
 
