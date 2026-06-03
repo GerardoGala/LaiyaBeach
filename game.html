@@ -213,3 +213,34 @@ html, body {
     100% { transform: translateY(-20px); opacity: 0; }
   }
 </style>
+
+<style>
+/* General button styling */
+.control-button {
+  flex: 1;                /* equal width within row */
+  min-width: 0;           /* prevents overflow pushing siblings */
+  text-align: center;
+  font-size: clamp(10px, 1.5vw, 16px); /* text shrinks/grows to fit */
+  white-space: normal;    /* allow wrapping if needed */
+  padding: 8px;
+  background-color: #222;
+  border: 1px solid #444;
+  color: #d4d4d4;
+  border-radius: 4px;
+  margin: 2px;            /* spacing between buttons */
+}
+
+/* Rows that contain multiple buttons */
+#sheetControl div,
+#daggerboardControl div,
+#sailorPositionControl div,
+#ilcaControl div,
+#vangControl div,
+#downhaulControl div,
+#outhaulControl div{
+  display: flex;          /* lay out buttons in a row */
+  gap: 6px;               /* consistent spacing */
+  justify-content: center;
+}
+</style>
+
