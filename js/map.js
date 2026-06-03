@@ -238,8 +238,7 @@ export function updateILCAControl() {
   const speedMS = (ilca.speed ? (ilca.speed * 0.514).toFixed(2) : "0.00");
   const heading = ilca.heading?.toFixed(0) || 0;
   const timer = ilca.displayTimer || "0:00";
-  const laiyaTime = ilca.localTime || "--:--:--";
-
+ 
   // --- ILCA Control Renderer ---
   ilcaControlDiv.innerHTML = `
     <div><strong>ILCA Status</strong></div>
@@ -254,7 +253,6 @@ export function updateILCAControl() {
     <div>Heading: ${heading}°</div>
     <div>Speed: ${speedKnots} knots (${speedMS} m/s)</div>
     <div>Timer: ${timer}</div>
-    <div style="margin-top:4px;"><strong>Laiya Time:</strong> ${laiyaTime}</div>
   `;
 }
 
@@ -295,7 +293,7 @@ export function updateVMGControl() {
   const vmg = speedMS * Math.cos(angleDiff);
 
   vmgControlDiv.innerHTML = `
-    <div style="margin-bottom: 4px;">VMG</div>
+    <div>VMG</div>
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="10" viewBox="0 0 80 10">
     </svg>
     <div style="color: blue;">
