@@ -6,18 +6,19 @@
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=.5">
 </head>
 <body>
-  <!-- Placeholder for controls -->
-  <div id="controls"></div>
-
-  <div id="notification-container"></div>
-
-  <!-- Right Pane (Map) -->
-  <div class="right-pane">
-    <div id="map"></div>
-    <button id="mapLaunchBtn">Launch</button>
+  <div class="container">
+    <div id="map">
+      <button id="mapLaunchBtn">Launch</button>
+      <div id="notification-container"></div>
+    </div>
+    <div id="controls"></div>
   </div>
+
+
+ 
 
 
 
@@ -97,7 +98,7 @@
           'DAGGERBOARD CONTROL = ' + window.globalSimulationData.ILCA.daggerboard;
     }
   </script>
-    <script>
+  <script>
     function updateVangControl(vang) {
       showNotification('Vang: ' + vang);
       window.globalSimulationData.ILCA.vang = vang;
@@ -107,8 +108,7 @@
           'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
     }
   </script>
-    </script>
-    <script>
+  <script>
     function updateDownhaulControl(downhaul) {
       showNotification('Downhaul: ' + downhaul);
       window.globalSimulationData.ILCA.downhaul = downhaul;
@@ -135,100 +135,81 @@
 
 
 <style>
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: "Segoe UI", sans-serif;
   background-color: #1e1e1e;
   color: #d4d4d4;
+}
+
+/* Default: mobile layout (vertical stack) */
+.container {
+  display: flex;
+  flex-direction: column; 
   height: 100vh;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;   /* stop the whole page from scrolling */
 }
-
-.left-pane {
-  width: 300px;          /* fixed width, adjust to taste */
-  flex: 0 0 300px;       /* don’t let flexbox shrink or grow it */
-  display: flex;
-  flex-direction: column;
-  background: #252525;
-}
-
-.right-3col {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-
-.right-pane {
-    flex: 1;               /* takes up the remaining space */
-  display: flex;
-  position: absolute;
-  top: 0;
-  left: 300px;        /* same as controls width */
-  right: 0;
-  bottom: 0;
-}
-
 
 #map {
-    flex: 1;
+  flex: 1;
   width: 100%;
-  height: 100%;
-}
-
-
-
-#leftPane {
-  display: grid;              /* or flex */
-  grid-template-columns: 1fr; /* single column */
-  grid-auto-rows: min-content;
-  gap: 12px;                  /* spacing between groups */
-  padding: 12px;
-  background: rgba(20,20,20,0.8); /* dark background */
-  border-radius: 8px;
+  border-bottom: 2px solid #333;
 }
 
 #controls {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 300px;       /* fixed width for left pane */
-  overflow-y: auto;   /* scroll only inside controls */
+  flex: 1;
+  overflow-y: auto;
   background-color: #111;
+  padding: 12px;
+}
+
+
+
+/* Desktop/Laptop: switch to side-by-side */
+@media screen and (min-width: 768px) {
+  .container {
+    flex-direction: row; /* forces horizontal split */
+  }
+  #map {
+    flex: 1; 
+    width: auto; /* allows layout to shrink side-by-side */
+    border-bottom: none;
+  }
+  #controls {
+    flex: 0 0 300px; 
+    width: 300px;
+    max-width: 300px;
+    border-right: 2px solid #333;
+  }
 }
 
 </style>
 
+
+
 <style>
-#notification-container {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-}
-
-.notification {
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  padding: 10px 20px;
-  margin-top: 10px;
-  border-radius: 5px;
-  font-size: 14px;
-  opacity: 0;
-  animation: slideUpFade 2.5s forwards;
-}
-
-@keyframes slideUpFade {
-  0% { transform: translateY(30px); opacity: 0; }
-  20% { transform: translateY(0); opacity: 1; }
-  80% { transform: translateY(-10px); opacity: 1; }
-  100% { transform: translateY(-20px); opacity: 0; }
-}
-
-
-
+  #notification-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+  }
+  .notification {
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    animation: slideUpFade 2.5s forwards;
+  }
+  @keyframes slideUpFade {
+    0% { transform: translateY(30px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(-10px); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+  }
 </style>
