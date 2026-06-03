@@ -24,7 +24,17 @@ export function initMap() {
 
   // Initialize the Leaflet map, centered on Laiya Beach with zoom ~16
   // Zoom 16 usually shows ~300m scale bar (depending on screen size and latitude)
-  const map = L.map('map').setView([13.670464, 121.401286], 16);
+  //const map = L.map('map').setView([13.670464, 121.401286], 16);
+
+  const map = L.map('map', {
+  center: [13.670464, 121.401286], // your buoy coords
+  zoom: 16,
+  dragging: false,        // disables drag
+  zoomControl: false,     // optional: removes zoom buttons
+  scrollWheelZoom: false, // optional: disables mouse wheel zoom
+  doubleClickZoom: false, // optional: disables double-click zoom
+  touchZoom: false        // optional: disables pinch zoom
+});
 
 
 
