@@ -1,7 +1,7 @@
 // map.js
 let windControlDiv; // keep reference so we can update later
 let ilcaControlDiv; // keep reference so we can update later
-
+let vmgControlDiv; // keep reference so we can update later
 
 export function initMap() {
   const laiya = [13.670464, 121.401286];
@@ -40,10 +40,7 @@ export function initMap() {
 
 
 
-  // Overlay: Esri World Hillshade (terrain relief, no roads)
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}', {
-    attribution: 'Tiles © Esri'
-  }).addTo(map);
+
 
 // Add marker for ILCA launch point
 L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
@@ -92,6 +89,18 @@ const RightControls = L.Control.extend({
     ilcaControlDiv.style.color = '#222';
     updateILCAControl();
 
+        // --- VMG Status ---
+    vmgControlDiv = L.DomUtil.create('div', 'vmg-status-container', container);
+    vmgControlDiv.style.background = 'white';
+    vmgControlDiv.style.padding = '8px';
+    vmgControlDiv.style.borderRadius = '5px';
+    vmgControlDiv.style.boxShadow = '0 1px 5px rgba(0,0,0,0.4)';
+    vmgControlDiv.style.textAlign = 'center';
+    vmgControlDiv.style.fontFamily = 'sans-serif';
+    vmgControlDiv.style.fontSize = '12px';
+    vmgControlDiv.style.lineHeight = '1.4em';
+    vmgControlDiv.style.color = '#222';
+    updateVMGControl();
     return container;
   }
 });
@@ -248,3 +257,52 @@ export function updateILCAControl() {
     <div style="margin-top:4px;"><strong>Laiya Time:</strong> ${laiyaTime}</div>
   `;
 }
+
+// --- Refresh function to update VMG ruler dynamically ---
+// --- Refresh function to update VMG ruler dynamically ---
+export function updateVMGControl() {
+  if (!vmgControlDiv) return;
+
+  const ilca = window.globalSimulationData.ILCA || {};
+  const buoyRounded = window.globalSimulationData.buoyRounded || 0;
+
+  // Destination: buoy if not yet rounded
+  const destLat = buoyRounded === 0 
+    ? window.globalSimulationData.buoyLat 
+    : window.globalSimulationData.finishLat;
+  const destLon = buoyRounded === 0 
+    ? window.globalSimulationData.buoyLon 
+    : window.globalSimulationData.finishLon;
+
+  // Local constants for boat state
+  const boatLat = ilca.lat || 0;
+  const boatLon = ilca.lon || 0;
+  const heading = ilca.heading || 0;
+  const speedKnots = ilca.speed?.toFixed(1) || 0;
+  const speedMS = ilca.speed ? (ilca.speed * 0.514) : 0;
+
+  // Bearing from boat to destination
+  const dLon = (destLon - boatLon) * Math.PI / 180;
+  const lat1 = boatLat * Math.PI / 180;
+  const lat2 = destLat * Math.PI / 180;
+  const y = Math.sin(dLon) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  let bearing = Math.atan2(y, x) * 180 / Math.PI;
+  if (bearing < 0) bearing += 360;
+
+  // VMG calculation: projection of speed along bearing to destination
+  const angleDiff = (heading - bearing) * Math.PI / 180;
+  const vmg = speedMS * Math.cos(angleDiff);
+
+  vmgControlDiv.innerHTML = `
+    <div style="margin-bottom: 4px;">VMG</div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="10" viewBox="0 0 80 10">
+    </svg>
+    <div style="color: blue;">
+      ${vmg.toFixed(2)} m/s
+    </div>
+  `;
+}
+
+
+

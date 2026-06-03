@@ -1,5 +1,5 @@
 // app.js
-import { initMap, updateWindControl, updateILCAControl } from './map.js';
+import { initMap, updateWindControl, updateILCAControl, updateVMGControl } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
 
@@ -20,6 +20,8 @@ async function loadConfig() {
   // ✅ Show initial status immediately
   updateWindControl(map);
   updateILCAControl();
+  updateVMGControl();
+
 
   // --- Unified master loop (every 1 second) ---
   let tick = 0;
@@ -50,6 +52,7 @@ async function loadConfig() {
     // Refresh overlays
     updateWindControl(map);
     updateILCAControl();
+    updateVMGControl();
   }, 1000);
 }
 
