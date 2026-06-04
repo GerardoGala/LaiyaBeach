@@ -101,13 +101,6 @@ function launchILCA(windDir, windSpeed) {
 }
 
 
-function decideManeuver(ilca, windDir, delta) {
-  const newHeading = (ilca.heading + delta + 360) % 360;
-
-  ilca.heading = newHeading;
-
-}
-
 function angleDiff(a, b) {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
