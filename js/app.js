@@ -114,22 +114,35 @@ window.stopSimulation = stopSimulation;
 
 loadConfig();
 
-
 function getPointOfSail(windDir, heading) {
-  const rel = (heading - windDir + 360) % 360;
-  if (rel <= 45 || rel >= 315) return "Close Hauled";
-  if (rel <= 90 || rel >= 270) return "Beam Reach";
-  if (rel <= 135 || rel >= 225) return "Broad Reach";
-  return "Running";
+  // Absolute difference between heading and wind direction
+  let rel = Math.abs(heading - windDir) % 360;
+  if (rel > 180) rel = 360 - rel; // fold into 0–180
+
+  if (rel <=30) return "Running";          // dead downwind
+  if (rel <= 60) return "Broad Reach";      // ~30–60°
+  if (rel <= 90) return "Beam Reach";       // ~60–90°
+  if (rel <= 120) return "Close Reach";     // ~90–120°
+  if (rel <= 150) return "Close Hauled";    // ~120–150°
+  return "In Irons";                       // ~150–180°                   // ~0–30° → dead downwind
 }
+
+
+
+
 
 function applyControls(pointOfSail, windSpeed, controls) {
   let speedFactor = 0.5; // baseline efficiency
 
   switch(pointOfSail) {
+    case "In Irons":
+      speedFactor = 0.0; // stalled, no drive
+      break;
     case "Close Hauled":
       speedFactor = 0.7;
-      if (controls.sheet < 15) speedFactor *= 0.9; // sheet too tight
+      if (controls.sheet < 25) speedFactor *= 0.9;   // oversheeted
+      else if (controls.sheet > 40) speedFactor *= 0.7; // too loose, luffing
+
       if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail 
       
 
@@ -163,12 +176,27 @@ function applyControls(pointOfSail, windSpeed, controls) {
       // this is for sailor position
       break;
 
+    case "Close Reach":
+      speedFactor = 1.0; // good drive, slightly freer than close hauled
+      if (controls.sheet >= 30 && controls.sheet <= 50) {
+        speedFactor *= 1.1; // optimal trim
+      } else if (controls.sheet < 25) {
+        speedFactor *= 0.8; // oversheeted
+      } else if (controls.sheet > 60) {
+        speedFactor *= 0.6; // too far out, luffing
+      }
+      break;  
+
     case "Beam Reach":
-      speedFactor = 1.2; // fastest point of sail
-      if (controls.sheet >= 20 && controls.sheet <= 40) speedFactor *= 1.1;
-      
-      
-      
+      speedFactor = 1.2;
+      if (controls.sheet >= 20 && controls.sheet <= 40) {
+        speedFactor *= 1.1; // optimal trim
+      } else if (controls.sheet > 70) {
+        speedFactor *= 0.5; // sail way out, luffing
+      } else if (controls.sheet < 20) {
+        speedFactor *= 0.7; // oversheeted
+      }    
+            
       // On beam reach, raising daggerboard reduces drag but increases leeway
       switch (controls.daggerboard) {
         case -2:
@@ -203,28 +231,12 @@ function applyControls(pointOfSail, windSpeed, controls) {
 
     case "Broad Reach":
       speedFactor = 1.0;
-
-      switch (controls.daggerboard) {
-        case -2:
-          speedFactor *= 0.85;
-          controls.leeway = 2;
-          break;
-        case -1:
-          speedFactor *= 0.9;
-          controls.leeway = 5;
-          break;
-        case 0:
-          speedFactor *= 1.0;
-          controls.leeway = 10;
-          break;
-        case 1:
-          speedFactor *= 1.05;
-          controls.leeway = 15;
-          break;
-        case 2:
-          speedFactor *= 1.1;   // faster forward
-          controls.leeway = 20; // big sideways slip
-          break;
+      if (controls.sheet >= 40 && controls.sheet <= 70) {
+        speedFactor *= 1.05; // good trim
+      } else if (controls.sheet > 80) {
+        speedFactor *= 0.6; // too far out, losing drive
+      } else if (controls.sheet < 30) {
+        speedFactor *= 0.8; // oversheeted
       }
 
       // --- sheet ---
@@ -252,8 +264,11 @@ function applyControls(pointOfSail, windSpeed, controls) {
     speedFactor = 0.8;
 
     // --- sheet ---
-    if (controls.sheet > 70) speedFactor *= 1.1; // parachute effect
-
+    if (controls.sheet > 70) {
+      speedFactor *= 1.1; // parachute effect
+    } else if (controls.sheet < 60) {
+      speedFactor *= 0.6; // sail not out enough, collapsing
+    }
     switch (controls.daggerboard) {
       case -2:
         speedFactor *= 0.95;   // drag penalty
