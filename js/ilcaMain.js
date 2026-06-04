@@ -18,18 +18,17 @@ export function updateILCA(map) {
   const windDir = window.globalSimulationData.windDirection;
   const windSpeed = window.globalSimulationData.windSpeed; // in knots
 
-  // Run maneuver & control logic
+  // Run maneuver & control logic (this sets ILCA.speed correctly)
   handleControls(windDir, windSpeed);
 
-  // Always calculate speed from wind speed (beam reach assumption)
-  const speedKnots = calculateILCASpeed(windSpeed);
-  window.globalSimulationData.ILCA.speed = speedKnots;
+  // Use the speed already set by controls, not a blind beam reach assumption
+  const speedKnots = window.globalSimulationData.ILCA.speed || 0;
 
-  // Update position
-  let lat = window.globalSimulationData.ILCA.lat;
-  let lon = window.globalSimulationData.ILCA.lon;
-
+  // Update position only if speed > 0
   if (speedKnots > 0) {
+    let lat = window.globalSimulationData.ILCA.lat;
+    let lon = window.globalSimulationData.ILCA.lon;
+
     const speedMS = speedKnots * 0.5144; // knots → m/s
     const dt = 1; // timestep in seconds
     const distance = speedMS * dt;
@@ -51,3 +50,4 @@ export function updateILCA(map) {
   // Draw overlay
   drawILCAOnMap(map);
 }
+
