@@ -234,6 +234,7 @@ export function updateILCAControl() {
   const speedKnots = ilca.speed?.toFixed(1) || 0;
   const speedMS = (ilca.speed ? (ilca.speed * 0.514).toFixed(2) : "0.00");
   const heading = ilca.heading?.toFixed(0) || 0;
+  const pointOfSail = ilca.pointOfSail;
   const timer = ilca.displayTimer || "0:00";
  
   // --- ILCA Control Renderer ---
@@ -248,6 +249,7 @@ export function updateILCAControl() {
       </g>
     </svg>
     <div>Heading: ${heading}°</div>
+    <div>Point of Sail: ${pointOfSail}</div>
     <div>Speed: ${speedKnots} knots (${speedMS} m/s)</div>
     <div>Timer: ${timer}</div>
   `;

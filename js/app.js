@@ -42,8 +42,10 @@ if (launched) {
   const windDir = window.globalSimulationData.windDirection;
   const heading = window.globalSimulationData.ILCA.heading;
 
+  // --- Point of Sail ---
   const pointOfSail = getPointOfSail(windDir, heading);
-
+  window.globalSimulationData.ILCA.pointOfSail = pointOfSail;  // <-- store it
+  
   const controls = window.globalSimulationData.ILCA;
   const newSpeed = applyControls(pointOfSail, windSpeed, controls);
 
@@ -115,20 +117,45 @@ loadConfig();
 
 function getPointOfSail(windDir, heading) {
   const rel = (heading - windDir + 360) % 360;
-  if (rel <= 45 || rel >= 315) return "closeHauled";
-  if (rel <= 90 || rel >= 270) return "beamReach";
-  if (rel <= 135 || rel >= 225) return "broadReach";
-  return "running";
+  if (rel <= 45 || rel >= 315) return "Close Hauled";
+  if (rel <= 90 || rel >= 270) return "Beam Reach";
+  if (rel <= 135 || rel >= 225) return "Broad Reach";
+  return "Running";
 }
 
 function applyControls(pointOfSail, windSpeed, controls) {
   let speedFactor = 0.5; // baseline efficiency
 
   switch(pointOfSail) {
-    case "closeHauled":
+    case "Close Hauled":
       speedFactor = 0.7;
       if (controls.sheet < 15) speedFactor *= 0.9; // sheet too tight
       if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail 
+      
+
+      // Upwind you need daggerboard down; raising it hurts VMG
+      switch (controls.daggerboard) {
+        case -2: // fully down
+          speedFactor *= 0.95;   // drag penalty but tracks straight
+          controls.leeway = 2;
+          break;
+        case -1:
+          speedFactor *= 0.97;
+          controls.leeway = 5;
+          break;
+        case 0:
+          speedFactor *= 1.0;
+          controls.leeway = 10;
+          break;
+        case 1:
+          speedFactor *= 1.02;
+          controls.leeway = 15;
+          break;
+        case 2: // fully up
+          speedFactor *= 1.05;   // less drag forward
+          controls.leeway = 25;  // slips badly, kills VMG
+          break;
+      }
       // this is for sheet
       // this is for vang
       // this is for downhaul
@@ -136,45 +163,135 @@ function applyControls(pointOfSail, windSpeed, controls) {
       // this is for sailor position
       break;
 
-    case "beamReach":
+    case "Beam Reach":
       speedFactor = 1.2; // fastest point of sail
       if (controls.sheet >= 20 && controls.sheet <= 40) speedFactor *= 1.1;
+      
+      
+      
+      // On beam reach, raising daggerboard reduces drag but increases leeway
+      switch (controls.daggerboard) {
+        case -2:
+          speedFactor *= 0.95;
+          controls.leeway = 2;
+          break;
+        case -1:
+          speedFactor *= 0.97;
+          controls.leeway = 5;
+          break;
+        case 0:
+          speedFactor *= 1.0;
+          controls.leeway = 10;
+          break;
+        case 1:
+          speedFactor *= 1.03;
+          controls.leeway = 15;
+          break;
+        case 2:
+          speedFactor *= 1.05;   // faster forward
+          controls.leeway = 20;  // big sideways slip
+          break;
+      }
+      
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
-            // this is for sheet
+      // this is for sheet
       // this is for vang
       // this is for downhaul
       // this is for outhaul
       // this is for sailor position
       break;
 
-    case "broadReach":
+    case "Broad Reach":
       speedFactor = 1.0;
-      // --- daggerboard control ---
-      // -2 = fully down (draggy offwind)
-      // -1 = mostly down
-      // 0 = middle (balanced)
-      // 1 = mostly up
-      // 2 = fully up (fast offwind, poor upwind)
-      if (controls.daggerboard === -2) speedFactor *= 0.85;
-      else if (controls.daggerboard === -1) speedFactor *= 0.9;
-      else if (controls.daggerboard === 0) speedFactor *= 1.0;
-      else if (controls.daggerboard === 1) speedFactor *= 1.05;
-      else if (controls.daggerboard === 2) speedFactor *= 1.1;
+
+      switch (controls.daggerboard) {
+        case -2:
+          speedFactor *= 0.85;
+          controls.leeway = 2;
+          break;
+        case -1:
+          speedFactor *= 0.9;
+          controls.leeway = 5;
+          break;
+        case 0:
+          speedFactor *= 1.0;
+          controls.leeway = 10;
+          break;
+        case 1:
+          speedFactor *= 1.05;
+          controls.leeway = 15;
+          break;
+        case 2:
+          speedFactor *= 1.1;   // faster forward
+          controls.leeway = 20; // big sideways slip
+          break;
+      }
+
+      // --- sheet ---
+      // (placeholder: add trim effect here later)
+
+      // --- vang ---
+      // (placeholder: add trim effect here later)
+
+      // --- downhaul ---
+      // (placeholder: add trim effect here later)
+
+      // --- outhaul ---
+      // (placeholder: add trim effect here later)
+
+      // --- sailor position ---
+      // (placeholder: hiking/weight shift effect here later)
+      break;
+
 
       if (controls.outhaul < 0.3) speedFactor *= 1.1; // fuller sail
       break;
 
 
-    case "running":
-      speedFactor = 0.8;
-      if (controls.sheet > 70) speedFactor *= 1.1; // parachute effect
-      if (controls.vang < 0.2) speedFactor *= 1.05; // max twist
-            // this is for sheet
-      // this is for vang
-      // this is for downhaul
-      // this is for outhaul
-      // this is for sailor position
-      break;
+  case "Running":
+    speedFactor = 0.8;
+
+    // --- sheet ---
+    if (controls.sheet > 70) speedFactor *= 1.1; // parachute effect
+
+    switch (controls.daggerboard) {
+      case -2:
+        speedFactor *= 0.95;   // drag penalty
+        controls.leeway = 2;   // almost straight
+        break;
+      case -1:
+        speedFactor *= 0.97;
+        controls.leeway = 5;
+        break;
+      case 0:
+        speedFactor *= 1.0;
+        controls.leeway = 10;
+        break;
+      case 1:
+        speedFactor *= 1.03;
+        controls.leeway = 15;
+        break;
+      case 2:
+        speedFactor *= 1.05;   // faster forward
+        controls.leeway = 20;  // big sideways slip
+        break;
+    }
+
+    // --- vang ---
+    if (controls.vang < 0.2) speedFactor *= 1.05; // max twist
+
+
+
+  // --- downhaul ---
+  // (placeholder: add trim effect here later)
+
+  // --- outhaul ---
+  // (placeholder: add trim effect here later)
+
+  // --- sailor position ---
+  // (placeholder: hiking/weight shift effect here later)
+  break;
+
   }
 
   // Cap speed by wind strength

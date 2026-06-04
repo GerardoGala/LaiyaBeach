@@ -13,6 +13,7 @@ window.globalSimulationData = {
   // --- ILCA state ---
   ILCA: {
     maneuver: null,
+    pointOfSail: "",
     heading: 180,
     speed: 0,
     sailorPosition: "Mid Center",
