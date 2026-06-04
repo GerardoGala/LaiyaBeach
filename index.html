@@ -4,154 +4,29 @@
   <meta charset="UTF-8">
   <title>Welcome to Laiya Beach ILCA Simulator</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    body.welcome {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      color: #222;
-      text-align: center;
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-    }
-
-    body.welcome::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url("images/ilca-dinghy-sailor.png") no-repeat center center;
-      background-size: cover;
-      opacity: 0.25;
-      z-index: -1;
-    }
-
-    .welcome-container {
-      position: relative;
-      padding: 25px;
-      background: rgba(255,255,255,0.85);
-      border-radius: 10px;
-      display: inline-block;
-      margin-top: 5%;
-      max-width: 650px;
-    }
-
-    h1 {
-      color: #0066cc;
-      font-size: 1.6em;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 0.95em;
-      line-height: 1.4em;
-      margin: 10px 0;
-    }
-
-    .forecast {
-      margin-top: 10px;
-      font-size: 0.9em;
-      color: #0066cc;
-      font-weight: bold;
-    }
-
-    /* Tooltip styling */
-    .tooltip {
-      position: relative;
-      cursor: pointer;
-      color: #d35400;
-      font-weight: bold;
-      font-size: 0.95em;
-    }
-    .tooltip .tooltiptext {
-      visibility: hidden;
-      width: 260px;
-      background-color: #fff8dc;
-      color: #333;
-      text-align: left;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 8px;
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      white-space: normal;
-      line-height: 1.3em;
-      z-index: 10;
-      font-size: 0.85em;
-    }
-    .tooltip:hover .tooltiptext {
-      visibility: visible;
-      opacity: 1;
-    }
-
-    button {
-      margin-top: 15px;
-      padding: 8px 16px;
-      font-size: 0.9em;
-      background-color: #ffcc00;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ffdb4d;
-    }
-
-    .rules {
-      margin-top: 15px;
-      background: #eef7ff;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #cce0ff;
-      font-size: 0.9em;
-    }
-    .rules h2 {
-      color: #0066cc;
-      margin-bottom: 6px;
-      font-size: 1.1em;
-    }
-    .rules ul {
-      text-align: left;
-      font-size: 0.9em;
-      line-height: 1.4em;
-      margin: 0;
-      padding-left: 18px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=.5">
 </head>
 <body class="welcome">
 
     <h1>🏖️ Laiya Beach ILCA Simulator</h1>
-    <!-- Forecast banner -->
-    <div id="forecast" class="forecast">Loading today's wind forecast...</div>
-      <p>
-    Welcome to the world of <strong>Sailing Physics</strong> — 
-    where wind, trim, and heading come together to teach you how to 
-    optimize your ILCA for speed and control.
-  </p>
-
+    <br>
+    <p>
+      <!-- Forecast banner -->
+      Welcome to the world of <strong>Sailing Physics</strong> — 
+    </p>
+        <p>
+      <!-- Forecast banner -->
+      where wind, trim, and heading come together to teach you how to 
+      optimize your ILCA for speed and control.
+    </p>
+    <br>
     <p>
       Experience the thrill of sailing with interactive rig controls, live wind data, and a dynamic map view.<br><br>
-      Hone your skill using this simulator. Learn to recognize when you are being 
-      <span class="tooltip">Lifted
-        <span class="tooltiptext">
-          <strong>Lifted:</strong> Wind shifts so your heading is closer to the wind. You can point higher without losing speed — a chance to gain advantage.
-        </span>
-      </span> 
-      or 
-      <span class="tooltip">Headed
-        <span class="tooltiptext">
-          <strong>Headed:</strong> Wind shifts so your heading is more downwind. You can’t point as high anymore, and if you don’t adjust, you’ll lose ground.
-        </span>
-      </span>.
+      Hone your skill using this simulator. Learn to recognize how each controls affect your VMG.
     </p>
-
-      <h2>🎯 Objective</h2>
+    <br>
+    <br>
+    <h2>🎯 Objective</h2>
       <p>
         Launch your ILCA dinghy, round the buoy, and return to the start in the shortest possible time.
       </p>
@@ -159,42 +34,102 @@
     <button onclick="location.href='game.html'">Enter Simulator</button>
 
 
-  <!-- Leaflet library -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- Global state must be loaded first -->
-  <script src="js/globalSimulationData.js"></script>
-
-  <script>
-    async function preloadWind() {
-      try {
-        const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
-        const latitude = 13.676;
-        const longitude = 121.437;
-        const apiKey = "2ae1f247f2de797baacea07fe09b19b6"; // replace with your key
-        const units = "metric";
-
-        const url = `${baseUrl}?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const windSpeedMS = data.wind.speed;
-        const windDeg = data.wind.deg;
-        const windKnots = (windSpeedMS * 1.94384).toFixed(1);
-
-        window.globalSimulationData.windDirection = windDeg;
-        window.globalSimulationData.windSpeed = windKnots;
-
-        document.getElementById("forecast").textContent =
-          `🌬️ Today's wind forecast is ${windDeg}° at ${windKnots} knots.`;
-      } catch (err) {
-        document.getElementById("forecast").textContent =
-          "⚠️ Unable to load today's wind forecast.";
-        console.error(err);
-      }
-    }
-
-    preloadWind();
-  </script>
 </body>
 </html>
+
+
+<style>
+body.welcome {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f8ff;
+  color: #222;
+  text-align: center;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Background image overlay */
+body.welcome::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("images/ilca-dinghy-sailor.png") no-repeat center center;
+  background-size: cover;
+  opacity: 0.25;
+  z-index: -1;
+}
+
+.welcome-container {
+  position: relative;
+  padding: 25px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 5%;
+  max-width: 650px;
+}
+
+/* Responsive fonts */
+h1 {
+  color: #0066cc;
+  font-size: clamp(1.8em, 3vw, 2.6em); /* bigger base, scales with screen */
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: clamp(1.1em, 2vw, 1.6em);
+  line-height: 1.5em;
+  margin: 10px 0;
+}
+
+.forecast {
+  margin-top: 10px;
+  font-size: clamp(1.2em, 2.2vw, 1.8em);
+  color: #0066cc;
+  font-weight: bold;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: clamp(1em, 2vw, 1.4em);
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #ffdb4d;
+}
+
+.rules {
+  margin-top: 15px;
+  background: #eef7ff;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cce0ff;
+  font-size: clamp(1em, 1.8vw, 1.3em);
+}
+.rules h2 {
+  color: #0066cc;
+  margin-bottom: 6px;
+  font-size: clamp(1.2em, 2vw, 1.6em);
+}
+.rules ul {
+  text-align: left;
+  font-size: clamp(1em, 1.6vw, 1.2em);
+  line-height: 1.5em;
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* Mobile boost: double font size */
+@media screen and (max-width: 767px) {
+  h1, p, .forecast, .tooltip, .tooltip .tooltiptext,
+  button, .rules, .rules h2, .rules ul {
+    font-size: 200%; /* double whatever the clamp resolved to */
+  }
+}
+</style>
