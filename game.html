@@ -55,7 +55,7 @@
       note.textContent = message;
       container.appendChild(note);
 
-      setTimeout(() => note.remove(), 2500);
+      setTimeout(() => note.remove(), 10000);
     }
   </script>
 
@@ -235,7 +235,7 @@ html, body {
     border-radius: 5px;
     font-size: 14px;
     opacity: 0;
-    animation: slideUpFade 2.5s forwards;
+    animation: slideUpFade 10s forwards;
   }
   @keyframes slideUpFade {
     0% { transform: translateY(30px); opacity: 0; }
