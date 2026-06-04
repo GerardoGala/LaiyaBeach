@@ -101,7 +101,16 @@
 
   <script>
     function updateDaggerboardControl(daggerboard) {
-      showNotification('Daggerboard: ' + daggerboard);
+      const labels = {
+        '-2': 'Down',
+        '-1': 'MidDown',
+        '0':  'Mid',
+        '1':  'MidUp',
+        '2':  'Up'
+      };
+      const key = String(daggerboard);
+      const label = labels[key] ?? 'Unknown';
+      showNotification('Daggerboard: ' + key + ' ' + label);
       window.globalSimulationData.ILCA.daggerboard = daggerboard;
       
       // Update only the label, not the whole container
