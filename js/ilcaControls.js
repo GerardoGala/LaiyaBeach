@@ -21,17 +21,31 @@ export function handleControls(windDir, windSpeed) {
         window.globalSimulationData.ILCA.heading = newHeading;
       }
       break;
-    case "heading-minus":
+    case "heading-minus5":
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading - 5 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
+      break;
+    case "heading-minus1":
       {
         let currentHeading = window.globalSimulationData.ILCA.heading;
         let newHeading = (currentHeading - 1 + 360) % 360;
         window.globalSimulationData.ILCA.heading = newHeading;
       }
       break;
-    case "heading-plus":
+    case "heading-plus1":
       {
         let currentHeading = window.globalSimulationData.ILCA.heading;
         let newHeading = (currentHeading + 1 + 360) % 360;
+        window.globalSimulationData.ILCA.heading = newHeading;
+      }
+      break;
+    case "heading-plus5":
+      {
+        let currentHeading = window.globalSimulationData.ILCA.heading;
+        let newHeading = (currentHeading + 5 + 360) % 360;
         window.globalSimulationData.ILCA.heading = newHeading;
       }
       break;
