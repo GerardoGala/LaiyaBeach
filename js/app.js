@@ -127,188 +127,152 @@ function getPointOfSail(windDir, heading) {
   return "In Irons";                       // ~150–180°                   // ~0–30° → dead downwind
 }
 
-
-
-
-
 function applyControls(pointOfSail, windSpeed, controls) {
   let speedFactor = 0.5; // baseline efficiency
+  controls.leeway = 0;   // default sideways slip
 
   switch(pointOfSail) {
     case "In Irons":
-      speedFactor = 0.0; // stalled, no drive
+      speedFactor = 0.0; // stalled
       break;
+
     case "Close Hauled":
       speedFactor = 0.7;
-      if (controls.sheet < 25) speedFactor *= 0.9;   // oversheeted
-      else if (controls.sheet > 40) speedFactor *= 0.7; // too loose, luffing
 
-      if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail 
-      
+      // --- sheet ---
+      if (controls.sheet < 25) speedFactor *= 0.9;
+      else if (controls.sheet > 40) speedFactor *= 0.7;
 
-      // Upwind you need daggerboard down; raising it hurts VMG
+      // --- vang ---
+      if (controls.vang > 0.7) speedFactor *= 1.1;
+
+      // --- downhaul ---
+      if (controls.downhaul > 0.7) speedFactor *= 1.05;
+
+      // --- outhaul ---
+      if (controls.outhaul > 0.7) speedFactor *= 1.05;
+
+      // --- sailor position ---
+      if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
+
+      // --- daggerboard ---
       switch (controls.daggerboard) {
-        case -2: // fully down
-          speedFactor *= 0.95;   // drag penalty but tracks straight
-          controls.leeway = 2;
-          break;
-        case -1:
-          speedFactor *= 0.97;
-          controls.leeway = 5;
-          break;
-        case 0:
-          speedFactor *= 1.0;
-          controls.leeway = 10;
-          break;
-        case 1:
-          speedFactor *= 1.02;
-          controls.leeway = 15;
-          break;
-        case 2: // fully up
-          speedFactor *= 1.05;   // less drag forward
-          controls.leeway = 25;  // slips badly, kills VMG
-          break;
+        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
+        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
+        case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
+        case 1:  speedFactor *= 1.02; controls.leeway = 15; break;
+        case 2:  speedFactor *= 1.05; controls.leeway = 25; break;
       }
-      // this is for sheet
-      // this is for vang
-      // this is for downhaul
-      // this is for outhaul
-      // this is for sailor position
       break;
 
     case "Close Reach":
-      speedFactor = 1.0; // good drive, slightly freer than close hauled
-      if (controls.sheet >= 30 && controls.sheet <= 50) {
-        speedFactor *= 1.1; // optimal trim
-      } else if (controls.sheet < 25) {
-        speedFactor *= 0.8; // oversheeted
-      } else if (controls.sheet > 60) {
-        speedFactor *= 0.6; // too far out, luffing
-      }
-      break;  
+      speedFactor = 1.0;
+
+      // --- sheet ---
+      if (controls.sheet >= 30 && controls.sheet <= 50) speedFactor *= 1.1;
+      else if (controls.sheet < 25) speedFactor *= 0.8;
+      else if (controls.sheet > 60) speedFactor *= 0.6;
+
+      // --- vang ---
+      if (controls.vang > 0.5) speedFactor *= 1.05;
+
+      // --- downhaul ---
+      if (controls.downhaul > 0.5) speedFactor *= 1.03;
+
+      // --- outhaul ---
+      if (controls.outhaul < 0.3) speedFactor *= 1.05;
+
+      // --- sailor position ---
+      if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.03;
+      break;
 
     case "Beam Reach":
       speedFactor = 1.2;
-      if (controls.sheet >= 20 && controls.sheet <= 40) {
-        speedFactor *= 1.1; // optimal trim
-      } else if (controls.sheet > 70) {
-        speedFactor *= 0.5; // sail way out, luffing
-      } else if (controls.sheet < 20) {
-        speedFactor *= 0.7; // oversheeted
-      }    
-            
-      // On beam reach, raising daggerboard reduces drag but increases leeway
+
+      // --- sheet ---
+      if (controls.sheet >= 20 && controls.sheet <= 40) speedFactor *= 1.1;
+      else if (controls.sheet > 70) speedFactor *= 0.5;
+      else if (controls.sheet < 20) speedFactor *= 0.7;
+
+      // --- daggerboard ---
       switch (controls.daggerboard) {
-        case -2:
-          speedFactor *= 0.95;
-          controls.leeway = 2;
-          break;
-        case -1:
-          speedFactor *= 0.97;
-          controls.leeway = 5;
-          break;
-        case 0:
-          speedFactor *= 1.0;
-          controls.leeway = 10;
-          break;
-        case 1:
-          speedFactor *= 1.03;
-          controls.leeway = 15;
-          break;
-        case 2:
-          speedFactor *= 1.05;   // faster forward
-          controls.leeway = 20;  // big sideways slip
-          break;
+        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
+        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
+        case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
+        case 1:  speedFactor *= 1.03; controls.leeway = 15; break;
+        case 2:  speedFactor *= 1.05; controls.leeway = 20; break;
       }
-      
+
+      // --- vang ---
+      if (controls.vang > 0.5) speedFactor *= 1.03;
+
+      // --- downhaul ---
+      if (controls.downhaul > 0.5) speedFactor *= 1.02;
+
+      // --- outhaul ---
+      if (controls.outhaul < 0.4) speedFactor *= 1.05;
+
+      // --- sailor position ---
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
-      // this is for sheet
-      // this is for vang
-      // this is for downhaul
-      // this is for outhaul
-      // this is for sailor position
       break;
 
     case "Broad Reach":
       speedFactor = 1.0;
-      if (controls.sheet >= 40 && controls.sheet <= 70) {
-        speedFactor *= 1.05; // good trim
-      } else if (controls.sheet > 80) {
-        speedFactor *= 0.6; // too far out, losing drive
-      } else if (controls.sheet < 30) {
-        speedFactor *= 0.8; // oversheeted
-      }
 
       // --- sheet ---
-      // (placeholder: add trim effect here later)
+      if (controls.sheet >= 40 && controls.sheet <= 70) speedFactor *= 1.05;
+      else if (controls.sheet > 80) speedFactor *= 0.6;
+      else if (controls.sheet < 30) speedFactor *= 0.8;
 
       // --- vang ---
-      // (placeholder: add trim effect here later)
+      if (controls.vang < 0.4) speedFactor *= 1.05;
 
       // --- downhaul ---
-      // (placeholder: add trim effect here later)
+      if (controls.downhaul < 0.4) speedFactor *= 1.03;
 
       // --- outhaul ---
-      // (placeholder: add trim effect here later)
+      if (controls.outhaul < 0.3) speedFactor *= 1.05;
 
       // --- sailor position ---
-      // (placeholder: hiking/weight shift effect here later)
+      if (controls.sailorPosition === "Neutral") speedFactor *= 1.02;
       break;
 
+    case "Running":
+      speedFactor = 0.8;
 
-      if (controls.outhaul < 0.3) speedFactor *= 1.1; // fuller sail
+      // --- sheet ---
+      if (controls.sheet > 70) speedFactor *= 1.1;
+      else if (controls.sheet < 60) speedFactor *= 0.6;
+
+      // --- daggerboard ---
+      switch (controls.daggerboard) {
+        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
+        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
+        case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
+        case 1:  speedFactor *= 1.03; controls.leeway = 15; break;
+        case 2:  speedFactor *= 1.05; controls.leeway = 20; break;
+      }
+
+      // --- vang ---
+      if (controls.vang < 0.2) speedFactor *= 1.05;
+
+      // --- downhaul ---
+      if (controls.downhaul < 0.3) speedFactor *= 1.03;
+
+      // --- outhaul ---
+      if (controls.outhaul < 0.3) speedFactor *= 1.05;
+
+      // --- sailor position ---
+      if (controls.sailorPosition === "Aft") speedFactor *= 1.02;
       break;
-
-
-  case "Running":
-    speedFactor = 0.8;
-
-    // --- sheet ---
-    if (controls.sheet > 70) {
-      speedFactor *= 1.1; // parachute effect
-    } else if (controls.sheet < 60) {
-      speedFactor *= 0.6; // sail not out enough, collapsing
-    }
-    switch (controls.daggerboard) {
-      case -2:
-        speedFactor *= 0.95;   // drag penalty
-        controls.leeway = 2;   // almost straight
-        break;
-      case -1:
-        speedFactor *= 0.97;
-        controls.leeway = 5;
-        break;
-      case 0:
-        speedFactor *= 1.0;
-        controls.leeway = 10;
-        break;
-      case 1:
-        speedFactor *= 1.03;
-        controls.leeway = 15;
-        break;
-      case 2:
-        speedFactor *= 1.05;   // faster forward
-        controls.leeway = 20;  // big sideways slip
-        break;
-    }
-
-    // --- vang ---
-    if (controls.vang < 0.2) speedFactor *= 1.05; // max twist
-
-
-
-  // --- downhaul ---
-  // (placeholder: add trim effect here later)
-
-  // --- outhaul ---
-  // (placeholder: add trim effect here later)
-
-  // --- sailor position ---
-  // (placeholder: hiking/weight shift effect here later)
-  break;
-
   }
 
   // Cap speed by wind strength
   return Math.min(windSpeed * speedFactor, 12);
 }
+
+
+
+
+
+
