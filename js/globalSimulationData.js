@@ -8,7 +8,8 @@ window.globalSimulationData = {
   buoyLat: 13.660641 + 0.0054,   // 0.0027 = 300m Northward is +
   buoyLon: 121.411058 - 0.0084,  // 0.0028 = 300m Westward is -
   buoyRounded: 0,
-
+  rcLat: 13.670464,
+  rcLon: 121.401286,
   // --- ILCA state ---
   ILCA: {
     maneuver: null,
@@ -23,6 +24,10 @@ window.globalSimulationData = {
     //slightly south of13.670464
     lat: 13.670264,   
     lon: 121.401286,
-    timer: 0
+    timer: 0,
+    distanceToBuoy: 0,
+    bearingToBuoy: 0,
+    distanceToRC: 0,
+    bearingToRC: 0
   }
 };

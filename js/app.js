@@ -128,25 +128,52 @@ function applyControls(pointOfSail, windSpeed, controls) {
     case "closeHauled":
       speedFactor = 0.7;
       if (controls.sheet < 15) speedFactor *= 0.9; // sheet too tight
-      if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail helps
+      if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail 
+      // this is for sheet
+      // this is for vang
+      // this is for downhaul
+      // this is for outhaul
+      // this is for sailor position
       break;
 
     case "beamReach":
       speedFactor = 1.2; // fastest point of sail
       if (controls.sheet >= 20 && controls.sheet <= 40) speedFactor *= 1.1;
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
+            // this is for sheet
+      // this is for vang
+      // this is for downhaul
+      // this is for outhaul
+      // this is for sailor position
       break;
 
     case "broadReach":
       speedFactor = 1.0;
-      if (controls.daggerboard < 0.5) speedFactor *= 1.05; // less drag
+      // --- daggerboard control ---
+      // -2 = fully down (draggy offwind)
+      // -1 = mostly down
+      // 0 = middle (balanced)
+      // 1 = mostly up
+      // 2 = fully up (fast offwind, poor upwind)
+      if (controls.daggerboard === -2) speedFactor *= 0.85;
+      else if (controls.daggerboard === -1) speedFactor *= 0.9;
+      else if (controls.daggerboard === 0) speedFactor *= 1.0;
+      else if (controls.daggerboard === 1) speedFactor *= 1.05;
+      else if (controls.daggerboard === 2) speedFactor *= 1.1;
+
       if (controls.outhaul < 0.3) speedFactor *= 1.1; // fuller sail
       break;
+
 
     case "running":
       speedFactor = 0.8;
       if (controls.sheet > 70) speedFactor *= 1.1; // parachute effect
       if (controls.vang < 0.2) speedFactor *= 1.05; // max twist
+            // this is for sheet
+      // this is for vang
+      // this is for downhaul
+      // this is for outhaul
+      // this is for sailor position
       break;
   }
 

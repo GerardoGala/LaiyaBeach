@@ -4,9 +4,10 @@ let ilcaControlDiv; // keep reference so we can update later
 let vmgControlDiv; // keep reference so we can update later
 
 export function initMap() {
-  const laiya = [13.670464, 121.401286];
+  const rcLat = window.globalSimulationData.rcLat;
+  const rcLon = window.globalSimulationData.rcLon;
   const buoyLat = window.globalSimulationData.buoyLat;
-  const buoyLng = window.globalSimulationData.buoyLon;
+  const buoyLon = window.globalSimulationData.buoyLon;
 
   const buoySVG = `
     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
@@ -27,7 +28,7 @@ export function initMap() {
   //const map = L.map('map').setView([13.670464, 121.401286], 16);
 
   const map = L.map('map', {
-  center: [13.670464, 121.401286], // your buoy coords
+  center: [rcLat, rcLon], // your buoy coords
   zoom: 16,
   dragging: false,        // disables drag
   zoomControl: false,     // optional: removes zoom buttons
@@ -37,16 +38,11 @@ export function initMap() {
 });
 
 
-
-
-
-
-
 // Add marker for ILCA launch point
-L.marker(laiya).addTo(map).bindPopup("ILCA Launch Point");
+L.marker([rcLat, rcLon]).addTo(map).bindPopup("RC");
 
 // Add buoy marker with custom SVG icon
-L.marker([buoyLat, buoyLng], { icon: buoyIcon })
+L.marker([buoyLat, buoyLon], { icon: buoyIcon })
   .addTo(map)
   .bindPopup("Race Buoy");
 
@@ -158,8 +154,9 @@ map.addControl(new RightControls());
   });
   map.addControl(new LocalWindControl());
 
-  const bounds = L.latLngBounds([laiya, [buoyLat, buoyLng]]);
-  map.fitBounds(bounds, { padding: [50, 50] });
+// Define bounds using RC (launch point) and buoy
+const bounds = L.latLngBounds([[rcLat, rcLon], [buoyLat, buoyLon]]);
+map.fitBounds(bounds, { padding: [50, 50] });
 
   return map;
 }
@@ -256,7 +253,7 @@ export function updateILCAControl() {
   `;
 }
 
-// --- Refresh function to update VMG ruler dynamically ---
+
 // --- Refresh function to update VMG ruler dynamically ---
 export function updateVMGControl() {
   if (!vmgControlDiv) return;
@@ -292,6 +289,30 @@ export function updateVMGControl() {
   const angleDiff = (heading - bearing) * Math.PI / 180;
   const vmg = speedMS * Math.cos(angleDiff);
 
+
+    // --- Distance to Buoy ---
+  const metersPerDegLat = 111320;
+  const metersPerDegLon = 111320 * Math.cos(boatLat * Math.PI / 180);
+  const deltaLatBuoy = (destLat - boatLat) * metersPerDegLat;
+  const deltaLonBuoy = (destLon - boatLon) * metersPerDegLon;
+  const distanceToBuoy = Math.sqrt(deltaLatBuoy**2 + deltaLonBuoy**2);
+
+  // --- Distance to RC ---
+  const rcLat = window.globalSimulationData.rcLat;
+  const rcLon = window.globalSimulationData.rcLon;
+  const deltaLatRC = (rcLat - boatLat) * metersPerDegLat;
+  const deltaLonRC = (rcLon - boatLon) * metersPerDegLon;
+  const distanceToRC = Math.sqrt(deltaLatRC**2 + deltaLonRC**2);
+
+  // --- Bearing to RC ---
+  const dLonRC = (rcLon - boatLon) * Math.PI / 180;
+  const latRC = rcLat * Math.PI / 180;
+  const yRC = Math.sin(dLonRC) * Math.cos(latRC);
+  const xRC = Math.cos(lat1) * Math.sin(latRC) - Math.sin(lat1) * Math.cos(latRC) * Math.cos(dLonRC);
+  let bearingRC = Math.atan2(yRC, xRC) * 180 / Math.PI;
+  if (bearingRC < 0) bearingRC += 360;
+
+
   vmgControlDiv.innerHTML = `
     <div>VMG</div>
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="10" viewBox="0 0 80 10">
@@ -299,6 +320,11 @@ export function updateVMGControl() {
     <div style="color: blue;">
       ${vmg.toFixed(2)} m/s
     </div>
+    <hr/>
+    <div style="color: green;">Distance to Buoy: ${distanceToBuoy.toFixed(0)} m</div>
+    <div style="color: green;">Bearing to Buoy: ${bearing.toFixed(0)}°</div>
+    <div style="color: red;">Distance to RC: ${distanceToRC.toFixed(0)} m</div>
+    <div style="color: red;">Bearing to RC: ${bearingRC.toFixed(0)}°</div>
   `;
 }
 
