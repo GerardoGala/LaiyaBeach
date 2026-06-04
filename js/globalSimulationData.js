@@ -1,14 +1,12 @@
 // Global simulation state
-// === Global simulation state ===
 window.globalSimulationData = {
   // --- Wind state ---
   windDirection: 0,
   windSpeed: 0,   //
   
-
   // --- Buoy state ---
-  buoyLat: 13.660641 + 0.0054,   // 0.0027 = 300m N
-  buoyLon: 121.411058 - 0.0056,  // 0.0028 = 300m 
+  buoyLat: 13.660641 + 0.0054,   // 0.0027 = 300m Northward is +
+  buoyLon: 121.411058 - 0.0084,  // 0.0028 = 300m Westward is -
   buoyRounded: 0,
 
   // --- ILCA state ---

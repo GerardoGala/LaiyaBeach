@@ -10,10 +10,6 @@ let masterIntervalId = null;
 async function loadConfig() {
   map = initMap();
 
-
-
-
-
   // ✅ Fetch wind immediately so overlays show something
   await updateWindFromAPI();
 
@@ -39,15 +35,21 @@ async function loadConfig() {
       now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
     // Update ILCA physics if launched
-    if (launched) {
-      updateILCA(map);
+if (launched) {
+  updateILCA(map);
 
-      const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
-      const efficiency = 0.6;
-      const initialSpeed = Math.min(windSpeed * efficiency, 12);
+  const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
+  const windDir = window.globalSimulationData.windDirection;
+  const heading = window.globalSimulationData.ILCA.heading;
 
-      window.globalSimulationData.ILCA.speed = initialSpeed;
-    }
+  const pointOfSail = getPointOfSail(windDir, heading);
+
+  const controls = window.globalSimulationData.ILCA;
+  const newSpeed = applyControls(pointOfSail, windSpeed, controls);
+
+  window.globalSimulationData.ILCA.speed = newSpeed;
+}
+
 
     // Refresh overlays
     updateWindControl(map);
@@ -69,7 +71,6 @@ async function updateWindFromAPI() {
     console.error("Wind fetch failed:", err);
   }
 }
-
 
 
 // Launch simulation
@@ -110,3 +111,45 @@ window.launchSimulation = launchSimulation;
 window.stopSimulation = stopSimulation;
 
 loadConfig();
+
+
+function getPointOfSail(windDir, heading) {
+  const rel = (heading - windDir + 360) % 360;
+  if (rel <= 45 || rel >= 315) return "closeHauled";
+  if (rel <= 90 || rel >= 270) return "beamReach";
+  if (rel <= 135 || rel >= 225) return "broadReach";
+  return "running";
+}
+
+function applyControls(pointOfSail, windSpeed, controls) {
+  let speedFactor = 0.5; // baseline efficiency
+
+  switch(pointOfSail) {
+    case "closeHauled":
+      speedFactor = 0.7;
+      if (controls.sheet < 15) speedFactor *= 0.9; // sheet too tight
+      if (controls.vang > 0.7) speedFactor *= 1.1; // flatter sail helps
+      break;
+
+    case "beamReach":
+      speedFactor = 1.2; // fastest point of sail
+      if (controls.sheet >= 20 && controls.sheet <= 40) speedFactor *= 1.1;
+      if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
+      break;
+
+    case "broadReach":
+      speedFactor = 1.0;
+      if (controls.daggerboard < 0.5) speedFactor *= 1.05; // less drag
+      if (controls.outhaul < 0.3) speedFactor *= 1.1; // fuller sail
+      break;
+
+    case "running":
+      speedFactor = 0.8;
+      if (controls.sheet > 70) speedFactor *= 1.1; // parachute effect
+      if (controls.vang < 0.2) speedFactor *= 1.05; // max twist
+      break;
+  }
+
+  // Cap speed by wind strength
+  return Math.min(windSpeed * speedFactor, 12);
+}
