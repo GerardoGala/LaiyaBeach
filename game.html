@@ -80,14 +80,25 @@
     }
   </script>
   <script>
-    function increaseSheetControl(sheet) {
-      window.globalSimulationData.ILCA.sheet = window.globalSimulationData.ILCA.sheet + sheet;
-      showNotification('Sheet: ' + window.globalSimulationData.ILCA.sheet);
+    function increaseSheetControl(delta) {
+      // Current sheet value
+      let current = window.globalSimulationData.ILCA.sheet || 20;
+
+      // Add delta and clamp between 20 and 90
+      const newSheet = Math.max(20, Math.min(90, current + delta));
+
+      // Save back to global state
+      window.globalSimulationData.ILCA.sheet = newSheet;
+
+      // Show notification
+      showNotification('Sheet: ' + newSheet);
+
       // Update only the label, not the whole container
-      document.getElementById('sheetControlLabel').textContent = 
-          'SHEET CONTROL = ' + window.globalSimulationData.ILCA.sheet;
+      document.getElementById('sheetControlLabel').textContent =
+          'SHEET CONTROL = ' + newSheet;
     }
   </script>
+
   <script>
     function updateDaggerboardControl(daggerboard) {
       showNotification('Daggerboard: ' + daggerboard);
