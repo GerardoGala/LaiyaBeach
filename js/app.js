@@ -78,7 +78,15 @@ async function updateWindFromAPI() {
 // Launch simulation
 export function launchSimulation() {
   launched = true;
-  window.globalSimulationData.ILCA.speed = 5;
+  fetchWind();
+  const windDirection = window.globalSimulationData.windDirection;
+
+  // ✅ ILCA stuck in irons
+  window.globalSimulationData.ILCA.heading = (windDirection + 180) % 360;
+  window.globalSimulationData.ILCA.speed = 0;
+
+
+
   window.globalSimulationData.ILCA.timer = 0;
   window.globalSimulationData.ILCA.displayTimer = "0:00";
 
