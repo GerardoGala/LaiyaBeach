@@ -23,7 +23,7 @@ window.globalSimulationData = {
     downhaul: 0,
     outhaul: 0,
     //slightly south of13.670464
-    lat: 13.670264,   
+    lat: 13.670464,   
     lon: 121.401286,
     timer: 0,
     distanceToBuoy: 0,
