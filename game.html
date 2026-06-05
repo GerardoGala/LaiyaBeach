@@ -11,21 +11,18 @@
 <body>
   <div class="container">
     <div id="map">
-      <button id="mapLaunchBtn">Launch</button>
+      <button id="mapStartSimulationBtn">Start Simulation</button>
       <div id="notification-container"></div>
     </div>
     <div id="controls"></div>
   </div>
 
-
- 
-
-
-
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="js/globalSimulationData.js"></script>
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/ilcaControls.js"></script>
+  <script type="module" src="js/ilcaMap.js"></script>
 
   <!-- Loader for controls partial -->
   <script>
@@ -34,16 +31,16 @@
       document.getElementById(id).innerHTML = await res.text();
     }
     loadPartial("controls", "partials/controls.html");
+  </script>
 
-    // Map launch button logic
-    const mapLaunchBtn = document.getElementById('mapLaunchBtn');
-    if (mapLaunchBtn) {
-      mapLaunchBtn.addEventListener('click', () => {
-        window.globalSimulationData.ILCA.maneuver = "launch";
-        launchSimulation();
-        mapLaunchBtn.style.display = 'none';
-        document.getElementById('map').style.display = 'block';
-      });
+  <script>
+    // Map start simulation button logic
+    const mapStartSimulationBtn = document.getElementById('mapStartSimulationBtn');
+    if (mapStartSimulationBtn) {
+        mapStartSimulationBtn.addEventListener('click', () => {
+          launchSimulation();
+          mapStartSimulationBtn.style.display = 'none';
+       });
     }
   </script>
 
@@ -149,17 +146,6 @@
           'OUTHAUL CONTROL = ' + window.globalSimulationData.ILCA.outhaul;
     }
   </script>
-
-  <script>
-    // 1. Debounce utility
-    function debounce(fn, delay = 300) {
-      let timeoutId;
-      return function (...args) {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => fn.apply(this, args), delay);
-      };
-    }
-  </script>
 </body>
 
 </html>
@@ -217,8 +203,6 @@ html, body {
 
 </style>
 
-
-
 <style>
   #notification-container {
     position: fixed;
@@ -275,3 +259,22 @@ html, body {
 }
 </style>
 
+<style>
+#mapStartSimulationBtn {
+  position: absolute;
+  bottom: 30px;       /* lower center */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: #007acc;
+  color: #fff;
+  border: none;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,0,0,0.6);
+  transition: background 0.3s, transform 0.2s;
+}
+</style>
