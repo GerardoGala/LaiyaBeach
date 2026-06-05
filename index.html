@@ -50,26 +50,8 @@ body.welcome {
   overflow: hidden;
 }
 
-/* Background image overlay */
-body.welcome::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url("images/ilca-dinghy-sailor.png") no-repeat center center;
-  background-size: cover;
-  opacity: 0.25;
-  z-index: -1;
-}
 
-.welcome-container {
-  position: relative;
-  padding: 25px;
-  background: rgba(255,255,255,0.85);
-  border-radius: 10px;
-  display: inline-block;
-  margin-top: 5%;
-  max-width: 650px;
-}
+
 
 /* Responsive fonts */
 h1 {
@@ -84,12 +66,7 @@ p {
   margin: 10px 0;
 }
 
-.forecast {
-  margin-top: 10px;
-  font-size: clamp(1.2em, 2.2vw, 1.8em);
-  color: #0066cc;
-  font-weight: bold;
-}
+
 
 button {
   margin-top: 15px;
@@ -104,31 +81,11 @@ button:hover {
   background-color: #ffdb4d;
 }
 
-.rules {
-  margin-top: 15px;
-  background: #eef7ff;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #cce0ff;
-  font-size: clamp(1em, 1.8vw, 1.3em);
-}
-.rules h2 {
-  color: #0066cc;
-  margin-bottom: 6px;
-  font-size: clamp(1.2em, 2vw, 1.6em);
-}
-.rules ul {
-  text-align: left;
-  font-size: clamp(1em, 1.6vw, 1.2em);
-  line-height: 1.5em;
-  margin: 0;
-  padding-left: 18px;
-}
+
 
 /* Mobile boost: double font size */
 @media screen and (max-width: 767px) {
-  h1, p, .forecast, .tooltip, .tooltip .tooltiptext,
-  button, .rules, .rules h2, .rules ul {
+  h1, p {
     font-size: 200%; /* double whatever the clamp resolved to */
   }
 }
