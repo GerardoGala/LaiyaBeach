@@ -263,72 +263,86 @@ export function updateVMGControl() {
   const ilca = window.globalSimulationData.ILCA || {};
   const buoyRounded = window.globalSimulationData.buoyRounded || 0;
 
-  // Destination: buoy if not yet rounded
+  // --- Destination for VMG ---
+  // VMG should point to buoy until rounded, then switch to RC.
   const destLat = buoyRounded === 0 
     ? window.globalSimulationData.buoyLat 
-    : window.globalSimulationData.finishLat;
+    : window.globalSimulationData.rcLat;
   const destLon = buoyRounded === 0 
     ? window.globalSimulationData.buoyLon 
-    : window.globalSimulationData.finishLon;
+    : window.globalSimulationData.rcLon;
 
-  // Local constants for boat state
+  // --- Boat state ---
   const boatLat = ilca.lat || 0;
   const boatLon = ilca.lon || 0;
   const heading = ilca.heading || 0;
-  const speedKnots = ilca.speed?.toFixed(1) || 0;
-  const speedMS = ilca.speed ? (ilca.speed * 0.514) : 0;
+  const speedKnots = ilca.speed?.toFixed(1) || 0;   // for display
+  const speedMS = ilca.speed ? (ilca.speed * 0.514) : 0; // knots → m/s
 
-  // Bearing from boat to destination
+  // --- Bearing to destination (for VMG) ---
   const dLon = (destLon - boatLon) * Math.PI / 180;
   const lat1 = boatLat * Math.PI / 180;
   const lat2 = destLat * Math.PI / 180;
   const y = Math.sin(dLon) * Math.cos(lat2);
-  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-  let bearing = Math.atan2(y, x) * 180 / Math.PI;
-  if (bearing < 0) bearing += 360;
+  const x = Math.cos(lat1) * Math.sin(lat2) -
+            Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  let bearingDest = Math.atan2(y, x) * 180 / Math.PI;
+  if (bearingDest < 0) bearingDest += 360;
 
-  // VMG calculation: projection of speed along bearing to destination
-  const angleDiff = (heading - bearing) * Math.PI / 180;
+  // --- VMG calculation ---
+  // VMG = boat speed projected onto bearing to destination
+  const angleDiff = (heading - bearingDest) * Math.PI / 180;
   const vmg = speedMS * Math.cos(angleDiff);
 
-
-    // --- Distance to Buoy ---
+  // --- Distance to Buoy (always use buoyLat/buoyLon) ---
+  const buoyLat = window.globalSimulationData.buoyLat;
+  const buoyLon = window.globalSimulationData.buoyLon;
   const metersPerDegLat = 111320;
   const metersPerDegLon = 111320 * Math.cos(boatLat * Math.PI / 180);
-  const deltaLatBuoy = (destLat - boatLat) * metersPerDegLat;
-  const deltaLonBuoy = (destLon - boatLon) * metersPerDegLon;
+  const deltaLatBuoy = (buoyLat - boatLat) * metersPerDegLat;
+  const deltaLonBuoy = (buoyLon - boatLon) * metersPerDegLon;
   const distanceToBuoy = Math.sqrt(deltaLatBuoy**2 + deltaLonBuoy**2);
 
-  // --- Distance to RC ---
+  // --- Bearing to Buoy (always use buoyLat/buoyLon) ---
+  const dLonBuoy = (buoyLon - boatLon) * Math.PI / 180;
+  const latBuoy = buoyLat * Math.PI / 180;
+  const yBuoy = Math.sin(dLonBuoy) * Math.cos(latBuoy);
+  const xBuoy = Math.cos(lat1) * Math.sin(latBuoy) -
+                Math.sin(lat1) * Math.cos(latBuoy) * Math.cos(dLonBuoy);
+  let bearingBuoy = Math.atan2(yBuoy, xBuoy) * 180 / Math.PI;
+  if (bearingBuoy < 0) bearingBuoy += 360;
+
+  // --- Distance to RC (always use rcLat/rcLon) ---
   const rcLat = window.globalSimulationData.rcLat;
   const rcLon = window.globalSimulationData.rcLon;
   const deltaLatRC = (rcLat - boatLat) * metersPerDegLat;
   const deltaLonRC = (rcLon - boatLon) * metersPerDegLon;
   const distanceToRC = Math.sqrt(deltaLatRC**2 + deltaLonRC**2);
 
-  // --- Bearing to RC ---
+  // --- Bearing to RC (always use rcLat/rcLon) ---
   const dLonRC = (rcLon - boatLon) * Math.PI / 180;
   const latRC = rcLat * Math.PI / 180;
   const yRC = Math.sin(dLonRC) * Math.cos(latRC);
-  const xRC = Math.cos(lat1) * Math.sin(latRC) - Math.sin(lat1) * Math.cos(latRC) * Math.cos(dLonRC);
+  const xRC = Math.cos(lat1) * Math.sin(latRC) -
+              Math.sin(lat1) * Math.cos(latRC) * Math.cos(dLonRC);
   let bearingRC = Math.atan2(yRC, xRC) * 180 / Math.PI;
   if (bearingRC < 0) bearingRC += 360;
 
-
+  // --- Display panel ---
   vmgControlDiv.innerHTML = `
     <div>VMG</div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="10" viewBox="0 0 80 10">
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="10" viewBox="0 0 80 10"></svg>
     <div style="color: blue;">
       ${vmg.toFixed(2)} m/s
     </div>
     <hr/>
     <div style="color: green;">Distance to Buoy: ${distanceToBuoy.toFixed(0)} m</div>
-    <div style="color: green;">Bearing to Buoy: ${bearing.toFixed(0)}°</div>
+    <div style="color: green;">Bearing to Buoy: ${bearingBuoy.toFixed(0)}°</div>
     <div style="color: red;">Distance to RC: ${distanceToRC.toFixed(0)} m</div>
     <div style="color: red;">Bearing to RC: ${bearingRC.toFixed(0)}°</div>
   `;
 }
+
 
 
 

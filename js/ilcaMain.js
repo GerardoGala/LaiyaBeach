@@ -47,7 +47,40 @@ export function updateILCA(map) {
     window.globalSimulationData.ILCA.lon = lon;
   }
 
+  detectBuoyRounding()
+
   // Draw overlay
   drawILCAOnMap(map);
 }
+
+// Declare once at the top of your script
+let nearBuoy = false;
+
+function detectBuoyRounding() {
+  const buoyLat = window.globalSimulationData.buoyLat;
+  const buoyLon = window.globalSimulationData.buoyLon;
+  const ilcaLat = window.globalSimulationData.ILCA.lat;
+  const ilcaLon = window.globalSimulationData.ILCA.lon;
+
+  // Distance calculation
+  const metersPerDegLat = 111320;
+  const metersPerDegLon = 111320 * Math.cos(ilcaLat * Math.PI / 180);
+  const dLat = (ilcaLat - buoyLat) * metersPerDegLat;
+  const dLon = (ilcaLon - buoyLon) * metersPerDegLon;
+  const distToBuoy = Math.sqrt(dLat * dLat + dLon * dLon);
+
+  const buoyRadius = 500; // meters
+
+  if (distToBuoy < buoyRadius && !nearBuoy) {
+    // Entering buoy zone
+    nearBuoy = true;
+    document.getElementById("nearBuoy").style.display = "block";
+  } else if (distToBuoy > buoyRadius && nearBuoy) {
+    // Exiting buoy zone
+    nearBuoy = false;
+    window.globalSimulationData.buoyRounded = 1; // use RC for VMG calculation
+    document.getElementById("nearBuoy").style.display = "none";
+  }
+}
+
 
