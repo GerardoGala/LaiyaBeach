@@ -35,22 +35,22 @@ async function loadConfig() {
       now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
 
     // Update ILCA physics if launched
-if (launched) {
-  updateILCA(map);
+    if (launched) {
+      updateILCA(map);
 
-  const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
-  const windDir = window.globalSimulationData.windDirection;
-  const heading = window.globalSimulationData.ILCA.heading;
+      const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
+      const windDir = window.globalSimulationData.windDirection;
+      const heading = window.globalSimulationData.ILCA.heading;
 
-  // --- Point of Sail ---
-  const pointOfSail = getPointOfSail(windDir, heading);
-  window.globalSimulationData.ILCA.pointOfSail = pointOfSail;  // <-- store it
-  
-  const controls = window.globalSimulationData.ILCA;
-  const newSpeed = applyControls(pointOfSail, windSpeed, controls);
+      // --- Point of Sail ---
+      const pointOfSail = getPointOfSail(windDir, heading);
+      window.globalSimulationData.ILCA.pointOfSail = pointOfSail;  // <-- store it
+      
+      const controls = window.globalSimulationData.ILCA;
+      const newSpeed = applyControls(pointOfSail, windSpeed, controls);
 
-  window.globalSimulationData.ILCA.speed = newSpeed;
-}
+      window.globalSimulationData.ILCA.speed = newSpeed;
+    }
 
 
     // Refresh overlays
@@ -73,7 +73,6 @@ async function updateWindFromAPI() {
     console.error("Wind fetch failed:", err);
   }
 }
-
 
 // Launch simulation
 export function launchSimulation() {
@@ -116,11 +115,6 @@ export function stopSimulation() {
     masterIntervalId = null;
   }
 }
-
-window.launchSimulation = launchSimulation;
-window.stopSimulation = stopSimulation;
-
-loadConfig();
 
 function getPointOfSail(windDir, heading) {
   // Absolute difference between heading and wind direction
@@ -279,8 +273,10 @@ function applyControls(pointOfSail, windSpeed, controls) {
   return Math.min(windSpeed * speedFactor, 12);
 }
 
+window.launchSimulation = launchSimulation;
+window.stopSimulation = stopSimulation;
 
-
+loadConfig();
 
 
 
