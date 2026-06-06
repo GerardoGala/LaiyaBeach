@@ -231,6 +231,7 @@ export function updateWindControl(map) {
 // --- Refresh function to update ILCA status + time ---
 export function updateILCAControl() {
   if (!ilcaControlDiv) return;
+  if (window.globalSimulationData.raceFinished) return; // stop updating once finished
 
   const ilca = window.globalSimulationData.ILCA || {};
   const speedKnots = ilca.speed?.toFixed(1) || 0;

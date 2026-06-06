@@ -54,6 +54,7 @@ export function handleControls(windDir, windSpeed) {
 }
 
 function launchILCA(windDir, windSpeed) {
+  if (window.globalSimulationData.raceFinished) return; // don't spawn new boats
   const ilca = window.globalSimulationData.ILCA;
   const portBeamReach = (windDir - 90 + 360) % 360;
   const starboardBeamReach = (windDir + 90) % 360;
