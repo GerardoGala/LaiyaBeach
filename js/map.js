@@ -83,6 +83,7 @@ const RightControls = L.Control.extend({
     ilcaControlDiv.style.fontSize = '12px';
     ilcaControlDiv.style.lineHeight = '1.4em';
     ilcaControlDiv.style.color = '#222';
+    ilcaControlDiv.style.fontWeight = 'bold'; 
     updateILCAControl();
 
         // --- VMG Status ---
@@ -96,6 +97,7 @@ const RightControls = L.Control.extend({
     vmgControlDiv.style.fontSize = '12px';
     vmgControlDiv.style.lineHeight = '1.4em';
     vmgControlDiv.style.color = '#222';
+    vmgControlDiv.style.fontWeight = 'bold'; 
     updateVMGControl();
     return container;
   }
@@ -105,7 +107,7 @@ map.addControl(new RightControls());
  
   // --- Leaderboard Button ---
   const LeaderboardControl = L.Control.extend({
-    options: { position: 'bottomleft' },
+    options: { position: 'bottomright' },
     onAdd: function() {
       const btn = L.DomUtil.create('button', 'leaderboard-btn');
       btn.innerHTML = "🏆 Leaderboard";
@@ -122,10 +124,10 @@ map.addControl(new RightControls());
 
   // --- Physics Button ---
   const PhysicsControl = L.Control.extend({
-    options: { position: 'bottomleft' },
+    options: { position: 'bottomright' },
     onAdd: function() {
       const btn = L.DomUtil.create('button', 'physics-btn');
-      btn.innerHTML = "⚓ Physics of Sailing";
+      btn.innerHTML = "⚓ Physics of ILCA Sailing";
       btn.style.cssText = `
         background:#28a745;color:white;border:none;
         padding:6px 10px;border-radius:4px;
@@ -139,7 +141,7 @@ map.addControl(new RightControls());
 
     // --- Local wind Button ---
   const LocalWindControl = L.Control.extend({
-    options: { position: 'bottomleft' },
+    options: { position: 'bottomright' },
     onAdd: function() {
       const btn = L.DomUtil.create('button', 'localWind-btn');
       btn.innerHTML = "🌬️ Local Wind";
