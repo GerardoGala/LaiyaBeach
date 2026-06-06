@@ -26,6 +26,8 @@ window.globalSimulationData = {
     lat: 13.670464,   
     lon: 121.401286,
     timer: 0,
+    displayTimer: "0:00",
+    elapsedTime: 0,
     distanceToBuoy: 0,
     bearingToBuoy: 0,
     distanceToRC: 0,

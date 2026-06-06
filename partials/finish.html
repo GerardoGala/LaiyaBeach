@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Race Finish</title>
+  <link rel="stylesheet" href="/partials/css/partials.css">
+</head>
+<body>
+  <div class="dialog-box">
+    <h3>🏁 Race Finished</h3>
+
+    <p class="intro">
+      Congratulations sailor! You’ve rounded the buoy and reached the RC. 
+      Your elapsed time is recorded below.
+    </p>
+
+    <section>
+      <h4>Your Time</h4>
+      <p id="finishTime">
+        <!-- JS will inject the elapsed time here -->
+      </p>
+    </section>
+
+    <section>
+      <h4>Next Steps</h4>
+      <p>
+        Review your VMG and heading during the leg to see how efficiently you sailed. 
+        Use this data to refine your tacks and mark roundings in future races.
+      </p>
+    </section>
+
+    <section>
+      <button onclick="document.getElementById('finishDialog').style.display='none'">
+        Close
+      </button>
+    </section>
+  </div>
+</body>
+</html>

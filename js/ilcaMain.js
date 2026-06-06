@@ -47,7 +47,9 @@ export function updateILCA(map) {
     window.globalSimulationData.ILCA.lon = lon;
   }
 
-  detectBuoyRounding()
+  detectBuoyRounding();
+  detectRCrounding();
+
 
   // Draw overlay
   drawILCAOnMap(map);
@@ -55,21 +57,17 @@ export function updateILCA(map) {
 
 // Declare once at the top of your script
 let nearBuoy = false;
-
+let nearRC = false;
 function detectBuoyRounding() {
   const buoyLat = window.globalSimulationData.buoyLat;
   const buoyLon = window.globalSimulationData.buoyLon;
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
 
-  // Distance calculation
-  const metersPerDegLat = 111320;
-  const metersPerDegLon = 111320 * Math.cos(ilcaLat * Math.PI / 180);
-  const dLat = (ilcaLat - buoyLat) * metersPerDegLat;
-  const dLon = (ilcaLon - buoyLon) * metersPerDegLon;
-  const distToBuoy = Math.sqrt(dLat * dLat + dLon * dLon);
+  // Use helper for distance
+  const distToBuoy = calculateDistance(ilcaLat, ilcaLon, buoyLat, buoyLon);
 
-  const buoyRadius = 500; // meters
+  const buoyRadius = 400; // meters
 
   if (distToBuoy < buoyRadius && !nearBuoy) {
     // Entering buoy zone
@@ -82,5 +80,55 @@ function detectBuoyRounding() {
     document.getElementById("nearBuoy").style.display = "none";
   }
 }
+
+function detectRCrounding() {
+  // Only run if buoy has been rounded
+  if (window.globalSimulationData.buoyRounded !== 1) return;
+  const rcLat = window.globalSimulationData.rcLat;
+  const rcLon = window.globalSimulationData.rcLon;
+  const ilcaLat = window.globalSimulationData.ILCA.lat;
+  const ilcaLon = window.globalSimulationData.ILCA.lon;
+
+  // Use helper for distance
+  const distToRC = calculateDistance(ilcaLat, ilcaLon, rcLat, rcLon);
+
+  const rcRadius = 50; // meters
+
+  if (distToRC < rcRadius && !nearRC) {
+    // Entering RC zone
+    nearRC = true;
+    document.getElementById("nearRC").style.display = "block"; // same div
+  } else if (distToRC > rcRadius && nearRC) {
+    // Exiting RC zone
+    nearRC = false;
+    window.globalSimulationData.rcRounded = 1; // mark RC rounded
+    document.getElementById("nearRC").style.display = "none"; // same div
+  }
+}
+
+
+function showFinishDialog(elapsed) {
+  fetch("/partials/finish.html")
+    .then(res => res.text())
+    .then(html => {
+      document.body.insertAdjacentHTML("beforeend", html);
+      document.getElementById("finishTime").textContent =
+        `Your time: ${elapsed.toFixed(1)} seconds`;
+      // ensure dialog floats above
+      document.querySelector(".dialog-box").style.zIndex = "9999";
+    });
+}
+
+// Helper: calculate distance between two lat/lon points in meters
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const metersPerDegLat = 111320;
+  const metersPerDegLon = 111320 * Math.cos(lat1 * Math.PI / 180);
+  const dLat = (lat1 - lat2) * metersPerDegLat;
+  const dLon = (lon1 - lon2) * metersPerDegLon;
+  return Math.sqrt(dLat * dLat + dLon * dLon);
+}
+
+
+
 
 
