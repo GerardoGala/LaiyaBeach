@@ -330,6 +330,9 @@ export function updateVMGControl() {
   let bearingRC = Math.atan2(yRC, xRC) * 180 / Math.PI;
   if (bearingRC < 0) bearingRC += 360;
 
+window.globalSimulationData.distanceToBuoy = distanceToBuoy;
+window.globalSimulationData.distanceToRC = distanceToRC;
+window.globalSimulationData.vmg = vmg;
   // --- Display panel ---
   vmgControlDiv.innerHTML = `
     <div>VMG</div>

@@ -31,6 +31,7 @@ window.globalSimulationData = {
     distanceToBuoy: 0,
     bearingToBuoy: 0,
     distanceToRC: 0,
-    bearingToRC: 0
+    bearingToRC: 0,
+    vmg: 0
   }
 };

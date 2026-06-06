@@ -67,7 +67,7 @@ function detectBuoyRounding() {
   // Use helper for distance
   const distToBuoy = calculateDistance(ilcaLat, ilcaLon, buoyLat, buoyLon);
 
-  const buoyRadius = 400; // meters
+  const buoyRadius = 450; // meters
 
   if (distToBuoy < buoyRadius && !nearBuoy) {
     // Entering buoy zone
@@ -92,31 +92,19 @@ function detectRCrounding() {
   // Use helper for distance
   const distToRC = calculateDistance(ilcaLat, ilcaLon, rcLat, rcLon);
 
-  const rcRadius = 50; // meters
+  const rcRadius = 20; // meters
 
   if (distToRC < rcRadius && !nearRC) {
     // Entering RC zone
     nearRC = true;
-    document.getElementById("nearRC").style.display = "block"; // same div
+    showFinishDialog();
   } else if (distToRC > rcRadius && nearRC) {
     // Exiting RC zone
     nearRC = false;
     window.globalSimulationData.rcRounded = 1; // mark RC rounded
-    document.getElementById("nearRC").style.display = "none"; // same div
+    closeFinishDialog();
+
   }
-}
-
-
-function showFinishDialog(elapsed) {
-  fetch("/partials/finish.html")
-    .then(res => res.text())
-    .then(html => {
-      document.body.insertAdjacentHTML("beforeend", html);
-      document.getElementById("finishTime").textContent =
-        `Your time: ${elapsed.toFixed(1)} seconds`;
-      // ensure dialog floats above
-      document.querySelector(".dialog-box").style.zIndex = "9999";
-    });
 }
 
 // Helper: calculate distance between two lat/lon points in meters
