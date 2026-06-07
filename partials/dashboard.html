@@ -1,0 +1,49 @@
+<!-- dashboard.html -->
+<div id="dashboard-pane">
+  <div id="notification-container"></div>
+
+  <div id="sheetControlLabel" class="dashboard-item" data-target="sheetControl">
+    SHEET CONTROL = 20
+  </div>
+
+  <div id="ilcaLabel" class="dashboard-item" data-target="ilcaControl">
+    ILCA MANEUVER
+  </div>
+
+  <div id="daggerboardLabel" class="dashboard-item" data-target="daggerboardControl">
+    DAGGERBOARD = 0 Mid
+  </div>
+
+  <div id="sailorPositionLabel" class="dashboard-item" data-target="sailorPositionControl">
+    SAILOR POSITION = Mid Center
+  </div>
+
+  <div id="vangLabel" class="dashboard-item" data-target="vangControl">
+    VANG CONTROL = 0
+  </div>
+
+  <div id="downhaulLabel" class="dashboard-item" data-target="downhaulControl">
+    DOWNHAUL CONTROL = 0
+  </div>
+
+  <div id="outhaulLabel" class="dashboard-item" data-target="outhaulControl">
+    OUTHAUL CONTROL = 0
+  </div>
+</div>
+<hr>
+<style>
+  .input-section {
+  display: none;
+  }
+  .input-section.active {
+    display: block;
+  }
+  .dashboard-item {
+    cursor: pointer;
+    padding: 5px;
+  }
+  .dashboard-item:hover {
+    background: #eee;
+  }
+
+</style>

@@ -19,27 +19,27 @@
                 font-size:14px;z-index:1000;">
               ✅ You've hit the mark. Sail back to the RC now.
       </div>
-    <!-- Finish dialog -->
-    <div id="nearRC" style="display:none;
-        position:fixed;top:50%;left:50%;
-        transform:translate(-50%,-50%);
-        background:#1e1e1e;color:#fff;
-        padding:24px;border-radius:10px;
-        font-size:16px;z-index:9000;
-        text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);">
-      <h2 style="margin-top:0;">🏁 Congratulations!</h2>
-      <p id="raceSummary">
-        Your race time is <span id="raceTime">--</span> seconds.<br>
-        VMG: <span id="raceVMG">--</span> m/s.<br>
-        Wind: <span id="windDir">--</span>° at <span id="windSpeed">--</span> knots.
-      </p>
-      <button onclick="closeFinishDialog()" 
-              style="margin-top:15px;background:#007bff;color:white;
-                    border:none;padding:8px 16px;border-radius:4px;
-                    cursor:pointer;font-size:14px;">
-        Close
-      </button>
-    </div>
+      <!-- Finish dialog -->
+      <div id="nearRC" style="display:none;
+          position:fixed;top:50%;left:50%;
+          transform:translate(-50%,-50%);
+          background:#1e1e1e;color:#fff;
+          padding:24px;border-radius:10px;
+          font-size:16px;z-index:9000;
+          text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+        <h2 style="margin-top:0;">🏁 Congratulations!</h2>
+        <p id="raceSummary">
+          Your race time is <span id="raceTime">--</span> seconds.<br>
+          VMG: <span id="raceVMG">--</span> m/s.<br>
+          Wind: <span id="windDir">--</span>° at <span id="windSpeed">--</span> knots.
+        </p>
+        <button onclick="closeFinishDialog()" 
+                style="margin-top:15px;background:#007bff;color:white;
+                      border:none;padding:8px 16px;border-radius:4px;
+                      cursor:pointer;font-size:14px;">
+          Close
+        </button>
+      </div>
       
 
 
@@ -48,7 +48,10 @@
 
 
     </div>
-    <div id="controls"></div>
+    <div id="controls">
+      <div id="dashboard-container"></div>
+      <div id="input-container"></div>
+    </div>
   </div>
 
   <!-- Scripts -->
@@ -57,34 +60,59 @@
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/ilcaControls.js"></script>
   <script type="module" src="js/ilcaMap.js"></script>
-<script>
-  function showFinishDialog() {
-    // Grab values from globalSimulationData
-    const data = window.globalSimulationData;
+  <script>
+    function showFinishDialog() {
+      // Grab values from globalSimulationData
+      const data = window.globalSimulationData;
 
-    document.getElementById("raceTime").textContent = data.ILCA?.timer?.toFixed(1) ?? "--";
-    document.getElementById("raceVMG").textContent = data.ILCA?.vmg?.toFixed(2) ?? "--";
-    document.getElementById("windDir").textContent = data.windDirection?.toFixed(0) ?? "--";
-    //document.getElementById("windSpeed").textContent = data.windSpeed?.toFixed(1) ?? "--";
+      document.getElementById("raceTime").textContent = data.ILCA?.timer?.toFixed(1) ?? "--";
+      document.getElementById("raceVMG").textContent = data.ILCA?.vmg?.toFixed(2) ?? "--";
+      document.getElementById("windDir").textContent = data.windDirection?.toFixed(0) ?? "--";
+      //document.getElementById("windSpeed").textContent = data.windSpeed?.toFixed(1) ?? "--";
 
-    document.getElementById("nearRC").style.display = "block";
-  }
+      document.getElementById("nearRC").style.display = "block";
+    }
 
-  function closeFinishDialog() {
+    function closeFinishDialog() {
 
-    document.getElementById("nearRC").style.display = "none";
-  }
-</script>
+      document.getElementById("nearRC").style.display = "none";
+    }
+  </script>
 
 
   <!-- Loader for controls partial -->
-  <script>
-    async function loadPartial(id, file) {
-      const res = await fetch(file);
-      document.getElementById(id).innerHTML = await res.text();
+<script>
+  async function loadPartial(id, file) {
+    const res = await fetch(file);
+    const html = await res.text();
+    document.getElementById(id).innerHTML = html;
+
+    // Attach click handlers once dashboard is loaded
+    if (id === "dashboard-container") {
+      document.querySelectorAll(".dashboard-item").forEach(item => {
+        item.addEventListener("click", function() {
+          const targetId = this.getAttribute("data-target");
+
+          // Hide all input sections
+          document.querySelectorAll(".input-section").forEach(div => {
+            div.classList.remove("active");
+          });
+
+          // Show the one that matches
+          const targetDiv = document.getElementById(targetId);
+          if (targetDiv) {
+            targetDiv.classList.add("active");
+          }
+        });
+      });
     }
-    loadPartial("controls", "partials/controls.html");
-  </script>
+  }
+
+  // Load both partials
+  loadPartial("dashboard-container", "partials/dashboard.html");
+  loadPartial("input-container", "partials/input.html");
+</script>
+
 
   <script>
     // Map start simulation button logic
@@ -131,6 +159,7 @@
           'SHEET CONTROL = ' + sheet;
     }
   </script>
+
   <script>
     function increaseSheetControl(delta) {
       // Current sheet value
@@ -170,6 +199,7 @@
           'DAGGERBOARD = ' + window.globalSimulationData.ILCA.daggerboard + ' ' + label;
     }
   </script>
+
   <script>
     function updateVangControl(vang) {
       showNotification('Vang: ' + vang);
@@ -180,6 +210,7 @@
           'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
     }
   </script>
+
   <script>
     function updateDownhaulControl(downhaul) {
       showNotification('Downhaul: ' + downhaul);
@@ -190,7 +221,7 @@
           'DOWNHAUL CONTROL = ' + window.globalSimulationData.ILCA.downhaul;
     }
   </script>
-  </script>
+
   <script>
     function updateOuthaulControl(outhaul) {
       showNotification('Outhaul: ' + outhaul);
