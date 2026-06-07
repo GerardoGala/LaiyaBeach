@@ -60,6 +60,41 @@
   <script type="module" src="js/app.js"></script>
   <script type="module" src="js/ilcaControls.js"></script>
   <script type="module" src="js/ilcaMap.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const dashboardItems = document.querySelectorAll(".dashboard-item");
+
+  // 1. Set the default active state on page load
+  const defaultLabel = document.getElementById("sheetControlLabel");
+  if (defaultLabel) {
+    defaultLabel.classList.add("active");
+  }
+
+  // 2. Click handler to toggle active styles dynamically
+  dashboardItems.forEach(item => {
+    item.addEventListener("click", () => {
+      // Remove 'active' class from whichever item currently holds it
+      dashboardItems.forEach(el => el.classList.remove("active"));
+      
+      // Add 'active' class to the newly clicked dashboard label
+      item.classList.add("active");
+
+      // Optional: If your input pane partial is also on this page, 
+      // this loop will automatically sync and show the matching input-section.
+      const targetId = item.getAttribute("data-target");
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        document.querySelectorAll(".input-section").forEach(sec => {
+          sec.classList.remove("active");
+        });
+        targetSection.classList.add("active");
+      }
+    });
+  });
+});
+</script>
+
   <script>
     function showFinishDialog() {
       // Grab values from globalSimulationData
