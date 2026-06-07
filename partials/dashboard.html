@@ -2,48 +2,92 @@
 <div id="dashboard-pane">
   <div id="notification-container"></div>
 
-  <div id="sheetControlLabel" class="dashboard-item" data-target="sheetControl">
-    SHEET CONTROL = 20
-  </div>
+  <!-- grid wrapper for the 7 dashboard items -->
+  <div class="dashboard-grid">
+    <div id="sheetControlLabel" class="dashboard-item" data-target="sheetControl">
+      SHEET CONTROL = 20
+    </div>
 
-  <div id="ilcaLabel" class="dashboard-item" data-target="ilcaControl">
-    ILCA MANEUVER
-  </div>
+    <div id="ilcaLabel" class="dashboard-item" data-target="ilcaControl">
+      ILCA MANEUVER
+    </div>
 
-  <div id="daggerboardLabel" class="dashboard-item" data-target="daggerboardControl">
-    DAGGERBOARD = Center
-  </div>
+    <div id="sailorPositionLabel" class="dashboard-item" data-target="sailorPositionControl">
+      SAILOR POSITION = Mid Center
+    </div>
 
-  <div id="sailorPositionLabel" class="dashboard-item" data-target="sailorPositionControl">
-    SAILOR POSITION = Mid Center
-  </div>
+    <div id="daggerboardLabel" class="dashboard-item" data-target="daggerboardControl">
+      DAGGERBOARD = Center
+    </div>
 
-  <div id="vangLabel" class="dashboard-item" data-target="vangControl">
-    VANG CONTROL = 0
-  </div>
+    <div id="vangLabel" class="dashboard-item" data-target="vangControl">
+      VANG CONTROL = 0
+    </div>
 
-  <div id="downhaulLabel" class="dashboard-item" data-target="downhaulControl">
-    DOWNHAUL CONTROL = 0
-  </div>
+    <div id="downhaulLabel" class="dashboard-item" data-target="downhaulControl">
+      DOWNHAUL CONTROL = 0
+    </div>
 
-  <div id="outhaulLabel" class="dashboard-item" data-target="outhaulControl">
-    OUTHAUL CONTROL = 0
+    <div id="outhaulLabel" class="dashboard-item" data-target="outhaulControl">
+      OUTHAUL CONTROL = 0
+    </div>
   </div>
 </div>
 <hr>
 <style>
   .input-section {
-  display: none;
+    display: none;
   }
   .input-section.active {
     display: block;
   }
+
+  /* Basic item styling */
   .dashboard-item {
     cursor: pointer;
-    padding: 5px;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid transparent; /* optional visual spacing */
   }
   .dashboard-item:hover {
     background: #eee;
   }
 
+  /* Grid layout:
+     - Use 12 equal row tracks so we can give the left column 4 equal items (each spanning 3 tracks)
+       and the right column 3 equal items (each spanning 4 tracks).
+     - This produces left rows = 1/4 of the available grid height, right rows = 1/3 of the available grid height. */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(12, 1fr); /* 12 equal slices */
+    gap: 6px;
+    height: 360px; /* adjust as needed; this is the overall grid height */
+    /* You can remove fixed height and use e.g. min-height or let parent control height */
+  }
+
+  /* Place left column items: 3 items, each spans 4 of the 12 tracks (4 * 3 = 12) */
+  #sheetControlLabel        { grid-column: 1; grid-row: 1 / span 4; }
+  #ilcaLabel               { grid-column: 1; grid-row: 5 / span 4; }
+
+  #sailorPositionLabel    { grid-column: 1; grid-row: 9 / span 4; }
+
+  /* Place right column items: 4 items, each spans 3 of the 12 tracks (3 * 4 = 12) */
+  #daggerboardLabel       { grid-column: 2; grid-row: 1 / span 3; }
+  #vangLabel              { grid-column: 2; grid-row: 4 / span 3; }
+  #downhaulLabel          { grid-column: 2; grid-row: 7 / span 3; }
+  #outhaulLabel           { grid-column: 2; grid-row: 10 / span 3; }
+
+  /* Make items fill their assigned grid cell and center content vertically */
+  .dashboard-item {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+  }
+
+  /* Responsive tweak: when the container gets narrow, reduce gap and padding */
+  @media (max-width: 480px) {
+    .dashboard-grid { gap: 4px; height: 480px; }
+    .dashboard-item { padding-left: 8px; }
+  }
 </style>
