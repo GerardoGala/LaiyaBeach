@@ -11,15 +11,13 @@
   </div>
 
   <div id="ilcaControl" class="input-section">
-    <div class="row">
+    <div class="control-column">
       <button class="control-button" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
-      <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
-    </div>
-    <div class="row">
       <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
       <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
       <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
       <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
+      <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
     </div>
   </div>
 
@@ -34,15 +32,11 @@
   </div>
 
   <div id="sailorPositionControl" class="input-section">
-    <div>
+    <div class="control-column">
       <button class="control-button" onclick="updateSailorPosition('Fore')">Fore</button>
-    </div>
-    <div>
       <button class="control-button" onclick="updateSailorPosition('Hike Out')">Hike Out</button>
       <button class="control-button" onclick="updateSailorPosition('Mid Center')">Mid Center</button>
       <button class="control-button" onclick="updateSailorPosition('Leeward')">Leeward</button>
-    </div>
-    <div>
       <button class="control-button" onclick="updateSailorPosition('Aft')">Aft</button>
     </div>
   </div>
