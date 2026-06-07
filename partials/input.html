@@ -1,7 +1,7 @@
 <!-- input.html -->
 <div id="input-pane">
 
-  <div id="sheetControl" class="input-section">
+  <div id="sheetControl" class="input-section active">
     <div>
       <button class="control-button" onclick="updateSheetControl(20)">20</button>
       <button class="control-button" onclick="increaseSheetControl(-1)">-1°</button>
@@ -23,55 +23,15 @@
     </div>
   </div>
 
-<div id="daggerboardControl" class="input-section">
-  <div class="control-column">
-    <button class="control-button" onclick="updateDaggerboardControl(2)">Up</button>
-    <button class="control-button" onclick="updateDaggerboardControl(1)">Mid Up</button>
-    <button class="control-button" onclick="updateDaggerboardControl(0)">Center</button>
-    <button class="control-button" onclick="updateDaggerboardControl(-1)">Mid Down</button>
-    <button class="control-button" onclick="updateDaggerboardControl(-2)">Down</button>
+  <div id="daggerboardControl" class="input-section">
+    <div class="control-column">
+      <button class="control-button" onclick="updateDaggerboardControl(2)">Up</button>
+      <button class="control-button" onclick="updateDaggerboardControl(1)">Mid Up</button>
+      <button class="control-button" onclick="updateDaggerboardControl(0)">Center</button>
+      <button class="control-button" onclick="updateDaggerboardControl(-1)">Mid Down</button>
+      <button class="control-button" onclick="updateDaggerboardControl(-2)">Down</button>
+    </div>
   </div>
-</div>
-<style>
-/* Make each input-section fill the available pane height */
-#input-pane {
-  height: 100vh;      /* full viewport height */
-  display: flex;
-  flex-direction: column;
-}
-
-.input-section {
-  flex: 1;              /* stretch to fill parent flex container */
-  display: flex;        /* allow child to stretch */
-align-items: center;
-}
-
-/* Column distributes buttons evenly */
-.control-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;   /* keep buttons centered horizontally */
-  padding: 20px 0;       /* top/bottom breathing room */
-}
-
-.control-button {
-  width: 66%;            /* 2/3 of pane width */
-  padding: 8px;          /* compact height */
-  border: 1px solid #888;
-  background: #f9f9f9;
-  cursor: pointer;
-  text-align: center;
-  flex: 0;               /* prevent flexbox from stretching buttons */
-}
-.control-button:hover {
-  background: #e0e0e0;
-}
-
-
-
-
-
-</style>
 
   <div id="sailorPositionControl" class="input-section">
     <div>
@@ -120,10 +80,56 @@ align-items: center;
 </div>
 
 <style>
-    .input-section {
-    display: none;   /* hidden by default */
-    }
-    .input-section.active {
-    display: block;  /* only show when clicked */
-    }
+/* Pane layout */
+#input-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each section should be a flex child that can expand.
+   When active it will use flex layout; inactive sections are hidden. */
+.input-section {
+  flex: 1;              /* stretch to fill parent flex container */
+  display: flex;        /* allow children (like .control-column) to stretch */
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* Hide inactive sections while preserving layout for the active one */
+.input-section:not(.active) {
+  display: none;
+}
+
+/* Column distributes buttons evenly vertically */
+.control-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* distribute child buttons evenly */
+  align-items: center;   /* keep buttons centered horizontally */
+  height: 100%;          /* fill the section height so space-between works */
+  padding: 20px 0;       /* breathing room top/bottom */
+  box-sizing: border-box;
+}
+
+/* Buttons */
+.control-button {
+  width: 66%;            /* 2/3 of pane width */
+  padding: 12px 8px;     /* a bit taller so space-between looks better */
+  border: 1px solid #888;
+  background: #f9f9f9;
+  cursor: pointer;
+  text-align: center;
+  flex: 0;               /* prevent flexbox from stretching buttons */
+  border-radius: 4px;
+}
+.control-button:hover {
+  background: #e0e0e0;
+}
+
+/* Optional: simple rows used elsewhere */
+.row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
 </style>
