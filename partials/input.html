@@ -84,13 +84,14 @@
 #input-pane {
   display: flex;
   flex-direction: column;
+  height: 35vh;
 }
 
-/* Each section should be a flex child that can expand.
-   When active it will use flex layout; inactive sections are hidden. */
 .input-section {
-  flex: 1;              /* stretch to fill parent flex container */
-  display: flex;        /* allow children (like .control-column) to stretch */
+  flex: 1;                    /* stretch to fill parent flex container */
+  display: flex;              /* allow children (like .control-column) to stretch */
+  flex-direction: column;     /* stack children vertically so we can distribute them */
+  justify-content: space-between; /* distribute child elements evenly along vertical axis */
   padding: 8px;
   box-sizing: border-box;
 }
