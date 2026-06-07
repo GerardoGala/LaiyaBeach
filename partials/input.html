@@ -2,21 +2,31 @@
 <div id="input-pane">
 
   <div id="sheetControl" class="input-section active">
-    <div class="control-column">
-      <button class="control-button" onclick="updateSheetControl(20)">20</button>
-      <button class="control-button" onclick="increaseSheetControl(-1)">-1°</button>
-      <button class="control-button" onclick="increaseSheetControl(1)">+1°</button>
-      <button class="control-button" onclick="updateSheetControl(90)">90</button>
-    </div>
+      <div class="control-row">
+        <button class="control-button" onclick="updateSheetControl(20)">20</button>
+        <button class="control-button" onclick="updateSheetControl(90)">90</button>
+      </div>
+      <div class="control-row">
+        <button class="control-button" onclick="increaseSheetControl(-1)">-1°</button>
+        <button class="control-button" onclick="increaseSheetControl(1)">+1°</button>
+      </div>
   </div>
 
   <div id="ilcaControl" class="input-section">
-    <div class="control-column">
+    <!-- Row 1: One button -->
+    <div class="control-row">
       <button class="control-button" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
+    </div>
+
+    <!-- Row 2: Three buttons in one row -->
+    <div class="control-row">
       <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
       <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
       <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
-      <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
+    </div>
+
+    <!-- Row 3: One button -->
+    <div class="control-row">
       <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
     </div>
   </div>
@@ -32,11 +42,15 @@
   </div>
 
   <div id="sailorPositionControl" class="input-section">
-    <div class="control-column">
+    <div class="control-row">
       <button class="control-button" onclick="updateSailorPosition('Fore')">Fore</button>
+    </div>
+    <div class="control-row">    
       <button class="control-button" onclick="updateSailorPosition('Hike Out')">Hike Out</button>
       <button class="control-button" onclick="updateSailorPosition('Mid Center')">Mid Center</button>
       <button class="control-button" onclick="updateSailorPosition('Leeward')">Leeward</button>
+    </div>
+    <div class="control-row">      
       <button class="control-button" onclick="updateSailorPosition('Aft')">Aft</button>
     </div>
   </div>
@@ -74,53 +88,66 @@
 </div>
 
 <style>
-/* Pane layout */
+/* Container Layout */
 #input-pane {
   display: flex;
   flex-direction: column;
-}
-
-.input-section {
-  flex: 1;                    /* stretch to fill parent flex container */
-  display: flex;              /* allow children (like .control-column) to stretch */
-  flex-direction: column;     /* stack children vertically so we can distribute them */
-  justify-content: space-between; /* distribute child elements evenly along vertical axis */
-  padding: 8px;
+  height: 300px;       /* Forces the pane to match the dashboard's 300px height */
+  background: #000;    /* Dark background to match the black divider theme */
+  padding: 6px;        /* Matches the outer border spacing */
   box-sizing: border-box;
 }
 
-/* Hide inactive sections while preserving layout for the active one */
+/* Hide inactive sections cleanly */
 .input-section:not(.active) {
-  display: none;
+  display: none !important;
 }
 
-/* Column distributes buttons evenly vertically */
+/* Make active sections fill the container entirely */
+.input-section.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  gap: 6px;            /* Matches the black gap thickness from the dashboard */
+  box-sizing: border-box;
+}
+
+/* Column layouts stretch buttons vertically */
 .control-column {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* distribute child buttons evenly */
-  align-items: center;   /* keep buttons centered horizontally */
-  height: 100%;          /* fill the section height so space-between works */
-  padding: 20px 0;       /* breathing room top/bottom */
-  box-sizing: border-box;
+  height: 100%;
+  gap: 6px;
 }
 
-/* Buttons */
-.control-button {
-  background:#007bff;color:white;
-  border: none;             /* remove gray border */
-  width: 66%;            /* 2/3 of pane width */
-  padding: 12px 8px;     /* a bit taller so space-between looks better */
-  cursor: pointer;
-  text-align: center;
-  flex: 0;               /* prevent flexbox from stretching buttons */
-}
-
-
-/* Optional: simple rows used elsewhere */
-.row {
+/* Row layouts distribute buttons horizontally across the screen */
+.control-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  gap: 6px;               /* Adds uniform spacing between buttons */
+}
+
+/* Buttons stretch to fill 100% of their available space evenly */
+.control-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  flex: 1;                  /* Forces buttons in a row/column to share space equally */
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  text-transform: uppercase;
 }
 </style>
