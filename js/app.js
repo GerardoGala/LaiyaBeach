@@ -127,17 +127,26 @@ function getPointOfSail(windDir, heading) {
   let rel = Math.abs(heading - windDir) % 360;
   if (rel > 180) rel = 360 - rel; // fold into 0–180
 
-  if (rel <=30) return "Running";          // dead downwind
-  if (rel <= 60) return "Broad Reach";      // ~30–60°
-  if (rel <= 90) return "Beam Reach";       // ~60–90°
-  if (rel <= 120) return "Close Reach";     // ~90–120°
-  if (rel <= 150) return "Close Hauled";    // ~120–150°
-  return "In Irons";                       // ~150–180°                   // ~0–30° → dead downwind
+  if (rel <=30) return "Running";          
+  if (rel <= 60) return "Broad Reach";     
+  if (rel <= 90) return "Beam Reach";      
+  if (rel <= 120) return "Close Reach";     
+  if (rel <= 150) return "Close Hauled";    
+  return "In Irons";                                  
 }
 
 function applyControls(pointOfSail, windSpeed, controls) {
   let speedFactor = 0.5; // baseline efficiency
   controls.leeway = 0;   // default sideways slip
+
+  // --- INTERFACE TRANSLATION LAYER ---
+  // Converts UI integers (-2, -1, 0, 1, 2) to decimal factors (0.0 to 1.0)
+  // -2 (FLAT / TIGHT) -> 0.0
+  //  0 (BASE)        -> 0.5
+  //  2 (FULL / LOOSE) -> 1.0
+  const v = (controls.vang + 2) / 4;
+  const d = (controls.downhaul + 2) / 4;
+  const o = (controls.outhaul + 2) / 4;
 
   switch(pointOfSail) {
     case "In Irons":
@@ -151,25 +160,25 @@ function applyControls(pointOfSail, windSpeed, controls) {
       if (controls.sheet < 25) speedFactor *= 0.9;
       else if (controls.sheet > 40) speedFactor *= 0.7;
 
-      // --- vang ---
-      if (controls.vang > 0.7) speedFactor *= 1.1;
+      // --- vang (wants to be flat/tight upwind) ---
+      if (v < 0.3) speedFactor *= 1.1;
 
-      // --- downhaul ---
-      if (controls.downhaul > 0.7) speedFactor *= 1.05;
+      // --- downhaul (wants to be flat/tight upwind) ---
+      if (d < 0.3) speedFactor *= 1.05;
 
-      // --- outhaul ---
-      if (controls.outhaul > 0.7) speedFactor *= 1.05;
+      // --- outhaul (wants to be FLAT upwind to reduce drag) ---
+      if (o < 0.3) speedFactor *= 1.05;
 
       // --- sailor position ---
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
 
-      // --- daggerboard ---
+      // --- daggerboard (FIXED: Board DOWN (2) = high speed, LOW leeway upwind) ---
       switch (controls.daggerboard) {
-        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
-        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
+        case -2: speedFactor *= 0.95; controls.leeway = 25; break; // Board fully up: high slip
+        case -1: speedFactor *= 0.97; controls.leeway = 15; break;
         case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
-        case 1:  speedFactor *= 1.02; controls.leeway = 15; break;
-        case 2:  speedFactor *= 1.05; controls.leeway = 25; break;
+        case 1:  speedFactor *= 1.02; controls.leeway = 5;  break;
+        case 2:  speedFactor *= 1.05; controls.leeway = 2;  break; // Board fully down: tracks true
       }
       break;
 
@@ -181,14 +190,14 @@ function applyControls(pointOfSail, windSpeed, controls) {
       else if (controls.sheet < 25) speedFactor *= 0.8;
       else if (controls.sheet > 60) speedFactor *= 0.6;
 
-      // --- vang ---
-      if (controls.vang > 0.5) speedFactor *= 1.05;
+      // --- vang (slightly eased from upwind) ---
+      if (v < 0.5) speedFactor *= 1.05;
 
-      // --- downhaul ---
-      if (controls.downhaul > 0.5) speedFactor *= 1.03;
+      // --- downhaul (slightly eased) ---
+      if (d < 0.5) speedFactor *= 1.03;
 
-      // --- outhaul ---
-      if (controls.outhaul < 0.3) speedFactor *= 1.05;
+      // --- outhaul (wants to be DEEP for power) ---
+      if (o > 0.7) speedFactor *= 1.05;
 
       // --- sailor position ---
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.03;
@@ -202,23 +211,23 @@ function applyControls(pointOfSail, windSpeed, controls) {
       else if (controls.sheet > 70) speedFactor *= 0.5;
       else if (controls.sheet < 20) speedFactor *= 0.7;
 
-      // --- daggerboard ---
+      // --- daggerboard (FIXED: Board halfway up is optimal to balance drag vs slip) ---
       switch (controls.daggerboard) {
-        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
-        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
-        case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
-        case 1:  speedFactor *= 1.03; controls.leeway = 15; break;
-        case 2:  speedFactor *= 1.05; controls.leeway = 20; break;
+        case -2: speedFactor *= 0.90; controls.leeway = 20; break; 
+        case -1: speedFactor *= 1.02; controls.leeway = 10; break;
+        case 0:  speedFactor *= 1.05; controls.leeway = 5;  break; // Sweet spot
+        case 1:  speedFactor *= 1.02; controls.leeway = 3;  break;
+        case 2:  speedFactor *= 0.98; controls.leeway = 2;  break; 
       }
 
       // --- vang ---
-      if (controls.vang > 0.5) speedFactor *= 1.03;
+      if (v < 0.5) speedFactor *= 1.03;
 
       // --- downhaul ---
-      if (controls.downhaul > 0.5) speedFactor *= 1.02;
+      if (d < 0.5) speedFactor *= 1.02;
 
-      // --- outhaul ---
-      if (controls.outhaul < 0.4) speedFactor *= 1.05;
+      // --- outhaul (wants to be DEEP/FULL for power) ---
+      if (o > 0.6) speedFactor *= 1.05;
 
       // --- sailor position ---
       if (controls.sailorPosition === "Hike Hard") speedFactor *= 1.05;
@@ -232,14 +241,14 @@ function applyControls(pointOfSail, windSpeed, controls) {
       else if (controls.sheet > 80) speedFactor *= 0.6;
       else if (controls.sheet < 30) speedFactor *= 0.8;
 
-      // --- vang ---
-      if (controls.vang < 0.4) speedFactor *= 1.05;
+      // --- vang (wants to be loose/eased downwind) ---
+      if (v > 0.6) speedFactor *= 1.05;
 
-      // --- downhaul ---
-      if (controls.downhaul < 0.4) speedFactor *= 1.03;
+      // --- downhaul (wants to be loose/eased downwind) ---
+      if (d > 0.6) speedFactor *= 1.03;
 
-      // --- outhaul ---
-      if (controls.outhaul < 0.3) speedFactor *= 1.05;
+      // --- outhaul (wants to be DEEP/FULL downwind) ---
+      if (o > 0.7) speedFactor *= 1.05;
 
       // --- sailor position ---
       if (controls.sailorPosition === "Neutral") speedFactor *= 1.02;
@@ -252,23 +261,23 @@ function applyControls(pointOfSail, windSpeed, controls) {
       if (controls.sheet > 70) speedFactor *= 1.1;
       else if (controls.sheet < 60) speedFactor *= 0.6;
 
-      // --- daggerboard ---
+      // --- daggerboard (FIXED: Board fully UP (-2) minimizes drag downwind) ---
       switch (controls.daggerboard) {
-        case -2: speedFactor *= 0.95; controls.leeway = 2; break;
-        case -1: speedFactor *= 0.97; controls.leeway = 5; break;
-        case 0:  speedFactor *= 1.0;  controls.leeway = 10; break;
-        case 1:  speedFactor *= 1.03; controls.leeway = 15; break;
-        case 2:  speedFactor *= 1.05; controls.leeway = 20; break;
+        case -2: speedFactor *= 1.05; controls.leeway = 2; break; // Best downwind setting
+        case -1: speedFactor *= 1.02; controls.leeway = 2; break;
+        case 0:  speedFactor *= 1.00; controls.leeway = 2; break;
+        case 1:  speedFactor *= 0.97; controls.leeway = 2; break;
+        case 2:  speedFactor *= 0.95; controls.leeway = 2; break; // Too much drag
       }
 
-      // --- vang ---
-      if (controls.vang < 0.2) speedFactor *= 1.05;
+      // --- vang (wants to be loose/eased) ---
+      if (v > 0.8) speedFactor *= 1.05;
 
-      // --- downhaul ---
-      if (controls.downhaul < 0.3) speedFactor *= 1.03;
+      // --- downhaul (wants to be loose/eased) ---
+      if (d > 0.7) speedFactor *= 1.03;
 
-      // --- outhaul ---
-      if (controls.outhaul < 0.3) speedFactor *= 1.05;
+      // --- outhaul (wants to be FULL downwind) ---
+      if (o > 0.7) speedFactor *= 1.05;
 
       // --- sailor position ---
       if (controls.sailorPosition === "Aft") speedFactor *= 1.02;
