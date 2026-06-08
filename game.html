@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Laiya Beach ILCA Simulator</title>
+  <title>ILCA Simulator</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <meta name="viewport" content="width=device-width, initial-scale=.5">
@@ -40,13 +40,6 @@
           Close
         </button>
       </div>
-      
-
-
-
-
-
-
     </div>
     <div id="controls">
       <div id="dashboard-container"></div>
@@ -175,16 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 
   <script>
-    function updateSailorPosition(position) {
-      showNotification('Sailor Position: ' + position);
-      window.globalSimulationData.ILCA.sailorPosition = position;
-      
-      // Update only the label, not the whole container
-      document.getElementById('sailorPositionLabel').textContent = 
-          'SAILOR POSITION = ' + position;
-    }
-  </script>
-  <script>
     function updateSheetControl(sheet) {
       showNotification('Sheet: ' + sheet);
       window.globalSimulationData.ILCA.sheet = sheet;
@@ -194,8 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
           'SHEET CONTROL = ' + sheet;
     }
   </script>
-
-  <script>
+    
+   <script>
     function increaseSheetControl(delta) {
       // Current sheet value
       let current = window.globalSimulationData.ILCA.sheet || 20;
@@ -212,6 +195,17 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update only the label, not the whole container
       document.getElementById('sheetControlLabel').textContent =
           'SHEET CONTROL = ' + newSheet;
+    }
+  </script>
+
+  <script>
+    function updateSailorPosition(position) {
+      showNotification('Sailor Position: ' + position);
+      window.globalSimulationData.ILCA.sailorPosition = position;
+      
+      // Update only the label, not the whole container
+      document.getElementById('sailorPositionLabel').textContent = 
+          'SAILOR POSITION = ' + position;
     }
   </script>
 
@@ -273,67 +267,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: "Segoe UI", sans-serif;
-  background-color: #1e1e1e;
-  color: #d4d4d4;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+  }
 
-/* Default: mobile layout (vertical stack) */
-.container {
-  display: flex;
-  flex-direction: column; 
-  height: 100vh;
-}
-
-#map {
-  flex: 1;
-  width: 100%;
-  border-bottom: 2px solid #333;
-  position: relative;   /* needed for absolute children */
-  min-height: 300px;    /* ensures visibility on mobile */
-}
-
-#controls {
-  flex: 1;
-  overflow-y: auto;
-  background-color: #111;
-  padding: 12px;
-}
-
-
-
-/* Desktop/Laptop: switch to side-by-side */
-@media screen and (min-width: 768px) {
+  /* Default: mobile layout (vertical stack) */
   .container {
-    flex-direction: row; /* forces horizontal split */
+    display: flex;
+    flex-direction: column; 
+    height: 100vh;
   }
+
   #map {
-    flex: 1; 
-    width: auto; /* allows layout to shrink side-by-side */
-    border-bottom: none;
+    flex: 1;
+    width: 100%;
+    border-bottom: 2px solid #333;
+    position: relative;   /* needed for absolute children */
+    min-height: 300px;    /* ensures visibility on mobile */
   }
+
   #controls {
-    flex: 0 0 300px; 
-    width: 300px;
-    max-width: 300px;
-    border-right: 2px solid #333;
+    flex: 1;
+    overflow-y: auto;
+    background-color: #111;
+    padding: 12px;
   }
-}
+
+  /* Desktop/Laptop: switch to side-by-side */
+  @media screen and (min-width: 768px) {
+    .container {
+      flex-direction: row; /* forces horizontal split */
+    }
+    #map {
+      flex: 1; 
+      width: auto; /* allows layout to shrink side-by-side */
+      border-bottom: none;
+    }
+    #controls {
+      flex: 0 0 300px; 
+      width: 300px;
+      max-width: 300px;
+      border-right: 2px solid #333;
+    }
+  }
 
 </style>
 
 <style>
-#notification-container {
-  position: absolute;
-  bottom: 20px;
-  left: 30%;
-  transform: translateX(-50%);
-  z-index: 1000;
-}
+  #notification-container {
+    position: absolute;
+    bottom: 20px;
+    left: 30%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
   .notification {
     background: rgba(0,0,0,0.8);
     color: #fff;
@@ -354,35 +346,32 @@ html, body {
 
 <style>
 /* Rows that contain multiple buttons */
-
-#daggerboardControl div,
-#sailorPositionControl div,
-#ilcaControl div,
-#vangControl div,
-#downhaulControl div,
-#outhaulControl div{
-  display: flex;          /* lay out buttons in a row */
-  gap: 6px;               /* consistent spacing */
-  justify-content: center;
-}
+  #daggerboardControl div,
+  #sailorPositionControl div,
+  #ilcaControl div,
+  #vangControl div,
+  #downhaulControl div,
+  #outhaulControl div{
+    display: flex;          /* lay out buttons in a row */
+    gap: 6px;               /* consistent spacing */
+    justify-content: center;
+  }
 </style>
 
 <style>
-#mapStartSimulationBtn {
-  position: absolute;
-  bottom: 30px;       /* lower center */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  background: #007acc;
-  color: #fff;
-  border: none;
-  padding: 16px 32px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(0,0,0,0.6);
-  transition: background 0.3s, transform 0.2s;
-}
+  #mapStartSimulationBtn {
+    position: absolute;
+    bottom: 30px;       /* lower center */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: #007acc;
+    color: #fff;
+    border: none;
+    padding: 16px 32px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 </style>

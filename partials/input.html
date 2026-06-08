@@ -1,22 +1,20 @@
 <!-- input.html -->
 <div id="input-pane">
 
-  <div id="sheetControl" class="input-section">
+  <div id="sheetControl" class="input-section active">
       <div class="control-row">
         <button class="control-button" onclick="updateSheetControl(20)">20</button>
-        <button class="control-button" onclick="updateSheetControl(90)">90</button>
-      </div>
-      <div class="control-row">
         <button class="control-button" onclick="increaseSheetControl(-1)">-1°</button>
         <button class="control-button" onclick="increaseSheetControl(1)">+1°</button>
+        <button class="control-button" onclick="updateSheetControl(90)">90</button>
       </div>
   </div>
 
   <!-- ADDED "active" class here to make it visible for testing -->
-  <div id="ilcaControl" class="input-section active directional-controls">
+  <div id="ilcaControl" class="input-section directional-controls">
     <!-- Column 1: One button (Turn Starboard) -->
     <div class="control-side-column">
-      <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
+      <button class="control-button" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
     </div>
 
     <!-- Column 2: Three buttons in a vertical stack -->
@@ -29,7 +27,7 @@
 
     <!-- Column 3: One button (Turn Port) -->
     <div class="control-side-column">
-      <button class="control-button" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
+      <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
     </div>
   </div>
 
