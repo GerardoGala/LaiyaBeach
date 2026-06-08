@@ -10,26 +10,46 @@
       </div>
   </div>
 
-  <!-- ADDED "active" class here to make it visible for testing -->
-  <div id="ilcaControl" class="input-section directional-controls">
-    <!-- Column 1: One button (Turn Starboard) -->
-    <div class="control-side-column">
-      <button class="control-button" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">Turn Port</button>
-    </div>
-
-    <!-- Column 2: Three buttons in a vertical stack -->
-    <div class="control-center-column">
-      <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
-      <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
-      <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
-      <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
-    </div>
-
-    <!-- Column 3: One button (Turn Port) -->
-    <div class="control-side-column">
-      <button class="control-button" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">Turn Starboard</button>
-    </div>
+  
+<div id="ilcaControl" class="input-section directional-controls">
+  <!-- Row 1: Directional Controls (Two Columns) -->
+  <div class="control-row row-directions">
+    <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
+    <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
   </div>
+
+  <!-- Row 2: Heading Adjustments (Four Columns/Buttons) -->
+  <div class="control-row row-adjustments">
+    <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
+    <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
+    <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
+    <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
+  </div>
+</div>
+
+
+  <style>
+    .directional-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Adjust spacing between row 1 and row 2 */
+}
+
+.control-row {
+  display: flex;
+  gap: 10px; /* Adjust spacing between buttons in the same row */
+}
+
+/* Row 1 splits equally into 2 columns */
+.row-directions .control-button {
+  flex: 1;
+}
+
+/* Row 2 splits equally into 4 columns */
+.row-adjustments .control-button {
+  flex: 1;
+}
+  </style>
 
   <div id="daggerboardControl" class="input-section">
     <div class="control-column">
@@ -57,31 +77,31 @@
 
   <div id="vangControl" class="input-section">
     <div class="control-column">
-      <button class="control-button" onclick="updateVangControl(-2)">-2</button>
-      <button class="control-button" onclick="updateVangControl(-1)">-1</button>
-      <button class="control-button" onclick="updateVangControl(0)">0</button>
-      <button class="control-button" onclick="updateVangControl(1)">1</button>
-      <button class="control-button" onclick="updateVangControl(2)">2</button>
+      <button class="control-button" onclick="updateVangControl(-2)">TIGHT</button>
+      <button class="control-button" onclick="updateVangControl(-1)">MID TIGHT</button>
+      <button class="control-button" onclick="updateVangControl(0)">CENTER</button>
+      <button class="control-button" onclick="updateVangControl(1)">MID LOOSE</button>
+      <button class="control-button" onclick="updateVangControl(2)">LOOSE</button>
     </div>
   </div>
 
   <div id="downhaulControl" class="input-section">
     <div class="control-column">
-      <button class="control-button" onclick="updateDownhaulControl(-2)">-2</button>
-      <button class="control-button" onclick="updateDownhaulControl(-1)">-1</button>
-      <button class="control-button" onclick="updateDownhaulControl(0)">0</button>
-      <button class="control-button" onclick="updateDownhaulControl(1)">1</button>
-      <button class="control-button" onclick="updateDownhaulControl(2)">2</button>
+      <button class="control-button" onclick="updateDownhaulControl(-2)">MAX LUFF</button>
+      <button class="control-button" onclick="updateDownhaulControl(-1)">TRIM</button>
+      <button class="control-button" onclick="updateDownhaulControl(0)">BASE</button>
+      <button class="control-button" onclick="updateDownhaulControl(1)">TWIST</button>
+      <button class="control-button" onclick="updateDownhaulControl(2)">OFF</button>
     </div>
   </div>
 
   <div id="outhaulControl" class="input-section">
     <div class="control-column">
-      <button class="control-button" onclick="updateOuthaulControl(-2)">-2</button>
-      <button class="control-button" onclick="updateOuthaulControl(-1)">-1</button>
-      <button class="control-button" onclick="updateOuthaulControl(0)">0</button>
-      <button class="control-button" onclick="updateOuthaulControl(1)">1</button>
-      <button class="control-button" onclick="updateOuthaulControl(2)">2</button>
+      <button class="control-button" onclick="updateOuthaulControl(-2)">FLAT</button>
+      <button class="control-button" onclick="updateOuthaulControl(-1)">BLENDED</button>
+      <button class="control-button" onclick="updateOuthaulControl(0)">BASE</button>
+      <button class="control-button" onclick="updateOuthaulControl(1)">DEEP</button>
+      <button class="control-button" onclick="updateOuthaulControl(2)">FULL</button>
     </div>
   </div>
 
@@ -114,10 +134,7 @@
   box-sizing: border-box;
 }
 
-/* FIX: Specific rules for the active directional control wrapper */
-.input-section.active.directional-controls {
-  flex-direction: row; /* Overrides the column layout to put 3 blocks next to each other */
-}
+
 
 /* Left and Right columns (Turn Starboard / Turn Port) */
 .control-side-column {
