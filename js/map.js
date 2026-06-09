@@ -193,7 +193,7 @@ export function updateVMGControl() {
   const currentLeg = window.globalSimulationData.currentLeg || 0;
   
   // FIX: Access the true wind direction from your global simulator data model
-  const windDir = window.globalSimulationData.windDir || 0; 
+  const windDir = window.globalSimulationData.windDirection || 0; 
 
   // 1. Determine active target mark destination metrics based on the current race leg
   let destLat, destLon, currentMarkLabel;
