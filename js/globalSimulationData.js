@@ -1,9 +1,28 @@
-// Global simulation state
 window.globalSimulationData = {
+
   // --- Wind state ---
   windDirection: 0,
   windSpeed: 0,   //
+
+  // Base coordinates scaled dynamically by the fudgeFactor multiplier
+  windwardMarkLat: 13.670464,
+  windwardMarkLon: 121.401286,
+
+  // Set to 1.0 for full course, 0.5 for smaller, 0.25 for rapid testing
+  leewardMarkLat: 13.670464 + (0.00361545 * 1),  // Full: 400m | Small: 200m | Tiny: 100m
+  leewardMarkLon: 121.401286,
   
+  gybeMarkLat: 13.670464 + (0.00180772 * 1),     // Full: 200m | Small: 100m | Tiny: 50m
+  gybeMarkLon: 121.401286 - (0.00320198 * 1),    // Full: 346m | Small: 173m | Tiny: 86m
+
+  currentLeg: 0, // Keeps your working waypoint logic perfectly intact                            // 0=To Leeward, 1=To Gybe, 2=To Windward(Finis
+
+
+  leewardMarkRounded: 0,
+  gybeMarkRounded: 0,
+  raceFinished: false,
+
+
   // --- Buoy state ---
   buoyLat: 13.660641 + 0.0054,   // 0.0027 = 300m Northward is +
   buoyLon: 121.411058 - 0.0084,  // 0.0028 = 300m Westward is -
@@ -11,11 +30,13 @@ window.globalSimulationData = {
   raceFinished: false,
   rcLat: 13.670464,
   rcLon: 121.401286,
+
+
   // --- ILCA state ---
   ILCA: {
     maneuver: null,
     pointOfSail: "",
-    heading: 180,
+    heading: 0,
     speed: 0,
     sailorPosition: "Mid Center",
     sheet: 20,
