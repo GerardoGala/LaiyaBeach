@@ -105,106 +105,12 @@ const RightControls = L.Control.extend({
 map.addControl(new RightControls());
 
  
-  // --- Leaderboard Button ---
-  const LeaderboardControl = L.Control.extend({
-    options: { position: 'bottomright' },
-    onAdd: function() {
-      const btn = L.DomUtil.create('button', 'leaderboard-btn');
-      btn.innerHTML = "🏆 Leaderboard";
-      btn.style.cssText = `
-        background:#007bff;color:white;border:none;
-        padding:6px 10px;border-radius:4px;
-        cursor:pointer;font-size:12px;
-      `;
-      btn.onclick = () => showDialogFromFile("Leaderboard", "partials/leaderBoard.html");
-      return btn;
-    }
-  });
-  map.addControl(new LeaderboardControl());
-
-  // --- Physics Button ---
-  const PhysicsControl = L.Control.extend({
-    options: { position: 'bottomright' },
-    onAdd: function() {
-      const btn = L.DomUtil.create('button', 'physics-btn');
-      btn.innerHTML = "⚓ Physics of ILCA Sailing";
-      btn.style.cssText = `
-        background:#28a745;color:white;border:none;
-        padding:6px 10px;border-radius:4px;
-        cursor:pointer;font-size:12px;margin-top:5px;
-      `;
-      btn.onclick = () => showDialogFromFile("Physics of Sailing", "partials/physics.html");
-      return btn;
-    }
-  });
-  map.addControl(new PhysicsControl());
-
-    // --- Local wind Button ---
-  const LocalWindControl = L.Control.extend({
-    options: { position: 'bottomright' },
-    onAdd: function() {
-      const btn = L.DomUtil.create('button', 'localWind-btn');
-      btn.innerHTML = "🌬️ Local Wind";
-      btn.style.cssText = `
-        background:#17a2b8;color:white;border:none;
-        padding:6px 10px;border-radius:4px;
-        cursor:pointer;font-size:12px;margin-top:5px;
-      `;
-      btn.onclick = () => showDialogFromFile("Local wind", "partials/localWind.html");
-      return btn;
-    }
-  });
-  map.addControl(new LocalWindControl());
-
 // Define bounds using RC (launch point) and buoy
 const bounds = L.latLngBounds([[rcLat, rcLon], [buoyLat, buoyLon]]);
 map.fitBounds(bounds, { padding: [50, 50] });
 
   return map;
 }
-
-// --- Define the modal loader function here ---
-async function showDialogFromFile(title, filePath) {
-  try {
-    const response = await fetch(filePath);
-    if (!response.ok) throw new Error("Failed to load " + filePath);
-    const content = await response.text();
-
-    const backdrop = document.createElement('div');
-    backdrop.className = 'dialog-backdrop';
-    backdrop.style.cssText = `
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.5);z-index:9998;
-    `;
-
-    const dialog = document.createElement('div');
-    dialog.className = 'popup-dialog';
-    dialog.style.cssText = `
-      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-      background:white;padding:20px;border-radius:8px;
-      box-shadow:0 2px 10px rgba(0,0,0,0.5);
-      width:80vw;height:80vh;z-index:9999;
-      overflow-y:auto; /* only here */
-    `;
-
-
-  dialog.innerHTML = `
-    ${content}
-    <button style="margin-top:10px;position: absolute; top: 10px; right: 10px;">Close</button>`;
-
-    dialog.querySelector('button').onclick = () => {
-      dialog.remove();
-      backdrop.remove();
-    };
-
-    document.body.appendChild(backdrop);
-    document.body.appendChild(dialog);
-  } catch (err) {
-    console.error(err);
-    alert("Could not load dialog content.");
-  }
-}
-
 
 // --- Refresh function to update wind arrow dynamically ---
 export function updateWindControl(map) {
