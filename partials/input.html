@@ -1,10 +1,19 @@
 <!-- input.html -->
 <div id="input-pane">
   <div id="ilcaControl" class="input-section directional-controls  active">
-  <!-- Row 1: Directional Controls (Two Columns) -->
-  <div class="control-row row-directions">
-    <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
-    <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
+    <!-- Row 1: Directional Controls (Two Columns) -->
+    <div class="control-row row-directions">
+      <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
+      <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
+    </div>
+    <!-- Row 2: Heading Adjustments (Four Columns/Buttons) -->
+    <div id="ilcaControl" class="input-section directional-controls"></div>  
+      <div class="control-row row-adjustments">
+        <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
+        <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
+        <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
+        <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
+      </div>
   </div>
 
   <div id="sheetControl" class="input-section">
@@ -15,39 +24,6 @@
         <button class="control-button" onclick="updateSheetControl(90)">90</button>
       </div>
   </div>
-
-  <!-- Row 2: Heading Adjustments (Four Columns/Buttons) -->
-  <div class="control-row row-adjustments">
-    <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
-    <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
-    <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
-    <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
-  </div>
-</div>
-
-
-  <style>
-    .directional-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Adjust spacing between row 1 and row 2 */
-}
-
-.control-row {
-  display: flex;
-  gap: 10px; /* Adjust spacing between buttons in the same row */
-}
-
-/* Row 1 splits equally into 2 columns */
-.row-directions .control-button {
-  flex: 1;
-}
-
-/* Row 2 splits equally into 4 columns */
-.row-adjustments .control-button {
-  flex: 1;
-}
-  </style>
 
   <div id="daggerboardControl" class="input-section">
     <div class="control-column">
@@ -104,6 +80,30 @@
   </div>
 
 </div>
+
+<style>
+    .directional-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust spacing between row 1 and row 2 */
+  }
+
+  .control-row {
+    display: flex;
+    gap: 10px; /* Adjust spacing between buttons in the same row */
+  }
+
+  /* Row 1 splits equally into 2 columns */
+  .row-directions .control-button {
+    flex: 1;
+  }
+
+  /* Row 2 splits equally into 4 columns */
+  .row-adjustments .control-button {
+    flex: 1;
+  }
+</style>
+
 
 <style>
 /* Container Layout */
