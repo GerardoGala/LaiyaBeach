@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sailing the Triangular Race Course - ILCA Simulator</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --text-color: #333333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .course-image-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 6px;
+        }
+
+        .course-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .image-caption {
+            font-style: italic;
+            color: #64748b;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        ol, ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .tip-box {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 20px;
+            margin: 30px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .tip-box h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sailing the Triangular Race Course</h1>
+    
+    <p>The standard triangular course (often called the Olympic Triangle) tests a sailor's ability across all fundamental angles of sail. Successfully navigating this course in the ILCA simulator requires precise sail trim, strategic tactical choices, and fluid boat handling at each mark transition.</p>
+
+    <div class="course-image-container">
+        <img src="/assets/images/olympic_triangle.jpg" alt="Triangular Sailing Race Course Diagram" class="course-image">
+        <div class="image-caption">Figure 1: Overview of the Triangular Race Course showing Windward, Gybe, and Leeward marks.</div>
+    </div>
+
+    <h2>1. The Upwind Leg (Beating to the Windward Mark)</h2>
+    <p>The race begins at the bottom of the course, sailing directly against the wind toward the <strong>Windward Mark</strong>. Because an ILCA cannot sail directly into the wind, you must progress by "beating"—sailing at a close-hauled angle (approximately 45 degrees off the wind) and executing a series of tacks.</p>
+    <ul>
+        <li><strong>Sail Trim:</strong> Sheet in tightly, flatten the sail using the outhaul and cunningham to maximize speed, and rely heavily on hiking to keep the boat flat.</li>
+        <li><strong>Strategy:</strong> Watch for wind shifts. Tack on headers to stay on the lifted tack, bringing you closer to the mark faster.</li>
+    </ul>
+
+    <h2>2. The Top Mark and First Reach (Windward to Gybe Mark)</h2>
+    <p>As you round the Windward Mark, you will bear away onto a <strong>broad reach</strong> or <strong>beam reach</strong> heading toward the <strong>Gybe / Jibe Mark</strong>. This transition brings a dramatic increase in boat speed.</p>
+    <ul>
+        <li><strong>Sail Trim:</strong> Ease the sheets immediately as you bear away. Ease the cunningham and outhaul to add depth and power back into the sail. Move your body weight slightly backward to keep the bow from digging into the water.</li>
+        <li><strong>Boat Handling:</strong> Maintain a clean round without letting the boat heel excessively to windward or leeward.</li>
+    </ul>
+
+    <h2>3. The Gybe Mark and Second Reach (Gybe to Leeward Mark)</h2>
+    <p>The Gybe Mark requires a tactical turn to change the side of the boat that the wind is blowing across, setting your course down toward the <strong>Leeward Mark</strong>.</p>
+    <ul>
+        <li><strong>The Maneuver:</strong> Initiate a controlled gybe. In an ILCA dinghy, timing is everything—pull the sail across smoothly as the stern passes through the eye of the wind, and use your body weight to counter the force of the sail snapping over.</li>
+        <li><strong>Course:</strong> After the gybe, settle onto the new reaching angle, keeping an eye on your lane and checking for overtaking boats from behind.</li>
+    </ul>
+
+    <h2>4. The Bottom Mark Rounding (Leeward Mark to Next Upwind)</h2>
+    <p>The Leeward Mark rounding transitions the boat from a fast downwind/reaching angle back into a hard upwind beat. This is one of the most critical zones for gaining or losing distance.</p>
+    <ul>
+        <li><strong>The Maneuver:</strong> Avoid making a sharp, blocky turn. Approach the mark slightly wide and execute a smooth, progressive turn to snap tight next to the buoy.</li>
+        <li><strong>Sail Trim:</strong> Simultaneously sheet in hard as you round the mark. If you try to turn before your sail is sheeted in, the boat will stall and slide sideways. Immediately get your weight out on the hiking strap to stabilize the boat.</li>
+    </ul>
+
+    <div class="tip-box">
+        <h3>ILCA Simulator Pro-Tip</h3>
+        <p>Always anticipate your controls ahead of time. Do not wait until you reach the mark to adjust your controls. Adjust your outhaul, cunningham, and vang slightly before your turns to ensure optimal sail shape the exact second you enter the next leg.</p>
+    </div>
+</div>
+
+</body>
+</html>
