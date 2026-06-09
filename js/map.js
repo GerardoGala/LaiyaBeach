@@ -20,18 +20,19 @@ export function initMap() {
 
   const buoyIcon = L.icon({
     iconUrl: "data:image/svg+xml;base64," + btoa(buoySVG),
-     iconSize: [20, 20],
-    iconAnchor: [24, 48], // Adjusted anchor point to center the 20x20 marker over coordinates    popupAnchor: [0, -10]
+    iconSize: [20, 20],
+    iconAnchor: [24, 48], // Adjusted anchor point to center the 20x20 marker over 
+    popupAnchor: [0, -10]
   });
 
   const map = L.map('map', {
     center: [windwardMarkLat, windwardMarkLon],
     zoom: 16,
-    dragging: false,        // disables drag
-    zoomControl: false,     // optional: removes zoom buttons
-    scrollWheelZoom: false, // optional: disables mouse wheel zoom
-    doubleClickZoom: false, // optional: disables double-click zoom
-    touchZoom: false        // optional: disables pinch zoom
+    dragging: false,        
+    zoomControl: false,     
+    scrollWheelZoom: false, 
+    doubleClickZoom: false, 
+    touchZoom: false        
   });
 
   // --- Add the 3 Marks to the Map ---
@@ -49,16 +50,19 @@ export function initMap() {
 
   // Add scale control to show distances on the map
   L.control.scale({
-    position: 'bottomleft', // place scale bar at bottom-left
-    imperial: false,        // disable yards/miles
-    metric: true            // enable meters/kilometers
+    position: 'bottomleft', 
+    imperial: false,        
+    metric: true            
   }).addTo(map);
 
-  // --- Combined Right-Side Controls ---
-  const RightControls = L.Control.extend({
-    options: { position: 'topright' },
+  // --- NEW: Bottom Left Controls (Wind & ILCA) ---
+  const BottomLeftControls = L.Control.extend({
+    options: { position: 'bottomleft' },
     onAdd: function(map) {
-      const container = L.DomUtil.create('div', 'right-controls-container');
+      const container = L.DomUtil.create('div', 'bottom-left-controls-container');
+      
+      // Stop map click/scroll events from bleeding through the panel
+      L.DomEvent.disableClickPropagation(container);
 
       // Wind Indicator
       windControlDiv = L.DomUtil.create('div', 'wind-indicator-container', container);
@@ -71,6 +75,7 @@ export function initMap() {
       windControlDiv.style.fontSize = '12px';
       windControlDiv.style.fontWeight = 'bold';
       windControlDiv.style.color = '#222';
+      windControlDiv.style.marginBottom = '8px'; // Adds vertical spacing between panels
       updateWindControl(map);
 
       // --- ILCA Status + Time ---
@@ -87,6 +92,18 @@ export function initMap() {
       ilcaControlDiv.style.fontWeight = 'bold'; 
       updateILCAControl();
 
+      return container;
+    }
+  });
+
+  // --- NEW: Top Left Controls (VMG) ---
+  const TopLeftControls = L.Control.extend({
+    options: { position: 'topleft' },
+    onAdd: function(map) {
+      const container = L.DomUtil.create('div', 'top-left-controls-container');
+      
+      L.DomEvent.disableClickPropagation(container);
+
       // --- VMG Status ---
       vmgControlDiv = L.DomUtil.create('div', 'vmg-status-container', container);
       vmgControlDiv.style.background = 'white';
@@ -100,10 +117,14 @@ export function initMap() {
       vmgControlDiv.style.color = '#222';
       vmgControlDiv.style.fontWeight = 'bold'; 
       updateVMGControl();
+
       return container;
     }
   });
-  map.addControl(new RightControls());
+
+  // Render both custom control groups onto the UI
+  map.addControl(new BottomLeftControls());
+  map.addControl(new TopLeftControls());
 
   // Define bounds safely encompassing all three active race marks
   const bounds = L.latLngBounds([
@@ -141,7 +162,7 @@ export function updateWindControl(map) {
 // --- Refresh function to update ILCA status + time ---
 export function updateILCAControl() {
   if (!ilcaControlDiv) return;
-  if (window.globalSimulationData.raceFinished) return; // stop updating once finished
+  if (window.globalSimulationData.raceFinished) return; 
 
   const ilca = window.globalSimulationData.ILCA || {};
   const speedKnots = ilca.speed?.toFixed(1) || 0;
@@ -150,7 +171,6 @@ export function updateILCAControl() {
   const pointOfSail = ilca.pointOfSail;
   const timer = ilca.displayTimer || "0:00";
  
-  // --- ILCA Control Renderer ---
   ilcaControlDiv.innerHTML = `
     <div><strong>ILCA Status</strong></div>
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" style="margin:4px 0;">
@@ -168,7 +188,6 @@ export function updateILCAControl() {
   `;
 }
 
-// --- Refresh function to update VMG ruler dynamically ---
 // --- Refresh function to update VMG ruler dynamically ---
 export function updateVMGControl() {
   if (!vmgControlDiv) return;
