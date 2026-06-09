@@ -148,7 +148,7 @@ export function updateWindControl(map) {
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
       <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
       <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
-      <g transform="rotate(${windDir + 180}, 25, 25)">
+      <g transform="rotate(${windDir}, 25, 25)">
         <line x1="25" y1="5" x2="25" y2="40" stroke="blue" stroke-width="3" stroke-linecap="round"/>
         <polygon points="25,45 20,35 30,35" fill="blue" />
       </g>
@@ -172,13 +172,13 @@ export function updateILCAControl() {
   const timer = ilca.displayTimer || "0:00";
  
   ilcaControlDiv.innerHTML = `
-    <div><strong>ILCA Status</strong></div>
+<div><strong>ILCA Status</strong></div>
     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" style="margin:4px 0;">
       <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
       <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
-      <g transform="rotate(${Number(heading) + 180}, 25, 25)">
-        <line x1="25" y1="5" x2="25" y2="40" stroke="red" stroke-width="3" stroke-linecap="round"/>
-        <polygon points="25,45 20,35 30,35" fill="red" />
+      <g transform="rotate(${Number(heading)}, 25, 25)">
+        <line x1="25" y1="45" x2="25" y2="10" stroke="red" stroke-width="3" stroke-linecap="round"/>
+        <polygon points="25,5 20,15 30,15" fill="red" />
       </g>
     </svg>
     <div>Heading: ${heading}°</div>
@@ -194,22 +194,25 @@ export function updateVMGControl() {
 
   const ilca = window.globalSimulationData.ILCA || {};
   const currentLeg = window.globalSimulationData.currentLeg || 0;
+  
+  // FIX: Access the true wind direction from your global simulator data model
+  const windDir = window.globalSimulationData.windDir || 0; 
 
   // 1. Determine active target mark destination metrics based on the current race leg
   let destLat, destLon, currentMarkLabel;
 
   if (currentLeg === 0) {
-    destLat = window.globalSimulationData.leewardMarkLat;
-    destLon = window.globalSimulationData.leewardMarkLon;
-    currentMarkLabel = "Leeward Mark";
+    destLat = window.globalSimulationData.windwardMarkLat;
+    destLon = window.globalSimulationData.windwardMarkLon;
+    currentMarkLabel = "Windward Mark";
   } else if (currentLeg === 1) {
     destLat = window.globalSimulationData.gybeMarkLat;
     destLon = window.globalSimulationData.gybeMarkLon;
     currentMarkLabel = "Gybe Mark";
   } else {
-    destLat = window.globalSimulationData.windwardMarkLat;
-    destLon = window.globalSimulationData.windwardMarkLon;
-    currentMarkLabel = "Windward Mark";
+    destLat = window.globalSimulationData.leewardMarkLat;
+    destLon = window.globalSimulationData.leewardMarkLon;
+    currentMarkLabel = "Leeward Mark (Finish Line)";
   }
 
   // 2. Fetch current real-time boat location coordinates
@@ -219,7 +222,7 @@ export function updateVMGControl() {
   const speedKnots = ilca.speed || 0;
   const speedMS = speedKnots * 0.5144; // Convert knots to m/s for HUD metric matching
 
-  // 3. Compute bearing to active target coordinate point
+  // 3. Compute bearing to active target coordinate point (For HUD navigation only)
   const dLon = (destLon - boatLon) * Math.PI / 180;
   const lat1 = boatLat * Math.PI / 180;
   const lat2 = destLat * Math.PI / 180;
@@ -229,20 +232,29 @@ export function updateVMGControl() {
   let bearingDest = Math.atan2(y, x) * 180 / Math.PI;
   if (bearingDest < 0) bearingDest += 360;
 
-  // 4. Compute physical remaining distance in meters (Using our precise flat projection helper formula)
+  // 4. Compute physical remaining distance in meters
   const metersPerDegLat = 111320;
   const metersPerDegLon = 111320 * Math.cos(boatLat * Math.PI / 180);
   const deltaLatMeters = (boatLat - destLat) * metersPerDegLat;
   const deltaLonMeters = (boatLon - destLon) * metersPerDegLon;
   const distanceToTarget = Math.sqrt(deltaLatMeters * deltaLatMeters + deltaLonMeters * deltaLonMeters);
 
-  // 5. Calculate target Velocity Made Good (VMG) vector math projection
-  const angleDiff = (bearingDest - heading) * Math.PI / 180;
-  const vmgMS = speedMS * Math.cos(angleDiff);
+  // 5. PROFESSIONAL FIX: Calculate VMG purely relative to True Wind Direction (TWD) axis
+  // This completely eliminates the decreasing coordinate distortion bug
+  const trueWindAngle = (heading - windDir) * Math.PI / 180;
+  let vmgMS = 0;
 
-  // 6. Update HUD Interface Panel UI to display current sequence target tracking metrics
+  if (currentLeg === 0) {
+    // Upwind Leg: Progress made directly into the wind vector axis (dead upwind)
+    vmgMS = speedMS * Math.cos(trueWindAngle);
+  } else {
+    // Downwind / Reaching Legs: Progress made directly away from the wind vector axis (dead downwind)
+    vmgMS = speedMS * Math.cos(trueWindAngle + Math.PI);
+  }
+
+  // 6. Update HUD Interface Panel UI
   vmgControlDiv.innerHTML = `
-    <div><strong>VMG</strong></div>
+    <div><strong>VMG (Wind Axis)</strong></div>
     <div style="margin: 4px 0; color: blue; font-size: 14px;">${vmgMS.toFixed(2)} m/s</div>
     <hr style="border: 0; border-top: 1px solid #eee; margin: 6px 0;">
     <div style="color: green; text-align: left;">
@@ -252,4 +264,7 @@ export function updateVMGControl() {
     </div>
   `;
 }
+
+
+
 

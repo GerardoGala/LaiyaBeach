@@ -5,21 +5,23 @@ window.globalSimulationData = {
   windSpeed: 0,   //
 
   // Base coordinates scaled dynamically by the fudgeFactor multiplier
-  windwardMarkLat: 13.670464,
-  windwardMarkLon: 121.401286,
+  leewardMarkLat: 13.670464,
+  leewardMarkLon: 121.401286,
 
   // Set to 1.0 for full course, 0.5 for smaller, 0.25 for rapid testing
-  leewardMarkLat: 13.670464 + (0.00361545 * 1),  // Full: 400m | Small: 200m | Tiny: 100m
-  leewardMarkLon: 121.401286,
+  windwardMarkLat: 13.670464 + (0.00361545 * 1),  // Full: 400m | Small: 200m | Tiny: 100m
+  windwardMarkLon: 121.401286,
   
   gybeMarkLat: 13.670464 + (0.00180772 * 1),     // Full: 200m | Small: 100m | Tiny: 50m
   gybeMarkLon: 121.401286 - (0.00320198 * 1),    // Full: 346m | Small: 173m | Tiny: 86m
 
-  currentLeg: 0, // Keeps your working waypoint logic perfectly intact                            // 0=To Leeward, 1=To Gybe, 2=To Windward(Finis
+  // FIX: Updated comments to match the actual upwind-first race progression
+  currentLeg: 0,                                 // 0=To Windward, 1=To Gybe, 2=To Leeward (Finish)
 
-
-  leewardMarkRounded: 0,
+  // FIX: Added windward tracker since it is the first mark rounded in the race
+  windwardMarkRounded: 0,
   gybeMarkRounded: 0,
+  leewardMarkRounded: 0,
   raceFinished: false,
 
 

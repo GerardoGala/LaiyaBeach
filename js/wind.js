@@ -20,8 +20,8 @@ export async function fetchWind() {
     // 4 is 7.8 knots
 
     const windSpeedMS = data.wind.speed;
-    // 🧭 Default wind direction to North (180 degrees)
-    const windDeg = 180; 
+    // 🧭 Default wind direction from North (0 degrees)
+    const windDeg = 0; 
     const windKnots = (windSpeedMS * 1.94384).toFixed(1);
 
     // 🔑 update global state

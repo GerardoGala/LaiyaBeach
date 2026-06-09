@@ -66,11 +66,11 @@ function trackRaceLegs() {
 
   let targetLat, targetLon, targetName, roundingRadius;
 
-  // 1. Evaluate current active mark targets based on sequential Leg step values
+  // 1. FIX: Reorder targets sequentially to support the Upwind -> Gybe -> Leeward course sequence
   if (currentLeg === 0) {
-    targetLat = window.globalSimulationData.leewardMarkLat;
-    targetLon = window.globalSimulationData.leewardMarkLon;
-    targetName = "Leeward Mark";
+    targetLat = window.globalSimulationData.windwardMarkLat;
+    targetLon = window.globalSimulationData.windwardMarkLon;
+    targetName = "Windward Mark";
     roundingRadius = 25; // Proximity threshold in meters to register rounding
   } else if (currentLeg === 1) {
     targetLat = window.globalSimulationData.gybeMarkLat;
@@ -78,9 +78,9 @@ function trackRaceLegs() {
     targetName = "Gybe Mark";
     roundingRadius = 25;
   } else if (currentLeg === 2) {
-    targetLat = window.globalSimulationData.windwardMarkLat;
-    targetLon = window.globalSimulationData.windwardMarkLon;
-    targetName = "Windward Mark (Finish Line)";
+    targetLat = window.globalSimulationData.leewardMarkLat;
+    targetLon = window.globalSimulationData.leewardMarkLon;
+    targetName = "Leeward Mark (Finish Line)";
     roundingRadius = 20; // Tighter radius matching your old RC finish line rule
   } else {
     return;
@@ -96,6 +96,8 @@ function trackRaceLegs() {
     if (currentLeg === 2) {
       // Trigger finish line overlay popup if completing final leg
       window.globalSimulationData.raceFinished = true;
+      // FIX: Mark the final buoy as successfully rounded in global state
+      window.globalSimulationData.leewardMarkRounded = 1;
       if (typeof showFinishDialog === "function") showFinishDialog();
     } else {
       // Show generic proximity alert if HTML target box element is active in UI
@@ -113,11 +115,19 @@ function trackRaceLegs() {
     if (alertBox) alertBox.style.display = "none";
 
     if (currentLeg < 2) {
+      // FIX: Flag specific state counters correctly upon clearing the mark boundaries
+      if (currentLeg === 0) {
+        window.globalSimulationData.windwardMarkRounded = 1;
+      } else if (currentLeg === 1) {
+        window.globalSimulationData.gybeMarkRounded = 1;
+      }
+
       // Advance to next race leg index value sequence safely
       window.globalSimulationData.currentLeg += 1;
     }
   }
 }
+
 
 // Helper: calculate distance between two lat/lon points in meters
 function calculateDistance(lat1, lon1, lat2, lon2) {
