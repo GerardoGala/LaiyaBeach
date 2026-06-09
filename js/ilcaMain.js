@@ -47,63 +47,75 @@ export function updateILCA(map) {
     window.globalSimulationData.ILCA.lon = lon;
   }
 
-  detectBuoyRounding();
-  detectRCrounding();
-
+  // Monitor race progression sequentially
+  if (!window.globalSimulationData.raceFinished) {
+    trackRaceLegs();
+  }
 
   // Draw overlay
   drawILCAOnMap(map);
 }
 
-// Declare once at the top of your script
-let nearBuoy = false;
-let nearRC = false;
-function detectBuoyRounding() {
-  const buoyLat = window.globalSimulationData.buoyLat;
-  const buoyLon = window.globalSimulationData.buoyLon;
+// Proximity alerts state flags
+let nearMark = false;
+
+function trackRaceLegs() {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
+  const currentLeg = window.globalSimulationData.currentLeg;
 
-  // Use helper for distance
-  const distToBuoy = calculateDistance(ilcaLat, ilcaLon, buoyLat, buoyLon);
+  let targetLat, targetLon, targetName, roundingRadius;
 
-  const buoyRadius = 450; // meters
-
-  if (distToBuoy < buoyRadius && !nearBuoy) {
-    // Entering buoy zone
-    nearBuoy = true;
-    document.getElementById("nearBuoy").style.display = "block";
-  } else if (distToBuoy > buoyRadius && nearBuoy) {
-    // Exiting buoy zone
-    nearBuoy = false;
-    window.globalSimulationData.buoyRounded = 1; // use RC for VMG calculation
-    document.getElementById("nearBuoy").style.display = "none";
+  // 1. Evaluate current active mark targets based on sequential Leg step values
+  if (currentLeg === 0) {
+    targetLat = window.globalSimulationData.leewardMarkLat;
+    targetLon = window.globalSimulationData.leewardMarkLon;
+    targetName = "Leeward Mark";
+    roundingRadius = 25; // Proximity threshold in meters to register rounding
+  } else if (currentLeg === 1) {
+    targetLat = window.globalSimulationData.gybeMarkLat;
+    targetLon = window.globalSimulationData.gybeMarkLon;
+    targetName = "Gybe Mark";
+    roundingRadius = 25;
+  } else if (currentLeg === 2) {
+    targetLat = window.globalSimulationData.windwardMarkLat;
+    targetLon = window.globalSimulationData.windwardMarkLon;
+    targetName = "Windward Mark (Finish Line)";
+    roundingRadius = 20; // Tighter radius matching your old RC finish line rule
+  } else {
+    return;
   }
-}
 
-function detectRCrounding() {
-  // Only run if buoy has been rounded
-  if (window.globalSimulationData.buoyRounded !== 1) return;
-  const rcLat = window.globalSimulationData.rcLat;
-  const rcLon = window.globalSimulationData.rcLon;
-  const ilcaLat = window.globalSimulationData.ILCA.lat;
-  const ilcaLon = window.globalSimulationData.ILCA.lon;
+  // 2. Measure boat spatial distance relative to active waypoint coordinate
+  const distanceToTarget = calculateDistance(ilcaLat, ilcaLon, targetLat, targetLon);
 
-  // Use helper for distance
-  const distToRC = calculateDistance(ilcaLat, ilcaLon, rcLat, rcLon);
+  // 3. Rounding collision volume validation engine
+  if (distanceToTarget < roundingRadius && !nearMark) {
+    nearMark = true;
+    
+    if (currentLeg === 2) {
+      // Trigger finish line overlay popup if completing final leg
+      window.globalSimulationData.raceFinished = true;
+      if (typeof showFinishDialog === "function") showFinishDialog();
+    } else {
+      // Show generic proximity alert if HTML target box element is active in UI
+      const alertBox = document.getElementById("nearBuoy");
+      if (alertBox) {
+        alertBox.innerText = `Approaching ${targetName}!`;
+        alertBox.style.display = "block";
+      }
+    }
+  } else if (distanceToTarget > roundingRadius && nearMark) {
+    nearMark = false;
+    
+    // Hide UI proximity overlays upon leaving mark safety buffer
+    const alertBox = document.getElementById("nearBuoy");
+    if (alertBox) alertBox.style.display = "none";
 
-  const rcRadius = 20; // meters
-
-  if (distToRC < rcRadius && !nearRC) {
-    // Entering RC zone
-    nearRC = true;
-    showFinishDialog();
-  } else if (distToRC > rcRadius && nearRC) {
-    // Exiting RC zone
-    nearRC = false;
-    window.globalSimulationData.rcRounded = 1; // mark RC rounded
-    closeFinishDialog();
-
+    if (currentLeg < 2) {
+      // Advance to next race leg index value sequence safely
+      window.globalSimulationData.currentLeg += 1;
+    }
   }
 }
 
@@ -115,8 +127,3 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const dLon = (lon1 - lon2) * metersPerDegLon;
   return Math.sqrt(dLat * dLat + dLon * dLon);
 }
-
-
-
-
-
