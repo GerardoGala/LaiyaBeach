@@ -14,23 +14,23 @@ export async function fetchWind() {
     //we can't sail when there is no wind,
     //so let's beef up the wind.
     if (data.wind.speed < 4) {
-      data.wind.speed = 4
+      data.wind.speed = 4;
     } 
     // 4 is just a wild guess
     // 4 is 7.8 knots
 
     const windSpeedMS = data.wind.speed;
-    const windDeg = data.wind.deg;
+    // 🧭 Default wind direction to North (180 degrees)
+    const windDeg = 180; 
     const windKnots = (windSpeedMS * 1.94384).toFixed(1);
 
     // 🔑 update global state
     window.globalSimulationData.windDirection = windDeg;
     window.globalSimulationData.windSpeed = windKnots;
    
-  
     const windDiv = document.getElementById("windStatus");
     if (windDiv) {
-      windDiv.textContent = `🌬️ Wind: ${windKnots} knots from ${windDeg}°`;
+      windDiv.textContent = `🌬️ Wind: ${windKnots} knots from ${windDeg}° (North)`;
     }
   } catch (err) {
     console.error("Wind API error:", err);
