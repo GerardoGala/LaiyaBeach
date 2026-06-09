@@ -5,10 +5,62 @@
   <title>Welcome to Laiya Beach ILCA Simulator</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=.5">
+  
+  <style>
+    body.welcome {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      color: #222;
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    /* Responsive fonts */
+    h1 {
+      color: #0066cc;
+      font-size: clamp(1.8em, 3vw, 2.6em); /* bigger base, scales with screen */
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: clamp(1.1em, 2vw, 1.6em);
+      line-height: 1.5em;
+      margin: 10px 0;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: clamp(1em, 2vw, 1.4em);
+      background-color: #ffcc00;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ffdb4d;
+    }
+
+    #enterSimulationBtn {
+      padding: 30px 20px; /* Increased top/bottom padding from 10px to 30px */
+      background: #007acc;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Mobile boost: double font size */
+    @media screen and (max-width: 767px) {
+      h1, p {
+        font-size: 200%; /* double whatever the clamp resolved to */
+      }
+    }
+  </style>
 </head>
 <body class="welcome">
 
-  <h1>🏖️ Laiya Beach ILCA Simulator</h1>
+  <h1>ILCA Simulator</h1>
   <br>
   <p>
     Welcome to the world of <strong>Sailing ILCA Physics</strong> —
@@ -22,70 +74,45 @@
     Experience the thrill of ILCA sailing with interactive controls, live wind data, and a dynamic map view.
     Every decision you make echoes the reality of the water, teaching you how physics drives performance.
   </p>
-  <br>
-  <h2>🎯 Objective</h2>
-  <p>
-    Launch your ILCA dinghy, round the buoy, and return to the start in the shortest possible time.
-    Along the way, discover how mastering the physics of sailing — not luck — is the key to speed.
-  </p>
+  <div>
+    <button id="enterSimulationBtn" onclick="location.href='game.html'">Enter Simulator</button>
+  </div>
+  <div>
+    <button id="objectiveBtn" onclick="openModal('objective.html')">Objective</button>
+    <button id="raceCourseBtn" onclick="openModal('raceCourse.html')">Race Course</button>
+    <button id="physicsBtn" onclick="openModal('physics.html')">Physics of Sailing</button>
+  </div>
 
+  <!-- UPDATED: Reusable Modal Structure using an iframe -->
+<dialog id="dynamicModal" style="width: 80%; max-width: 800px; padding: 20px; border-radius: 8px; border: 1px solid #ccc;">
+  <div style="text-align: right; margin-bottom: 10px;">
+    <button onclick="closeModal()" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 1rem;">Close</button>
+  </div>
+  <!-- Using an iframe completely isolates the loaded page from your index.html styling/structure -->
+  <iframe id="modalIframe" src="" style="width: 100%; height: 60vh; border: none;"></iframe>
+</dialog>
 
-  <button onclick="location.href='game.html'">Enter Simulator</button>
+<script>
+  function openModal(pageUrl) {
+    const modal = document.getElementById('dynamicModal');
+    const iframe = document.getElementById('modalIframe');
+    
+    // Set the source of the iframe directly to the target page
+    iframe.src = pageUrl;
+    
+    // Open the native dialog backdrop
+    modal.showModal();
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('dynamicModal');
+    const iframe = document.getElementById('modalIframe');
+    
+    modal.close();
+    iframe.src = ""; // Clear iframe source on close
+  }
+</script>
 
 
 </body>
 </html>
-
-
-<style>
-body.welcome {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f0f8ff;
-  color: #222;
-  text-align: center;
-  position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-
-
-
-/* Responsive fonts */
-h1 {
-  color: #0066cc;
-  font-size: clamp(1.8em, 3vw, 2.6em); /* bigger base, scales with screen */
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: clamp(1.1em, 2vw, 1.6em);
-  line-height: 1.5em;
-  margin: 10px 0;
-}
-
-
-
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  font-size: clamp(1em, 2vw, 1.4em);
-  background-color: #ffcc00;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #ffdb4d;
-}
-
-
-
-/* Mobile boost: double font size */
-@media screen and (max-width: 767px) {
-  h1, p {
-    font-size: 200%; /* double whatever the clamp resolved to */
-  }
-}
-</style>
