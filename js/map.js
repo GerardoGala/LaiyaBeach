@@ -21,7 +21,7 @@ export function initMap() {
   const buoyIcon = L.icon({
     iconUrl: "data:image/svg+xml;base64," + btoa(buoySVG),
     iconSize: [20, 20],
-    iconAnchor: [24, 48], // Adjusted anchor point to center the 20x20 marker over 
+    iconAnchor: [10, 10], // Adjusted anchor point to center the 20x20 marker over 
     popupAnchor: [0, -10]
   });
 
@@ -37,16 +37,13 @@ export function initMap() {
 
   // --- Add the 3 Marks to the Map ---
   const windwardMarker = L.marker([windwardMarkLat, windwardMarkLon], { icon: buoyIcon })
-    .addTo(map)
-    .bindTooltip("Windward Mark", { permanent: true, direction: "top", offset: [0, -10] });
+    .addTo(map);
 
   const gybeMarker = L.marker([gybeMarkLat, gybeMarkLon], { icon: buoyIcon })
-    .addTo(map)
-    .bindTooltip("Gybe Mark", { permanent: true, direction: "left", offset: [-10, 0] });
+    .addTo(map);
 
   const leewardMarker = L.marker([leewardMarkLat, leewardMarkLon], { icon: buoyIcon })
-    .addTo(map)
-    .bindTooltip("Leeward Mark", { permanent: true, direction: "bottom", offset: [0, 10] });
+    .addTo(map);
 
   // Add scale control to show distances on the map
   L.control.scale({
