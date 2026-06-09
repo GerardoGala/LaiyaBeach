@@ -4,12 +4,12 @@
 
   <!-- grid wrapper for the 7 dashboard items -->
   <div class="dashboard-grid">
-    <div id="sheetControlLabel" class="dashboard-item" data-target="sheetControl">
-      SHEET CONTROL = 20
-    </div>
-
     <div id="ilcaLabel" class="dashboard-item" data-target="ilcaControl">
       ILCA MANEUVER
+    </div>
+
+    <div id="sheetControlLabel" class="dashboard-item" data-target="sheetControl">
+      SHEET CONTROL = 20
     </div>
 
     <div id="sailorPositionLabel" class="dashboard-item" data-target="sailorPositionControl">
@@ -107,9 +107,8 @@
   }
 
   /* Place left column items: 3 items, each spans 4 of the 12 tracks (4 * 3 = 12) */
-  #sheetControlLabel        { grid-column: 1; grid-row: 1 / span 4; }
-  #ilcaLabel               { grid-column: 1; grid-row: 5 / span 4; }
-
+  #ilcaLabel              { grid-column: 1; grid-row: 1 / span 4; }
+  #sheetControlLabel      { grid-column: 1; grid-row: 5 / span 4; }
   #sailorPositionLabel    { grid-column: 1; grid-row: 9 / span 4; }
 
   /* Place right column items: 4 items, each spans 3 of the 12 tracks (3 * 4 = 12) */
