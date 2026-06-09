@@ -83,14 +83,22 @@
     <button id="physicsBtn" onclick="openModal('physics.html')">Physics of Sailing</button>
   </div>
 
-  <!-- UPDATED: Reusable Modal Structure using an iframe -->
-<dialog id="dynamicModal" style="width: 80%; max-width: 800px; padding: 20px; border-radius: 8px; border: 1px solid #ccc;">
-  <div style="text-align: right; margin-bottom: 10px;">
-    <button onclick="closeModal()" style="background: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 1rem;">Close</button>
+<!-- FIXED: Mobile-optimized dynamic fullscreen dialog -->
+<dialog id="dynamicModal" style="position: fixed; inset: 0; width: 100dvw; height: 100dvh; max-width: 100dvw; max-height: 100dvh; margin: 0; padding: 20px; border: none; box-sizing: border-box; background: #f0f8ff;">
+  
+  <!-- Top Bar for the Close Button -->
+  <div style="text-align: right; margin-bottom: 10px; height: 50px;">
+    <button onclick="closeModal()" style="background: #ff4d4d; color: white; border: none; padding: 12px 24px; cursor: pointer; border-radius: 6px; font-size: clamp(1em, 2vw, 1.4em); font-weight: bold;">
+      Close
+    </button>
   </div>
-  <!-- Using an iframe completely isolates the loaded page from your index.html styling/structure -->
-  <iframe id="modalIframe" src="" style="width: 100%; height: 60vh; border: none;"></iframe>
+  
+  <!-- Content container tracking the dynamic mobile height -->
+  <iframe id="modalIframe" src="" style="width: 100%; height: calc(100dvh - 100px); border: none; display: block;"></iframe>
+
 </dialog>
+
+
 
 <script>
   function openModal(pageUrl) {
