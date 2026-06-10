@@ -189,6 +189,10 @@ export function updateILCAControl() {
 export function updateVMGControl() {
   if (!vmgControlDiv) return;
 
+    // 🏁 ADD THIS LINE HERE: Freeze HUD when the race finishes
+  if (window.globalSimulationData.raceFinished) return; 
+
+
   const ilca = window.globalSimulationData.ILCA || {};
   const currentLeg = window.globalSimulationData.currentLeg || 0;
   
@@ -248,6 +252,10 @@ export function updateVMGControl() {
     // Downwind / Reaching Legs: Progress made directly away from the wind vector axis (dead downwind)
     vmgMS = speedMS * Math.cos(trueWindAngle + Math.PI);
   }
+
+    
+  // 💾 ADD THIS LINE HERE: Save the fresh calculation to global memory
+  window.globalSimulationData.ILCA.vmg = vmgMS; 
 
   // 6. Update HUD Interface Panel UI
   vmgControlDiv.innerHTML = `

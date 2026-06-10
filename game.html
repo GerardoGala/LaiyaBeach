@@ -93,13 +93,28 @@ document.addEventListener("DOMContentLoaded", () => {
       // Grab values from globalSimulationData
       const data = window.globalSimulationData;
 
-      document.getElementById("raceTime").textContent = data.ILCA?.timer?.toFixed(1) ?? "--";
-      document.getElementById("raceVMG").textContent = data.ILCA?.vmg?.toFixed(2) ?? "--";
-      document.getElementById("windDir").textContent = data.windDirection?.toFixed(0) ?? "--";
-      //document.getElementById("windSpeed").textContent = data.windSpeed?.toFixed(1) ?? "--";
+      // 1. Resolve Time Property: Check for display string first, fallback to numeric property
+      const timeText = data.ILCA?.displayTimer || 
+                      (typeof data.ILCA?.timer === 'number' ? data.ILCA.timer.toFixed(1) : "--");
+      document.getElementById("raceTime").textContent = timeText;
 
+      // 2. Safely cast and display numeric simulator values
+      const vmgNum = Number(data.ILCA?.vmg);
+      document.getElementById("raceVMG").textContent = !isNaN(vmgNum) ? vmgNum.toFixed(2) : "--";
+
+      const windDirNum = Number(data.windDirection);
+      document.getElementById("windDir").textContent = !isNaN(windDirNum) ? windDirNum.toFixed(0) : "--";
+
+      const windSpeedNum = Number(data.windSpeed);
+      document.getElementById("windSpeed").textContent = !isNaN(windSpeedNum) ? windSpeedNum.toFixed(1) : "--";
+
+      // 3. Render the overlay panel
       document.getElementById("nearRC").style.display = "block";
+      
+      // 4. Halt global engine state processing flags
+      window.globalSimulationData.raceFinished = true;
     }
+
 
     function closeFinishDialog() {
 
