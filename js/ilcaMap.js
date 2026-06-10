@@ -4,12 +4,15 @@ export function drawILCAOnMap(map) {
   const heading = ilca.heading;
 
 const boatSvgMarkup = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-      <g transform="rotate(${heading}, 50, 50)">
-        <polygon points="50,10 85,85 15,85" fill="white" stroke="black" stroke-width="2"/>
-        <polygon points="30,85 70,85 60,95 40,95 35,90" fill="blue" stroke="black" stroke-width="2"/>
-      </g>
-    </svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <g transform="rotate(${heading}, 50, 50)">
+    <!-- Main Hull (Scaled 50% towards center 50,50) -->
+    <polygon points="50,30 67.5,67.5 32.5,67.5" fill="white" stroke="black" stroke-width="2"/>
+    <!-- Transom / Rudder detail (Scaled 50% towards center 50,50) -->
+    <polygon points="40,67.5 60,67.5 55,72.5 45,72.5 42.5,70" fill="blue" stroke="black" stroke-width="2"/>
+  </g>
+</svg>
+
 `;
 
   const parser = new DOMParser();

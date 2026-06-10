@@ -70,6 +70,7 @@ export function updateILCA(map) {
 // Proximity alerts state flags
 let nearMark = false;
 
+
 function trackRaceLegs() {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
@@ -77,6 +78,7 @@ function trackRaceLegs() {
 
   let targetLat, targetLon, targetName, roundingRadius;
 
+  // --- 5-LEG TARGET ROUTING SYSTEM ---
   if (currentLeg === 0) {
     targetLat = window.globalSimulationData.windwardMarkLat;
     targetLon = window.globalSimulationData.windwardMarkLon;
@@ -90,8 +92,20 @@ function trackRaceLegs() {
   } else if (currentLeg === 2) {
     targetLat = window.globalSimulationData.leewardMarkLat;
     targetLon = window.globalSimulationData.leewardMarkLon;
-    targetName = "Leeward Mark (Finish Line)";
+    targetName = "Leeward Mark"; 
     roundingRadius = 20; 
+  } else if (currentLeg === 3) {
+    // Leg 4: Heading back to the top Windward Mark
+    targetLat = window.globalSimulationData.windwardMarkLat;
+    targetLon = window.globalSimulationData.windwardMarkLon;
+    targetName = "Windward Mark";
+    roundingRadius = 25;
+  } else if (currentLeg === 4) {
+    // Leg 5: The final downwind finish sprint to the bottom Leeward Mark
+    targetLat = window.globalSimulationData.leewardMarkLat;
+    targetLon = window.globalSimulationData.leewardMarkLon;
+    targetName = "Leeward Mark (Finish Line)";
+    roundingRadius = 20;
   } else {
     return;
   }
@@ -99,38 +113,50 @@ function trackRaceLegs() {
   // Measure boat spatial distance relative to active waypoint coordinate
   const distanceToTarget = calculateDistance(ilcaLat, ilcaLon, targetLat, targetLon);
 
-  // --- NEW FIXED LOGIC: Trigger instantly on arrival ---
+  // --- TRIGGER INSTANTLY ON ARRIVAL ---
   if (distanceToTarget <= roundingRadius) {
     console.log(`Successfully reached and rounded: ${targetName}!`);
 
-  // Hide any active proximity overlay boxes immediately
-  const alertBox = document.getElementById("nearBuoy");
-  if (alertBox) alertBox.style.display = "none";
+    // Hide any active proximity overlay boxes immediately
+    const alertBox = document.getElementById("nearBuoy");
+    if (alertBox) alertBox.style.display = "none";
 
-  if (currentLeg === 2) {
-    // Handle the finish line logic
-    window.globalSimulationData.raceFinished = true;
-    window.globalSimulationData.leewardMarkRounded = 1;
+    // --- STATE MACHINE FOR 5-LEG MARK ROUNDINGS ---
+    if (currentLeg === 0) {
+      window.globalSimulationData.windwardMarkRounded = 1;
+      window.globalSimulationData.currentLeg = 1; // Move to Leg 2 (Gybe)
 
-    // 🔧 THE FIX: Force windSpeed into a true JavaScript number type
-    if (window.globalSimulationData.windSpeed !== undefined) {
-      window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
-    }
+    } else if (currentLeg === 1) {
+      window.globalSimulationData.gybeMarkRounded = 1;
+      window.globalSimulationData.currentLeg = 2; // Move to Leg 3 (Leeward)
 
-    if (typeof showFinishDialog === "function") showFinishDialog();
-    } else {
-      // Mark completion flags for leg 0 or 1
-      if (currentLeg === 0) {
-        window.globalSimulationData.windwardMarkRounded = 1;
-      } else if (currentLeg === 1) {
-        window.globalSimulationData.gybeMarkRounded = 1;
+    } else if (currentLeg === 2) {
+      window.globalSimulationData.leewardMarkRounded = 1;
+      window.globalSimulationData.currentLeg = 3; // Move to Leg 4 (Second Upwind Climb)
+      console.log("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+
+    } else if (currentLeg === 3) {
+      // INTERCEPT FIXED: Track second upwind rounding, then pivot downwind for Leg 5
+      window.globalSimulationData.windwardMarkRounded = 2;
+      window.globalSimulationData.currentLeg = 4; // Move to Leg 5 (Final Dead Downwind Run)
+      console.log("Windward Mark rounded a second time! Bear away into the final dead downwind Run!");
+
+    } else if (currentLeg === 4) {
+      // True 5-leg race finish line triggered here at the bottom mark
+      window.globalSimulationData.raceFinished = true;
+      window.globalSimulationData.leewardMarkRounded = 2; // Track second leeward rounding
+
+      // Force windSpeed into a true JavaScript number type
+      if (window.globalSimulationData.windSpeed !== undefined) {
+        window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
       }
 
-      // Securely advance to the next race leg sequence immediately
-      window.globalSimulationData.currentLeg += 1;
+      if (typeof showFinishDialog === "function") showFinishDialog();
+      console.log("Race Completed! Final dead downwind finish registered.");
     }
+
   } else {
-    // Optional: Show an "approaching" warning when slightly outside the rounding zone (e.g., within 50 meters)
+    // Show an "approaching" warning when slightly outside the rounding zone (e.g., within 50 meters)
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) {
       if (distanceToTarget > roundingRadius && distanceToTarget < 50) {
@@ -142,6 +168,8 @@ function trackRaceLegs() {
     }
   }
 }
+
+
 
 
 

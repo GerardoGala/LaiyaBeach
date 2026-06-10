@@ -186,22 +186,23 @@ export function updateILCAControl() {
 }
 
 // --- Refresh function to update VMG ruler dynamically ---
+// --- Refresh function to update VMG ruler dynamically ---
 export function updateVMGControl() {
   if (!vmgControlDiv) return;
 
-    // 🏁 ADD THIS LINE HERE: Freeze HUD when the race finishes
+  // 🏁 Freeze HUD when the race finishes
   if (window.globalSimulationData.raceFinished) return; 
-
 
   const ilca = window.globalSimulationData.ILCA || {};
   const currentLeg = window.globalSimulationData.currentLeg || 0;
   
-  // FIX: Access the true wind direction from your global simulator data model
+  // Access the true wind direction from your global simulator data model
   const windDir = window.globalSimulationData.windDirection || 0; 
 
   // 1. Determine active target mark destination metrics based on the current race leg
   let destLat, destLon, currentMarkLabel;
 
+  // --- UPDATED FOR 5-LEG SEQUENCE ---
   if (currentLeg === 0) {
     destLat = window.globalSimulationData.windwardMarkLat;
     destLon = window.globalSimulationData.windwardMarkLon;
@@ -210,10 +211,21 @@ export function updateVMGControl() {
     destLat = window.globalSimulationData.gybeMarkLat;
     destLon = window.globalSimulationData.gybeMarkLon;
     currentMarkLabel = "Gybe Mark";
-  } else {
+  } else if (currentLeg === 2) {
+    destLat = window.globalSimulationData.leewardMarkLat;
+    destLon = window.globalSimulationData.leewardMarkLon;
+    currentMarkLabel = "Leeward Mark";
+  } else if (currentLeg === 3) {
+    destLat = window.globalSimulationData.windwardMarkLat;
+    destLon = window.globalSimulationData.windwardMarkLon;
+    currentMarkLabel = "Windward Mark";
+  } else if (currentLeg === 4) {
+    // Leg 5: Head back down to the Leeward Mark to finish the race
     destLat = window.globalSimulationData.leewardMarkLat;
     destLon = window.globalSimulationData.leewardMarkLon;
     currentMarkLabel = "Leeward Mark (Finish Line)";
+  } else {
+    return;
   }
 
   // 2. Fetch current real-time boat location coordinates
@@ -240,24 +252,26 @@ export function updateVMGControl() {
   const deltaLonMeters = (boatLon - destLon) * metersPerDegLon;
   const distanceToTarget = Math.sqrt(deltaLatMeters * deltaLatMeters + deltaLonMeters * deltaLonMeters);
 
-  // 5. PROFESSIONAL FIX: Calculate VMG purely relative to True Wind Direction (TWD) axis
-  // This completely eliminates the decreasing coordinate distortion bug
+  // 5. Calculate VMG relative to True Wind Direction (TWD) axis
   const trueWindAngle = (heading - windDir) * Math.PI / 180;
   let vmgMS = 0;
 
-  if (currentLeg === 0) {
-    // Upwind Leg: Progress made directly into the wind vector axis (dead upwind)
+  // --- FIX: Group upwind legs vs downwind/reaching legs correctly ---
+  if (currentLeg === 0 || currentLeg === 3) {
+    // Upwind Legs (Leg 1 & Leg 4): Progress made directly into the wind vector axis (dead upwind)
     vmgMS = speedMS * Math.cos(trueWindAngle);
   } else {
-    // Downwind / Reaching Legs: Progress made directly away from the wind vector axis (dead downwind)
+    // Downwind / Reaching Legs (Leg 2, Leg 3 & Leg 5): Progress made directly away from the wind vector axis (dead downwind)
     vmgMS = speedMS * Math.cos(trueWindAngle + Math.PI);
   }
 
-    
-  // 💾 ADD THIS LINE HERE: Save the fresh calculation to global memory
-  window.globalSimulationData.ILCA.vmg = vmgMS; 
+  // 💾 Save the fresh calculation to global memory
+  if (window.globalSimulationData.ILCA) {
+    window.globalSimulationData.ILCA.vmg = vmgMS; 
+  }
 
-  // 6. Update HUD Interface Panel UI
+  // 6. Update HUD Interface Panel 
+  // removed this for now ggala      <div>Bearing to Mark: ${bearingDest.toFixed(0)}°</div>
   vmgControlDiv.innerHTML = `
     <div><strong>VMG (Wind Axis)</strong></div>
     <div style="margin: 4px 0; color: blue; font-size: 14px;">${vmgMS.toFixed(2)} m/s</div>
@@ -265,10 +279,10 @@ export function updateVMGControl() {
     <div style="color: green; text-align: left;">
       <div>Target: <strong>Leg ${currentLeg + 1} (${currentMarkLabel})</strong></div>
       <div>Distance to Mark: ${distanceToTarget.toFixed(0)} m</div>
-      <div>Bearing to Mark: ${bearingDest.toFixed(0)}°</div>
     </div>
   `;
 }
+
 
 
 

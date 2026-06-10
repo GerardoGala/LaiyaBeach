@@ -9,21 +9,27 @@ window.globalSimulationData = {
   leewardMarkLon: 121.401286,
 
   // Set to 1.0 for full course, 0.5 for smaller, 0.25 for rapid testing
-  windwardMarkLat: 13.670464 + (0.00361545 * .75),  // Full: 400m | Small: 200m | Tiny: 100m
+  windwardMarkLat: 13.670464 + (0.00361545 * 0.5),  // Full: 400m | Small: 200m | Tiny: 100m
   windwardMarkLon: 121.401286,
   
-  gybeMarkLat: 13.670464 + (0.00180772 * .75),     // Full: 200m | Small: 100m | Tiny: 50m
-  gybeMarkLon: 121.401286 - (0.00186238 * .75),    // Updated from 0.00320198 to achieve a true 60-60-60 triangle
+  gybeMarkLat: 13.670464 + (0.00180772 * 0.5),     // Full: 200m | Small: 100m | Tiny: 50m
+  gybeMarkLon: 121.401286 - (0.00186238 * 0.5),    // Updated to achieve a perfect 45-90-45 course
 
+  // --- UPDATED FOR 5-LEG OLYMPIC COURSE SYSTEM ---
+  // 0 = Leg 1: To Windward (Beat)
+  // 1 = Leg 2: To Gybe (Beam Reach)
+  // 2 = Leg 3: To Leeward (Broad Reach)
+  // 3 = Leg 4: To Windward (Second Beat Climb)
+  // 4 = Leg 5: To Leeward (Final Dead Downwind Run Finish)
+  currentLeg: 0,                                 
 
-  // FIX: Updated comments to match the actual upwind-first race progression
-  currentLeg: 0,                                 // 0=To Windward, 1=To Gybe, 2=To Leeward (Finish)
-
-  // FIX: Added windward tracker since it is the first mark rounded in the race
-  windwardMarkRounded: 0,
-  gybeMarkRounded: 0,
-  leewardMarkRounded: 0,
+  // Rounded trackers increment each time a mark threshold is successfully crossed
+  windwardMarkRounded: 0,  // Reaches 1 on Leg 1, reaches 2 on Leg 4!
+  gybeMarkRounded: 0,      // Reaches 1 on Leg 2
+  leewardMarkRounded: 0,   // Reaches 1 on Leg 3, reaches 2 at the final race finish!
   raceFinished: false,
+
+
 
 
   // --- Buoy state ---
