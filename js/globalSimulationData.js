@@ -4,16 +4,17 @@ window.globalSimulationData = {
   windDirection: 0,
   windSpeed: 0,   //
 
-  // Base coordinates scaled dynamically by the fudgeFactor multiplier
+   // Base coordinates scaled dynamically by the fudgeFactor multiplier
   leewardMarkLat: 13.670464,
   leewardMarkLon: 121.401286,
 
   // Set to 1.0 for full course, 0.5 for smaller, 0.25 for rapid testing
-  windwardMarkLat: 13.670464 + (0.00361545 * 1),  // Full: 400m | Small: 200m | Tiny: 100m
+  windwardMarkLat: 13.670464 + (0.00361545 * .75),  // Full: 400m | Small: 200m | Tiny: 100m
   windwardMarkLon: 121.401286,
   
-  gybeMarkLat: 13.670464 + (0.00180772 * 1),     // Full: 200m | Small: 100m | Tiny: 50m
-  gybeMarkLon: 121.401286 - (0.00320198 * 1),    // Full: 346m | Small: 173m | Tiny: 86m
+  gybeMarkLat: 13.670464 + (0.00180772 * .75),     // Full: 200m | Small: 100m | Tiny: 50m
+  gybeMarkLon: 121.401286 - (0.00186238 * .75),    // Updated from 0.00320198 to achieve a true 60-60-60 triangle
+
 
   // FIX: Updated comments to match the actual upwind-first race progression
   currentLeg: 0,                                 // 0=To Windward, 1=To Gybe, 2=To Leeward (Finish)
