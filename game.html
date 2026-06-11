@@ -30,8 +30,7 @@
         <h2 style="margin-top:0;">🏁 Congratulations!</h2>
         <p id="raceSummary">
           Your race time is <span id="raceTime">--</span> minutes.<br>
-          VMG: <span id="raceVMG">--</span> m/s.<br>
-          Wind: <span id="windDir">--</span>° at <span id="windSpeed">--</span> knots.
+             Wind: <span id="windDir">--</span>° at <span id="windSpeed">--</span> knots.
         </p>
         <button onclick="closeFinishDialog()" 
                 style="margin-top:15px;background:#007bff;color:white;
@@ -99,10 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("raceTime").textContent = timeText;
 
       // 2. Safely cast and display numeric simulator values
-      const vmgNum = Number(data.ILCA?.vmg);
-      document.getElementById("raceVMG").textContent = !isNaN(vmgNum) ? vmgNum.toFixed(2) : "--";
-
-      const windDirNum = Number(data.windDirection);
+       const windDirNum = Number(data.windDirection);
       document.getElementById("windDir").textContent = !isNaN(windDirNum) ? windDirNum.toFixed(0) : "--";
 
       const windSpeedNum = Number(data.windSpeed);
