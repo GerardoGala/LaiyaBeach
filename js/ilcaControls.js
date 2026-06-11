@@ -3,55 +3,53 @@ import { computeBearing } from "./ilcaUtils.js";
 
 export function handleControls(windDir, windSpeed) {
   const ilca = window.globalSimulationData.ILCA;
+  let currentHeading = ilca.heading;
+  
+  // Calculate which tack we are on relative to the shifting wind
+  // Wrapping with a standard normalization to handle the 360-degree rollover cleanly
+  const relativeAngle = ((currentHeading - windDir + 540) % 360) - 180; 
+  const isStarboardTack = relativeAngle >= 0;
+
+  // A crisp 3-degree adjustment step prevents over-steering near the buoys
+  const STEERING_STEP = 3; 
+
   switch (ilca.maneuver) {
     case "launch":
       launchILCA(windDir, windSpeed);
       break;
+
     case "turn-port":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading - 45 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
-      }
+      ilca.heading = (currentHeading - 45 + 360) % 360;
       break;
+
     case "turn-starboard":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading + 45 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
+      ilca.heading = (currentHeading + 45 + 360) % 360;
+      break;
+
+    case "head-up":
+      // ⛵ Head Up always steers the bow CLOSER to the wind axis
+      if (isStarboardTack) {
+        ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
+      } else {
+        ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
       }
       break;
-    case "heading-minus5":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading - 5 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
-      }
-      break;
-    case "heading-minus1":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading - 1 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
-      }
-      break;
-    case "heading-plus1":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading + 1 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
-      }
-      break;
-    case "heading-plus5":
-      {
-        let currentHeading = window.globalSimulationData.ILCA.heading;
-        let newHeading = (currentHeading + 5 + 360) % 360;
-        window.globalSimulationData.ILCA.heading = newHeading;
+
+    case "bear-away":
+      // ⛵ Bear Away always steers the bow FURTHER AWAY from the wind axis
+      if (isStarboardTack) {
+        ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
+      } else {
+        ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
       }
       break;
   }
-  ilca.maneuver = null;
+
+  // Clear the maneuver state so it doesn't loop infinitely 
+  // (Assuming your engine handles resets elsewhere, otherwise leave as is)
+  ilca.maneuver = null; 
 }
+
 
 function launchILCA(windDir, windSpeed) {
   if (window.globalSimulationData.raceFinished) return; // don't spawn new boats

@@ -1,20 +1,19 @@
 <!-- input.html -->
 <div id="input-pane">
-  <div id="ilcaControl" class="input-section directional-controls  active">
-    <!-- Row 1: Directional Controls (Two Columns) -->
-    <div class="control-row row-directions">
-      <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
-      <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
-    </div>
-    <!-- Row 2: Heading Adjustments (Four Columns/Buttons) -->
-    <div id="ilcaControl" class="input-section directional-controls"></div>  
-      <div class="control-row row-adjustments">
-        <button class="control-button" onclick="showNotification('ILCA Heading -5'); window.globalSimulationData.ILCA.maneuver = 'heading-minus5'">-5</button>
-        <button class="control-button" onclick="showNotification('ILCA Heading -1'); window.globalSimulationData.ILCA.maneuver = 'heading-minus1'">-1</button>
-        <button class="control-button" onclick="showNotification('ILCA Heading +1'); window.globalSimulationData.ILCA.maneuver = 'heading-plus1'">+1</button>
-        <button class="control-button" onclick="showNotification('ILCA Heading +5'); window.globalSimulationData.ILCA.maneuver = 'heading-plus5'">+5</button>
-      </div>
+<div id="ilcaControl" class="input-section directional-controls active">
+  <!-- Row 1: Directional Controls (Two Columns) -->
+  <div class="control-row row-directions">
+    <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
+    <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
   </div>
+  
+  <!-- Row 2: Strategic Wind-Relative Adjustments (Two Columns) -->
+  <div class="control-row row-adjustments">
+    <button class="control-button button-headup" onclick="showNotification('Heading Up'); window.globalSimulationData.ILCA.maneuver = 'head-up'">HEAD UP</button>
+    <button class="control-button button-bearaway" onclick="showNotification('Bearing Away'); window.globalSimulationData.ILCA.maneuver = 'bear-away'">BEAR AWAY</button>
+  </div>
+</div>
+
 
   <div id="sheetControl" class="input-section">
       <div class="control-row">
