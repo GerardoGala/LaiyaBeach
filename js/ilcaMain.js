@@ -70,15 +70,17 @@ export function updateILCA(map) {
 // Proximity alerts state flags
 let nearMark = false;
 
+// =========================================================================
+// ⚓ RACE LEG TRACKING MODULE (With Immediate green Target)
+// =========================================================================
 
-function trackRaceLegs() {
+export function trackRaceLegs() {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
 
   let targetLat, targetLon, targetName, roundingRadius;
 
   // --- 1. TARGET ROUTING SYSTEM ---
-  // Evaluated directly on global scope state to prevent stale frame references
   switch (window.globalSimulationData.currentLeg) {
     case 0:
       targetLat = window.globalSimulationData.windwardMarkLat;
@@ -90,7 +92,7 @@ function trackRaceLegs() {
       targetLat = window.globalSimulationData.gybeMarkLat;
       targetLon = window.globalSimulationData.gybeMarkLon;
       targetName = "Gybe Mark";
-      roundingRadius = 5; // Reduced to fit the tight 71.1m leg clearance
+      roundingRadius = 5; 
       break;
     case 2:
       targetLat = window.globalSimulationData.leewardMarkLat;
@@ -111,48 +113,84 @@ function trackRaceLegs() {
       roundingRadius = 5;
       break;
     default:
-      return; // Stop processing if currentLeg out of bounds
+      return; 
   }
 
   // Measure boat spatial distance relative to active waypoint coordinate
   const distanceToTarget = calculateDistance(ilcaLat, ilcaLon, targetLat, targetLon);
 
-  // --- 2. TRIGGER ON ARRIVAL ARRIVAL ---
+  // --- 2. TRIGGER ON ARRIVAL ---
   if (distanceToTarget <= roundingRadius) {
     console.log(`Successfully reached and rounded: ${targetName}!`);
 
-    // Clear UI warnings instantly upon collision detection
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) alertBox.style.display = "none";
 
     // --- 3. STATE MACHINE FOR MARK ROUNDINGS ---
-    // Break closures prevent execution fallthrough or sequential skipping
+    // Moving the teleportation calls right into the leg assignment states fixes the lag!
     switch (window.globalSimulationData.currentLeg) {
       case 0:
         window.globalSimulationData.windwardMarkRounded = 1;
         window.globalSimulationData.currentLeg = 1; // Move to Leg 2 (Gybe)
+        
+        // ⚡ Teleport immediately to the Gybe mark coordinates
+        if (window.globalSimulationData.activeMarker) {
+          window.globalSimulationData.activeMarker.setLatLng([
+            window.globalSimulationData.gybeMarkLat, 
+            window.globalSimulationData.gybeMarkLon
+          ]);
+        }
         break;
 
       case 1:
         window.globalSimulationData.gybeMarkRounded = 1;
         window.globalSimulationData.currentLeg = 2; // Move to Leg 3 (Leeward)
+        
+        // ⚡ Teleport immediately to Leeward mark coordinates
+        if (window.globalSimulationData.activeMarker) {
+          window.globalSimulationData.activeMarker.setLatLng([
+            window.globalSimulationData.leewardMarkLat, 
+            window.globalSimulationData.leewardMarkLon
+          ]);
+        }
         break;
 
       case 2:
         window.globalSimulationData.leewardMarkRounded = 1;
-        window.globalSimulationData.currentLeg = 3; // Move to Leg 4
+        window.globalSimulationData.currentLeg = 3; // Move to Leg 4 (Windward again)
         console.log("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+        
+        // ⚡ Teleport back to Windward mark coordinates
+        if (window.globalSimulationData.activeMarker) {
+          window.globalSimulationData.activeMarker.setLatLng([
+            window.globalSimulationData.windwardMarkLat, 
+            window.globalSimulationData.windwardMarkLon
+          ]);
+        }
         break;
 
       case 3:
         window.globalSimulationData.windwardMarkRounded = 2;
-        window.globalSimulationData.currentLeg = 4; // Move to Leg 5
+        window.globalSimulationData.currentLeg = 4; // Move to Leg 5 (Final Downwind Finish)
         console.log("Windward Mark rounded a second time! Bear away into the final downwind Run!");
+        
+        // ⚡ Teleport to Leeward mark coordinates for the Finish line marker
+        if (window.globalSimulationData.activeMarker) {
+          window.globalSimulationData.activeMarker.setLatLng([
+            window.globalSimulationData.leewardMarkLat, 
+            window.globalSimulationData.leewardMarkLon
+          ]);
+        }
         break;
 
       case 4:
         window.globalSimulationData.raceFinished = true;
         window.globalSimulationData.leewardMarkRounded = 2; 
+
+        // 🛑 Clear target circle on finish line crossing
+        if (window.globalSimulationData.activeMarker) {
+          window.globalSimulationData.activeMarker.remove();
+        }
 
         if (window.globalSimulationData.windSpeed !== undefined) {
           window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
@@ -176,6 +214,16 @@ function trackRaceLegs() {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

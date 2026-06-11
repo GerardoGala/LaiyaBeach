@@ -2,7 +2,7 @@ window.globalSimulationData = {
 
   // --- Wind state ---
   windDirection: 0,
-  windSpeed: 0,   //
+  windSpeed: 0,   
 
   // Base coordinates for the course setup
   leewardMarkLat: 13.670464,
@@ -15,6 +15,9 @@ window.globalSimulationData = {
   gybeMarkLat: 13.67091593,
   gybeMarkLon: 121.40082041,
 
+
+    // 🎯 The Leaflet marker instance reference
+  activeMarker: null, 
 
   // --- UPDATED FOR 5-LEG OLYMPIC COURSE SYSTEM ---
   // 0 = Leg 1: To Windward (Beat)
@@ -30,6 +33,14 @@ window.globalSimulationData = {
   leewardMarkRounded: 0,   // Reaches 1 on Leg 3, reaches 2 at the final race finish!
   raceFinished: false,
 
+  // 🟢 NEW: Holds references to your physical Leaflet map markers
+  // Map initialization scripts should store markers here: window.globalSimulationData.markers.windward = myMarker;
+  markers: {
+    windward: null,
+    gybe: null,
+    leeward: null
+  },
+
   // --- ILCA state ---
   ILCA: {
     maneuver: null,
@@ -42,7 +53,7 @@ window.globalSimulationData = {
     vang: 0,
     downhaul: 0,
     outhaul: 0,
-    //slightly south of13.670464
+    //slightly south of 13.670464
     lat: 13.670464,   
     lon: 121.401286,
     timer: 0,
