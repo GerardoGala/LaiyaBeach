@@ -74,92 +74,100 @@ let nearMark = false;
 function trackRaceLegs() {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
-  const currentLeg = window.globalSimulationData.currentLeg;
 
   let targetLat, targetLon, targetName, roundingRadius;
 
-  // --- 5-LEG TARGET ROUTING SYSTEM ---
-  if (currentLeg === 0) {
-    targetLat = window.globalSimulationData.windwardMarkLat;
-    targetLon = window.globalSimulationData.windwardMarkLon;
-    targetName = "Windward Mark";
-    roundingRadius = 25; 
-  } else if (currentLeg === 1) {
-    targetLat = window.globalSimulationData.gybeMarkLat;
-    targetLon = window.globalSimulationData.gybeMarkLon;
-    targetName = "Gybe Mark";
-    roundingRadius = 25;
-  } else if (currentLeg === 2) {
-    targetLat = window.globalSimulationData.leewardMarkLat;
-    targetLon = window.globalSimulationData.leewardMarkLon;
-    targetName = "Leeward Mark"; 
-    roundingRadius = 20; 
-  } else if (currentLeg === 3) {
-    // Leg 4: Heading back to the top Windward Mark
-    targetLat = window.globalSimulationData.windwardMarkLat;
-    targetLon = window.globalSimulationData.windwardMarkLon;
-    targetName = "Windward Mark";
-    roundingRadius = 25;
-  } else if (currentLeg === 4) {
-    // Leg 5: The final downwind finish sprint to the bottom Leeward Mark
-    targetLat = window.globalSimulationData.leewardMarkLat;
-    targetLon = window.globalSimulationData.leewardMarkLon;
-    targetName = "Leeward Mark (Finish Line)";
-    roundingRadius = 20;
-  } else {
-    return;
+  // --- 1. TARGET ROUTING SYSTEM ---
+  // Evaluated directly on global scope state to prevent stale frame references
+  switch (window.globalSimulationData.currentLeg) {
+    case 0:
+      targetLat = window.globalSimulationData.windwardMarkLat;
+      targetLon = window.globalSimulationData.windwardMarkLon;
+      targetName = "Windward Mark";
+      roundingRadius = 5; // Reduced from 25 to match 0.25 absolute scaled layout
+      break;
+    case 1:
+      targetLat = window.globalSimulationData.gybeMarkLat;
+      targetLon = window.globalSimulationData.gybeMarkLon;
+      targetName = "Gybe Mark";
+      roundingRadius = 5; // Reduced to fit the tight 71.1m leg clearance
+      break;
+    case 2:
+      targetLat = window.globalSimulationData.leewardMarkLat;
+      targetLon = window.globalSimulationData.leewardMarkLon;
+      targetName = "Leeward Mark"; 
+      roundingRadius = 5;
+      break;
+    case 3:
+      targetLat = window.globalSimulationData.windwardMarkLat;
+      targetLon = window.globalSimulationData.windwardMarkLon;
+      targetName = "Windward Mark";
+      roundingRadius = 5;
+      break;
+    case 4:
+      targetLat = window.globalSimulationData.leewardMarkLat;
+      targetLon = window.globalSimulationData.leewardMarkLon;
+      targetName = "Leeward Mark (Finish Line)";
+      roundingRadius = 5;
+      break;
+    default:
+      return; // Stop processing if currentLeg out of bounds
   }
 
   // Measure boat spatial distance relative to active waypoint coordinate
   const distanceToTarget = calculateDistance(ilcaLat, ilcaLon, targetLat, targetLon);
 
-  // --- TRIGGER INSTANTLY ON ARRIVAL ---
+  // --- 2. TRIGGER ON ARRIVAL ARRIVAL ---
   if (distanceToTarget <= roundingRadius) {
     console.log(`Successfully reached and rounded: ${targetName}!`);
 
-    // Hide any active proximity overlay boxes immediately
+    // Clear UI warnings instantly upon collision detection
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) alertBox.style.display = "none";
 
-    // --- STATE MACHINE FOR 5-LEG MARK ROUNDINGS ---
-    if (currentLeg === 0) {
-      window.globalSimulationData.windwardMarkRounded = 1;
-      window.globalSimulationData.currentLeg = 1; // Move to Leg 2 (Gybe)
+    // --- 3. STATE MACHINE FOR MARK ROUNDINGS ---
+    // Break closures prevent execution fallthrough or sequential skipping
+    switch (window.globalSimulationData.currentLeg) {
+      case 0:
+        window.globalSimulationData.windwardMarkRounded = 1;
+        window.globalSimulationData.currentLeg = 1; // Move to Leg 2 (Gybe)
+        break;
 
-    } else if (currentLeg === 1) {
-      window.globalSimulationData.gybeMarkRounded = 1;
-      window.globalSimulationData.currentLeg = 2; // Move to Leg 3 (Leeward)
+      case 1:
+        window.globalSimulationData.gybeMarkRounded = 1;
+        window.globalSimulationData.currentLeg = 2; // Move to Leg 3 (Leeward)
+        break;
 
-    } else if (currentLeg === 2) {
-      window.globalSimulationData.leewardMarkRounded = 1;
-      window.globalSimulationData.currentLeg = 3; // Move to Leg 4 (Second Upwind Climb)
-      console.log("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+      case 2:
+        window.globalSimulationData.leewardMarkRounded = 1;
+        window.globalSimulationData.currentLeg = 3; // Move to Leg 4
+        console.log("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+        break;
 
-    } else if (currentLeg === 3) {
-      // INTERCEPT FIXED: Track second upwind rounding, then pivot downwind for Leg 5
-      window.globalSimulationData.windwardMarkRounded = 2;
-      window.globalSimulationData.currentLeg = 4; // Move to Leg 5 (Final Dead Downwind Run)
-      console.log("Windward Mark rounded a second time! Bear away into the final dead downwind Run!");
+      case 3:
+        window.globalSimulationData.windwardMarkRounded = 2;
+        window.globalSimulationData.currentLeg = 4; // Move to Leg 5
+        console.log("Windward Mark rounded a second time! Bear away into the final downwind Run!");
+        break;
 
-    } else if (currentLeg === 4) {
-      // True 5-leg race finish line triggered here at the bottom mark
-      window.globalSimulationData.raceFinished = true;
-      window.globalSimulationData.leewardMarkRounded = 2; // Track second leeward rounding
+      case 4:
+        window.globalSimulationData.raceFinished = true;
+        window.globalSimulationData.leewardMarkRounded = 2; 
 
-      // Force windSpeed into a true JavaScript number type
-      if (window.globalSimulationData.windSpeed !== undefined) {
-        window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
-      }
+        if (window.globalSimulationData.windSpeed !== undefined) {
+          window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
+        }
 
-      if (typeof showFinishDialog === "function") showFinishDialog();
-      console.log("Race Completed! Final dead downwind finish registered.");
+        if (typeof showFinishDialog === "function") showFinishDialog();
+        console.log("Race Completed! Final dead downwind finish registered.");
+        break;
     }
 
   } else {
-    // Show an "approaching" warning when slightly outside the rounding zone (e.g., within 50 meters)
+    // Show an "approaching" warning when slightly outside the rounding zone (e.g., within 25 meters)
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) {
-      if (distanceToTarget > roundingRadius && distanceToTarget < 50) {
+      if (distanceToTarget > roundingRadius && distanceToTarget < 25) {
         alertBox.innerText = `Approaching ${targetName} (${distanceToTarget.toFixed(0)}m)`;
         alertBox.style.display = "block";
       } else {
@@ -168,6 +176,7 @@ function trackRaceLegs() {
     }
   }
 }
+
 
 
 

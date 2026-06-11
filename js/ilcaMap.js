@@ -7,9 +7,9 @@ const boatSvgMarkup = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <g transform="rotate(${heading}, 50, 50)">
     <!-- Main Hull (Scaled 50% towards center 50,50) -->
-    <polygon points="50,30 67.5,67.5 32.5,67.5" fill="white" stroke="black" stroke-width="2"/>
+    <polygon points="50,40 58.75,58.75 41.25,58.75" fill="white" stroke="black" stroke-width="2"/>
     <!-- Transom / Rudder detail (Scaled 50% towards center 50,50) -->
-    <polygon points="40,67.5 60,67.5 55,72.5 45,72.5 42.5,70" fill="blue" stroke="black" stroke-width="2"/>
+    <polygon points="45,58.75 55,58.75 52.5,61.25 47.5,61.25 46.25,60" fill="blue" stroke="black" stroke-width="2"/>
   </g>
 </svg>
 

@@ -4,17 +4,18 @@ window.globalSimulationData = {
   windDirection: 0,
   windSpeed: 0,   //
 
-   // Base coordinates scaled dynamically by the fudgeFactor multiplier
+  // Base coordinates for the course setup
   leewardMarkLat: 13.670464,
   leewardMarkLon: 121.401286,
 
-  // Set to 1.0 for full course, 0.5 for smaller, 0.25 for rapid testing
-  windwardMarkLat: 13.670464 + (0.00361545 * 0.5),  // Full: 400m | Small: 200m | Tiny: 100m
+  // Absolute positions calculated from the previous 0.25 testing factor
+  windwardMarkLat: 13.67136786,
   windwardMarkLon: 121.401286,
   
-  gybeMarkLat: 13.670464 + (0.00180772 * 0.5),     // Full: 200m | Small: 100m | Tiny: 50m
-  gybeMarkLon: 121.401286 - (0.00186238 * 0.5),    // Updated to achieve a perfect 45-90-45 course
+  gybeMarkLat: 13.67091593,
+  gybeMarkLon: 121.40082041,
 
+  
   // --- UPDATED FOR 5-LEG OLYMPIC COURSE SYSTEM ---
   // 0 = Leg 1: To Windward (Beat)
   // 1 = Leg 2: To Gybe (Beam Reach)
