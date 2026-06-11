@@ -60,13 +60,15 @@ if (launched) {
   }, 1000);
 }
 
-// --- Helper to fetch wind and update global state ---
+
+// --- Clean, flat helper to sync the wind state ---
 async function updateWindFromAPI() {
   try {
-    const windData = await fetchWind(); // should return { direction, speed }
+    const windData = await fetchWind(); // Returns { direction, speed }
     if (windData) {
-      window.globalSimulationData.windDirection = Number(windData.direction) || 0;
-      window.globalSimulationData.windSpeed = Number(windData.speed) || 0;
+      window.globalSimulationData.windDirection = Number(windData.direction);
+      window.globalSimulationData.windSpeed = Number(windData.speed);
+      
       console.log("Wind updated:", window.globalSimulationData.windDirection, window.globalSimulationData.windSpeed);
     }
   } catch (err) {
@@ -75,12 +77,11 @@ async function updateWindFromAPI() {
 }
 
 
+
 // Launch simulation
 export function launchSimulation() {
   launched = true;
   fetchWind();
-  //06/09/20026 default to 0 for now
-  //const windDirection = window.globalSimulationData.windDirection;
 
   // ✅ ILCA stuck in irons
   window.globalSimulationData.ILCA.heading = (0) % 360;
