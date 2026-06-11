@@ -84,7 +84,7 @@ function trackRaceLegs() {
       targetLat = window.globalSimulationData.windwardMarkLat;
       targetLon = window.globalSimulationData.windwardMarkLon;
       targetName = "Windward Mark";
-      roundingRadius = 5; // Reduced from 25 to match 0.25 absolute scaled layout
+      roundingRadius = 5;
       break;
     case 1:
       targetLat = window.globalSimulationData.gybeMarkLat;
