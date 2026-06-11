@@ -15,7 +15,7 @@ window.globalSimulationData = {
   gybeMarkLat: 13.67091593,
   gybeMarkLon: 121.40082041,
 
-  
+
   // --- UPDATED FOR 5-LEG OLYMPIC COURSE SYSTEM ---
   // 0 = Leg 1: To Windward (Beat)
   // 1 = Leg 2: To Gybe (Beam Reach)
@@ -29,18 +29,6 @@ window.globalSimulationData = {
   gybeMarkRounded: 0,      // Reaches 1 on Leg 2
   leewardMarkRounded: 0,   // Reaches 1 on Leg 3, reaches 2 at the final race finish!
   raceFinished: false,
-
-
-
-
-  // --- Buoy state ---
-  buoyLat: 13.660641 + 0.0054,   // 0.0027 = 300m Northward is +
-  buoyLon: 121.411058 - 0.0084,  // 0.0028 = 300m Westward is -
-  buoyRounded: 0,
-  raceFinished: false,
-  rcLat: 13.670464,
-  rcLon: 121.401286,
-
 
   // --- ILCA state ---
   ILCA: {
