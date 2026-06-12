@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame | Laser Sailing Simulator</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --navy: #0056b3;
+            --light-bg: #f8fafc;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--light-bg); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px;
+            margin: 0;
+        }
+        .board-container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 95%; 
+            max-width: 600px; 
+            margin-top: 20px;
+        }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--navy); margin: 0; font-size: 2rem; }
+        p { color: #666; margin-top: 5px; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; border-bottom: 2px solid #edf2f7; padding: 15px 10px; color: #4a5568; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+        td { padding: 15px 10px; border-bottom: 1px solid #edf2f7; color: #2d3748; }
+        
+        tr:nth-child(1) .rank { color: #d4af37; font-size: 1.5rem; } /* Gold */
+        tr:nth-child(2) .rank { color: #aaa9ad; font-size: 1.3rem; } /* Silver */
+        tr:nth-child(3) .rank { color: #b08d57; font-size: 1.2rem; } /* Bronze */
+
+        .rank { font-weight: bold; width: 60px; }
+        .sailor-name { font-weight: 500; }
+        .time { text-align: right; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: var(--navy); }
+        
+        .nav-links { margin-top: 30px; display: flex; gap: 15px; }
+        .btn { 
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            transition: transform 0.2s;
+        }
+        .btn-play { background: var(--primary-blue); color: white; }
+        .btn-play:hover { transform: translateY(-2px); background: var(--navy); }
+    </style>
+</head>
+<body>
+
+    <div class="board-container">
+        <header>
+            <h1>Global Leaderboard ⛵</h1>
+            <p>The Top 10 Fastest Sailors</p>
+        </header>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Sailor</th>
+                    <th style="text-align: right;">Time</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                <tr><td colspan="3" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="nav-links">
+        <button id="shareBoardBtn" class="btn" style="background: #6c757d; color: white; border: none; cursor: pointer;">
+            Share Leaderboard 🌐
+        </button>
+        <a href="index.html" class="btn btn-play">Back to Dock</a>
+        <a href="game.html" class="btn btn-play" style="background: #28a745;">New Race</a>
+    </div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+        authDomain: "laser-sailing-simulator.firebaseapp.com",
+        projectId: "laser-sailing-simulator",
+        storageBucket: "laser-sailing-simulator.firebasestorage.app",
+        messagingSenderId: "45397375888",
+        appId: "1:45397375888:web:1ca8d7688170787624d115"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function initBoard() {
+            const tableBody = document.getElementById('leaderboardBody');
+            
+            try {
+                // 1. Reference the collection
+                const leaderboardRef = collection(db, "leaderboard");
+                
+                // 2. Simple query first to ensure we see data
+                // If this works, you can re-add: orderBy("finalTime", "asc"), limit(10)
+                const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
+                
+                const querySnapshot = await getDocs(q);
+                tableBody.innerHTML = ''; 
+
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
+                    return;
+                }
+
+                let rank = 1;
+                querySnapshot.forEach((doc) => {
+                    const entry = doc.data();
+                    
+                    // Handle potential different field names or missing data
+                    const sailor = entry.sailorName || "Anonymous Skipper";
+                    const time = entry.finalTime ? Number(entry.finalTime).toFixed(2) : "N/A";
+
+                    let rankDisplay = `#${rank}`;
+                    if(rank === 1) rankDisplay = '🏆';
+                    if(rank === 2) rankDisplay = '🥈';
+                    if(rank === 3) rankDisplay = '🥉';
+
+                    const row = `
+                        <tr>
+                            <td class="rank">${rankDisplay}</td>
+                            <td class="sailor-name">${sailor}</td>
+                            <td class="time">${time}s</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                    rank++;
+                });
+
+            } catch (err) {
+                console.error("Board error:", err);
+                // This will show the EXACT error message on the screen if it fails
+                tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">
+                    Error: ${err.code || err.message}
+                </td></tr>`;
+            }
+        }
+
+        // Share functionality stays outside the async loop for reliability
+        document.getElementById('shareBoardBtn').onclick = async () => {
+            try {
+                await navigator.share({
+                    title: 'Laser Sailing Hall of Fame',
+                    text: 'Check out the top times on the Laser Sailing Simulator! ⛵',
+                    url: "https://gerardogala.github.io/LaserSailingSimulator/scoreBoard.html"
+                });
+            } catch (err) { console.log('Share ignored'); }
+        };
+
+        initBoard();
+    </script>
+</body>
+</html>
