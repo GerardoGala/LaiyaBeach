@@ -74,11 +74,11 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
     metric: true            
   }).addTo(map);
 
-  // --- NEW: Bottom Left Controls (Wind & ILCA) ---
-  const BottomLeftControls = L.Control.extend({
-    options: { position: 'bottomleft' },
+  // --- topleft (Wind & ILCA) ---
+  const TopLeftControls = L.Control.extend({
+    options: { position: 'topleft' },
     onAdd: function(map) {
-      const container = L.DomUtil.create('div', 'bottom-left-controls-container');
+      const container = L.DomUtil.create('div', 'top-left-controls-container');
       
       // Stop map click/scroll events from bleeding through the panel
       L.DomEvent.disableClickPropagation(container);
@@ -115,11 +115,11 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
     }
   });
 
-  // --- NEW: Top Left Controls (VMG) ---
-  const TopLeftControls = L.Control.extend({
-    options: { position: 'topleft' },
+  // --- top-right Controls (VMG) ---
+  const TopRightControls = L.Control.extend({
+    options: { position: 'topright' },
     onAdd: function(map) {
-      const container = L.DomUtil.create('div', 'top-left-controls-container');
+      const container = L.DomUtil.create('div', 'top-right-controls-container');
       
       L.DomEvent.disableClickPropagation(container);
 
@@ -142,7 +142,7 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
   });
 
   // Render both custom control groups onto the UI
-  map.addControl(new BottomLeftControls());
+  map.addControl(new TopRightControls());
   map.addControl(new TopLeftControls());
 
   // Define bounds safely encompassing all three active race marks
