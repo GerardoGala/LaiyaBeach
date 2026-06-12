@@ -74,7 +74,22 @@ let nearMark = false;
 // ⚓ RACE LEG TRACKING MODULE (With Immediate green Target)
 // =========================================================================
 
-export function trackRaceLegs() {
+// Helper function to calculate bearing between two coordinates (degrees 0-360)
+function calculateHeadingToTarget(lat1, lon1, lat2, lon2) {
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const lat1Rad = lat1 * Math.PI / 180;
+  const lat2Rad = lat2 * Math.PI / 180;
+
+  const y = Math.sin(dLon) * Math.cos(lat2Rad);
+  const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+            Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+  
+  let brng = Math.atan2(y, x) * 180 / Math.PI;
+  return (brng + 360) % 360;
+}
+
+// Added 'map' parameter to the main execution signature
+export function trackRaceLegs(map) {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
 
@@ -121,65 +136,78 @@ export function trackRaceLegs() {
 
   // --- 2. TRIGGER ON ARRIVAL ---
   if (distanceToTarget <= roundingRadius) {
-    console.log(`Successfully reached and rounded: ${targetName}!`);
+    if (typeof showNotification === "function") {
+      showNotification("ILCA rounded the buoy!");
+    }
 
-    const alertBox = document.getElementById("nearBuoy");
-    if (alertBox) alertBox.style.display = "none";
+    // --- AUTOMATIC TACK / JIBE SYSTEM ---
+    if (window.globalSimulationData.ILCA && window.globalSimulationData.ILCA.tack !== undefined) {
+      switch (window.globalSimulationData.currentLeg) {
+        case 0: window.globalSimulationData.ILCA.tack = "Starboard"; break;
+        case 1: window.globalSimulationData.ILCA.tack = "Port"; break;
+        case 2: window.globalSimulationData.ILCA.tack = "Starboard"; break;
+        case 3: window.globalSimulationData.ILCA.tack = "Port"; break;
+      }
+      if (typeof showNotification === "function") {
+        showNotification(`Auto-rounded: Boat stabilized on ${window.globalSimulationData.ILCA.tack} Tack.`);
+      }
+    }
 
-    // --- 3. STATE MACHINE FOR MARK ROUNDINGS ---
-    // Moving the teleportation calls right into the leg assignment states fixes the lag!
+    // --- 3. STATE MACHINE FOR MARK ROUNDINGS & AUTO-STEERING ---
+    let nextMarkLat, nextMarkLon;
+
     switch (window.globalSimulationData.currentLeg) {
       case 0:
         window.globalSimulationData.windwardMarkRounded = 1;
-        window.globalSimulationData.currentLeg = 1; // Move to Leg 2 (Gybe)
+        window.globalSimulationData.currentLeg = 1; 
         
-        // ⚡ Teleport immediately to the Gybe mark coordinates
+        nextMarkLat = window.globalSimulationData.gybeMarkLat;
+        nextMarkLon = window.globalSimulationData.gybeMarkLon;
+
         if (window.globalSimulationData.activeMarker) {
-          window.globalSimulationData.activeMarker.setLatLng([
-            window.globalSimulationData.gybeMarkLat, 
-            window.globalSimulationData.gybeMarkLon
-          ]);
+          window.globalSimulationData.activeMarker.setLatLng([nextMarkLat, nextMarkLon]);
         }
         break;
 
       case 1:
         window.globalSimulationData.gybeMarkRounded = 1;
-        window.globalSimulationData.currentLeg = 2; // Move to Leg 3 (Leeward)
+        window.globalSimulationData.currentLeg = 2; 
         
-        // ⚡ Teleport immediately to Leeward mark coordinates
+        nextMarkLat = window.globalSimulationData.leewardMarkLat;
+        nextMarkLon = window.globalSimulationData.leewardMarkLon;
+
         if (window.globalSimulationData.activeMarker) {
-          window.globalSimulationData.activeMarker.setLatLng([
-            window.globalSimulationData.leewardMarkLat, 
-            window.globalSimulationData.leewardMarkLon
-          ]);
+          window.globalSimulationData.activeMarker.setLatLng([nextMarkLat, nextMarkLon]);
         }
         break;
 
       case 2:
         window.globalSimulationData.leewardMarkRounded = 1;
-        window.globalSimulationData.currentLeg = 3; // Move to Leg 4 (Windward again)
-        console.log("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+        window.globalSimulationData.currentLeg = 3; 
         
-        // ⚡ Teleport back to Windward mark coordinates
+        nextMarkLat = window.globalSimulationData.windwardMarkLat;
+        nextMarkLon = window.globalSimulationData.windwardMarkLon;
+
+        if (typeof showNotification === "function") {
+          showNotification("Leeward Mark passed. Starting Leg 4 Upwind Beat!");
+        }
         if (window.globalSimulationData.activeMarker) {
-          window.globalSimulationData.activeMarker.setLatLng([
-            window.globalSimulationData.windwardMarkLat, 
-            window.globalSimulationData.windwardMarkLon
-          ]);
+          window.globalSimulationData.activeMarker.setLatLng([nextMarkLat, nextMarkLon]);
         }
         break;
 
       case 3:
         window.globalSimulationData.windwardMarkRounded = 2;
-        window.globalSimulationData.currentLeg = 4; // Move to Leg 5 (Final Downwind Finish)
-        console.log("Windward Mark rounded a second time! Bear away into the final downwind Run!");
+        window.globalSimulationData.currentLeg = 4; 
         
-        // ⚡ Teleport to Leeward mark coordinates for the Finish line marker
+        nextMarkLat = window.globalSimulationData.leewardMarkLat;
+        nextMarkLon = window.globalSimulationData.leewardMarkLon;
+
+        if (typeof showNotification === "function") {
+          showNotification("Windward Mark rounded a second time! Bear away into final downwind Run!");
+        }
         if (window.globalSimulationData.activeMarker) {
-          window.globalSimulationData.activeMarker.setLatLng([
-            window.globalSimulationData.leewardMarkLat, 
-            window.globalSimulationData.leewardMarkLon
-          ]);
+          window.globalSimulationData.activeMarker.setLatLng([nextMarkLat, nextMarkLon]);
         }
         break;
 
@@ -187,22 +215,43 @@ export function trackRaceLegs() {
         window.globalSimulationData.raceFinished = true;
         window.globalSimulationData.leewardMarkRounded = 2; 
 
-        // 🛑 Clear target circle on finish line crossing
         if (window.globalSimulationData.activeMarker) {
           window.globalSimulationData.activeMarker.remove();
         }
-
         if (window.globalSimulationData.windSpeed !== undefined) {
           window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
         }
-
         if (typeof showFinishDialog === "function") showFinishDialog();
-        console.log("Race Completed! Final dead downwind finish registered.");
+        if (typeof showNotification === "function") {
+          showNotification("Race Completed! Final dead downwind finish registered.");
+        }
         break;
     }
 
+    // --- AUTO-STEER HEADING GENERATOR ---
+    if (nextMarkLat !== undefined && nextMarkLon !== undefined && window.globalSimulationData.ILCA) {
+      const newHeading = calculateHeadingToTarget(ilcaLat, ilcaLon, nextMarkLat, nextMarkLon);
+      
+      if (window.globalSimulationData.ILCA.heading !== undefined) {
+        window.globalSimulationData.ILCA.heading = newHeading;
+      } else if (window.globalSimulationData.ILCA.bearing !== undefined) {
+        window.globalSimulationData.ILCA.bearing = newHeading;
+      } else if (window.globalSimulationData.ILCA.course !== undefined) {
+        window.globalSimulationData.ILCA.course = newHeading;
+      }
+      
+      if (typeof showNotification === "function") {
+        showNotification(`Auto-Pilot: Course adjusted to ${newHeading.toFixed(0)}°.`);
+      }
+
+      // ⛵ INSTANT RE-DRAW ENGINE
+      // Triggers immediate render update so the map icon matches your heading
+      if (typeof updateILCA === "function") {
+        updateILCA(map);
+      }
+    }
+
   } else {
-    // Show an "approaching" warning when slightly outside the rounding zone (e.g., within 25 meters)
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) {
       if (distanceToTarget > roundingRadius && distanceToTarget < 25) {
@@ -214,6 +263,8 @@ export function trackRaceLegs() {
     }
   }
 }
+
+
 
 
 
