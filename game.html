@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-  <script>
-    function showFinishDialog() {
+<script>
+  function showFinishDialog() {
       // Grab values from globalSimulationData
       const data = window.globalSimulationData;
 
@@ -107,13 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
       // 4. Halt global engine state processing flags
       window.globalSimulationData.raceFinished = true;
     }
+</script>
 
-
-    function closeFinishDialog() {
-
-      document.getElementById("nearRC").style.display = "none";
-    }
-  </script>
+<script>
+  function closeFinishDialog() {
+    document.getElementById("nearRC").style.display = "none";
+  }
+</script>
 
 
   <!-- Loader for controls partial -->
