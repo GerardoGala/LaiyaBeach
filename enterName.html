@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame | Laser Sailing Simulator</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --navy: #0056b3;
+            --light-bg: #f8fafc;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--light-bg); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px;
+            margin: 0;
+        }
+        .board-container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 95%; 
+            max-width: 600px; 
+            margin-top: 20px;
+        }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--navy); margin: 0; font-size: 2rem; }
+        p { color: #666; margin-top: 5px; }
+        
+        /* Highlight styling for the dynamic time */
+        .score-highlight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        /* Input Form Elements */
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .input-form input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .input-form button {
+            padding: 10px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .input-form button:hover {
+            background: var(--navy);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="board-container">
+        <header>
+            <h1>Submit Race Results</h1>
+            <p>Save your time to the leaderboard</p>
+            <!-- Dynamic placeholder to show the user their time -->
+            <div id="timeDisplay" class="score-highlight">Time: --:--</div>
+        </header>
+
+        <!-- Submission Form Interface -->
+        <form id="submissionForm" class="input-form">
+            <input type="text" id="sailorNameInput" placeholder="Enter Your Name" required autocomplete="off">
+            <button type="submit" id="submitBtn">Enter Time</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getFirestore, collection, addDoc } from "https://gstatic.com";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+            authDomain: "://firebaseapp.com",
+            projectId: "laser-sailing-simulator",
+            storageBucket: "laser-sailing-simulator.firebasestorage.app",
+            messagingSenderId: "45397375888",
+            appId: "1:145397375888:web:1ca8d7688170787624d115"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const leaderboardRef = collection(db, "leaderboard");
+
+        // --- DYNAMIC PARAMETER EXTRACTION ---
+        // Grab the 'score' parameter from the URL string (e.g., enterName.html?score=45)
+        const urlParams = new URLSearchParams(window.location.search);
+        const finalTime = parseFloat(urlParams.get('score')) || 0;
+
+        // Update the display text to let the user see their score on-screen
+        const timeDisplay = document.getElementById('timeDisplay');
+        if (timeDisplay && finalTime > 0) {
+            // Helper configuration to show minutes and seconds format nicely
+            const minutes = Math.floor(finalTime / 60);
+            const seconds = Math.floor(finalTime % 60);
+            const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+            timeDisplay.textContent = `Your Top 10 Time: ${formattedTime} (${finalTime}s)`;
+        } else {
+            timeDisplay.textContent = `Time: ${finalTime}s`;
+        }
+
+        document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const nameInput = document.getElementById('sailorNameInput');
+            const sailorName = nameInput.value.trim();
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Saving...";
+
+                // Insert real name and dynamic score to cloud firestore database
+                await addDoc(leaderboardRef, {
+                    sailorName: sailorName,
+                    finalTime: finalTime,
+                    timestamp: new Date()
+                });
+
+                nameInput.value = '';
+                alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s`);
+
+                // --- LEADERBOARD ROUTING ENGINE ---
+                // Automatically redirect them to see the updated scores dashboard
+                window.location.href = "leaderboard.html";
+
+            } catch (err) {
+                console.error("Firestore Error:", err);
+                alert("Failed to save score. Moving to leaderboard.");
+                window.location.href = "leaderboard.html";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Enter Time";
+            }
+        });
+    </script>
+</body>
+</html>
