@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame | Laser Sailing Simulator</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --navy: #0056b3;
+            --light-bg: #f8fafc;
+            --danger-red: #dc3545;
+            --danger-hover: #bd2130;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--light-bg); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px;
+            margin: 0;
+        }
+        .board-container { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 95%; 
+            max-width: 600px; 
+            margin-top: 20px;
+        }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--navy); margin: 0; font-size: 2rem; }
+        p { color: #666; margin-top: 5px; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { text-align: left; border-bottom: 2px solid #edf2f7; padding: 15px 10px; color: #4a5568; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
+        td { padding: 15px 10px; border-bottom: 1px solid #edf2f7; color: #2d3748; }
+
+        .rank { font-weight: bold; width: 60px; color: #4a5568; }
+        .sailor-name { font-weight: 500; }
+        .time { text-align: right; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: var(--navy); }
+        
+        /* Input Form Elements */
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            border-top: 1px solid #edf2f7;
+            padding-top: 20px;
+        }
+        .input-form input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .input-form button {
+            flex: 1;
+            padding: 10px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .input-form button:hover {
+            background: var(--navy);
+        }
+        .input-form .clear-btn {
+            background: var(--danger-red);
+        }
+        .input-form .clear-btn:hover {
+            background: var(--danger-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="board-container">
+        <header>
+            <h1>Global Leaderboard</h1>
+            <p>The Top 10 Fastest Sailors</p>
+        </header>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Sailor</th>
+                    <th style="text-align: right;">Time</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                <tr><td colspan="3" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Submission Form Interface -->
+        <form id="submissionForm" class="input-form">
+            <input type="text" id="sailorNameInput" placeholder="Enter Name" required autocomplete="off">
+            <input type="number" id="finalTimeInput" placeholder="Time in Seconds" step="0.01" min="0" required autocomplete="off">
+            <div class="action-buttons">
+                <button type="submit" id="submitBtn">Enter Time</button>
+                <button type="button" id="clearBtn" class="clear-btn">Clear All Records</button>
+            </div>
+        </form>
+    </div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+        authDomain: "laser-sailing-simulator.firebaseapp.com",
+        projectId: "laser-sailing-simulator",
+        storageBucket: "laser-sailing-simulator.firebasestorage.app",
+        messagingSenderId: "45397375888",
+        appId: "1:145397375888:web:1ca8d7688170787624d115"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const leaderboardRef = collection(db, "leaderboard");
+
+        async function initBoard() {
+            const tableBody = document.getElementById('leaderboardBody');
+            
+            try {
+                const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
+                
+                const querySnapshot = await getDocs(q);
+                tableBody.innerHTML = ''; 
+
+                if (querySnapshot.empty) {
+                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
+                    return;
+                }
+
+                let rank = 1;
+                querySnapshot.forEach((snapshotItem) => {
+                    const entry = snapshotItem.data();
+                    
+                    const sailor = entry.sailorName || "Anonymous Skipper";
+                    const time = entry.finalTime ? Number(entry.finalTime).toFixed(2) : "N/A";
+
+                    let rankDisplay = `#${rank}`;
+                    if(rank === 1) rankDisplay = '🏆';
+                    if(rank === 2) rankDisplay = '🥈';
+                    if(rank === 3) rankDisplay = '🥉';
+
+                    const row = `
+                        <tr>
+                            <td class="rank">${rankDisplay}</td>
+                            <td class="sailor-name">${sailor}</td>
+                            <td class="time">${time}s</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                    rank++;
+                });
+
+            } catch (err) {
+                console.error("Board error:", err);
+                tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">
+                    Error: ${err.code || err.message}
+                </td></tr>`;
+            }
+        }
+
+        // Event listener to parse form submissions directly to Firestore
+        document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const nameInput = document.getElementById('sailorNameInput');
+            const timeInput = document.getElementById('finalTimeInput');
+            
+            const sailorName = nameInput.value.trim();
+            const finalTime = parseFloat(timeInput.value);
+
+            if (!sailorName || isNaN(finalTime)) return;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Saving...";
+
+                await addDoc(leaderboardRef, {
+                    sailorName: sailorName,
+                    finalTime: finalTime
+                });
+
+                nameInput.value = '';
+                timeInput.value = '';
+                await initBoard();
+
+            } catch (err) {
+                console.error("Submission failed:", err);
+                alert(`Error saving document: ${err.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Enter Time";
+            }
+        });
+
+        // Functionality behind the Clear All Records button using Atomic WriteBatch
+        document.getElementById('clearBtn').addEventListener('click', async () => {
+            if (!confirm("Are you absolutely sure you want to permanently delete ALL leaderboard records?")) {
+                return;
+            }
+
+            const clearBtn = document.getElementById('clearBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            try {
+                clearBtn.disabled = true;
+                submitBtn.disabled = true;
+                clearBtn.textContent = "Clearing...";
+
+                // Fetch all documents currently in the leaderboard collection
+                const querySnapshot = await getDocs(leaderboardRef);
+                
+                if (querySnapshot.empty) {
+                    alert("Leaderboard is already empty.");
+                    return;
+                }
+
+                // Initialize Firestore batch operation
+                const batch = writeBatch(db);
+                
+                // Add each document deletion reference to the batch queue
+                querySnapshot.forEach((snapshotItem) => {
+                    batch.delete(snapshotItem.ref);
+                });
+
+                // Commit the entire deletion transaction all at once
+                await batch.commit();
+                
+                // Force board UI interface refresh
+                await initBoard();
+                alert("Leaderboard cleared successfully!");
+
+            } catch (err) {
+                console.error("Clear database failed:", err);
+                alert(`Error clearing database: ${err.message}`);
+            } finally {
+                clearBtn.disabled = false;
+                submitBtn.disabled = false;
+                clearBtn.textContent = "Clear All Records";
+            }
+        });
+
+        initBoard();
+    </script>
+</body>
+</html>

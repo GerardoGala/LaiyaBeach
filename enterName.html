@@ -32,18 +32,6 @@
         h1 { color: var(--navy); margin: 0; font-size: 2rem; }
         p { color: #666; margin-top: 5px; }
         
-        /* Highlight styling for the dynamic time */
-        .score-highlight {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2e7d32;
-            background: #e8f5e9;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-        }
-        
         /* Input Form Elements */
         .input-form {
             display: flex;
@@ -75,87 +63,84 @@
 
     <div class="board-container">
         <header>
-            <h1>Submit Race Results</h1>
-            <p>Save your time to the leaderboard</p>
-            <!-- Dynamic placeholder to show the user their time -->
-            <div id="timeDisplay" class="score-highlight">Time: --:--</div>
+            <h1>Submit Race Result</h1>
+            <p>Enter your name to the leaderboard</p>
         </header>
 
         <!-- Submission Form Interface -->
         <form id="submissionForm" class="input-form">
-            <input type="text" id="sailorNameInput" placeholder="Enter Your Name" required autocomplete="off">
-            <button type="submit" id="submitBtn">Enter Time</button>
+            <input type="text" name="sailorName" id="sailorNameInput" placeholder="Enter Name" required autocomplete="off">
+            <button type="submit" id="submitBtn">Enter Name</button>
         </form>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-        import { getFirestore, collection, addDoc } from "https://gstatic.com";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
-            authDomain: "://firebaseapp.com",
-            projectId: "laser-sailing-simulator",
-            storageBucket: "laser-sailing-simulator.firebasestorage.app",
-            messagingSenderId: "45397375888",
-            appId: "1:145397375888:web:1ca8d7688170787624d115"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+        authDomain: "laser-sailing-simulator.firebaseapp.com",
+        projectId: "laser-sailing-simulator",
+        storageBucket: "laser-sailing-simulator.firebasestorage.app",
+        messagingSenderId: "45397375888",
+        appId: "1:145397375888:web:1ca8d7688170787624d115"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const leaderboardRef = collection(db, "leaderboard");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const leaderboardRef = collection(db, "leaderboard");
 
-        // --- DYNAMIC PARAMETER EXTRACTION ---
-        // Grab the 'score' parameter from the URL string (e.g., enterName.html?score=45)
-        const urlParams = new URLSearchParams(window.location.search);
-        const finalTime = parseFloat(urlParams.get('score')) || 0;
+    document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+        // Stop default browser form refresh actions
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const formElement = e.target;
+        
+        // Safely extract text string straight from form data mapping
+        const formData = new FormData(formElement);
+        const sailorName = formData.get('sailorName')?.trim();
 
-        // Update the display text to let the user see their score on-screen
-        const timeDisplay = document.getElementById('timeDisplay');
-        if (timeDisplay && finalTime > 0) {
-            // Helper configuration to show minutes and seconds format nicely
-            const minutes = Math.floor(finalTime / 60);
-            const seconds = Math.floor(finalTime % 60);
-            const formattedTime = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-            timeDisplay.textContent = `Your Top 10 Time: ${formattedTime} (${finalTime}s)`;
-        } else {
-            timeDisplay.textContent = `Time: ${finalTime}s`;
+        if (!sailorName) return;
+
+        // 1. Try to read from the simulation app first
+        let finalTime = window.globalSimulationData?.ILCA?.timer;
+
+        // 2. Fallback: If not found, look for "?time=X" in the browser URL bar
+        if (finalTime === undefined) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const timeParam = urlParams.get('time');
+            
+            // Parse the URL value, or use 33 if the URL parameter is also missing
+            finalTime = timeParam ? parseFloat(timeParam) : 33;
         }
 
-        document.getElementById('submissionForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving...";
+
+            // Save document into Firestore DB
+            await addDoc(leaderboardRef, {
+                sailorName: sailorName,
+                finalTime: finalTime,
+                timestamp: new Date()
+            });
+
+            // Prompt congratulatory note to user
+            alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s`);
             
-            const submitBtn = document.getElementById('submitBtn');
-            const nameInput = document.getElementById('sailorNameInput');
-            const sailorName = nameInput.value.trim();
+            // Forward viewer immediately to the layout view board page
+            window.location.href = "leaderBoard.html";
 
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Saving...";
-
-                // Insert real name and dynamic score to cloud firestore database
-                await addDoc(leaderboardRef, {
-                    sailorName: sailorName,
-                    finalTime: finalTime,
-                    timestamp: new Date()
-                });
-
-                nameInput.value = '';
-                alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s`);
-
-                // --- LEADERBOARD ROUTING ENGINE ---
-                // Automatically redirect them to see the updated scores dashboard
-                window.location.href = "leaderboard.html";
-
-            } catch (err) {
-                console.error("Firestore Error:", err);
-                alert("Failed to save score. Moving to leaderboard.");
-                window.location.href = "leaderboard.html";
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Enter Time";
-            }
-        });
-    </script>
+        } catch (err) {
+            console.error("Firestore Error:", err);
+            alert("Submission error. Please check your network connection.");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Enter Name";
+        }
+    });
+</script>
 </body>
 </html>
