@@ -22,10 +22,100 @@
     </section>
 
     <section>
-      <button onclick="document.getElementById('finishDialog').style.display='none'">
+      <!-- MODIFIED: The Close button hides the dialog and then runs the check function -->
+      <button onclick="document.getElementById('finishDialog').style.display='none'; checkLeaderboardQualification();">
         Close
       </button>
     </section>
   </div>
+
+  <!-- NEW SEPARATE SCRIPT BLOCK FOR LEADERBOARD CHECKING -->
+  <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc } from "https://gstatic.com";
+
+    // Re-initialized config so this script can communicate with Firestore on its own
+    const firebaseConfig = {
+      apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+      authDomain: "://firebaseapp.com",
+      projectId: "laser-sailing-simulator",
+      storageBucket: "laser-sailing-simulator.firebasestorage.app",
+      messagingSenderId: "45397375888",
+      appId: "1:45397375888:web:1ca8d7688170787624d115"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function checkLeaderboardQualification() {
+        // 1. Read the globalSimulationData.finishTime
+        // Fallback to checking window object properties if not declared globally
+        let currentFinishTime = null;
+        if (typeof globalSimulationData !== 'undefined' && globalSimulationData.finishTime) {
+            currentFinishTime = globalSimulationData.finishTime;
+        } else if (typeof window.globalSimulationData !== 'undefined' && window.globalSimulationData.finishTime) {
+            currentFinishTime = window.globalSimulationData.finishTime;
+        }
+        
+        // Safety check: if there's no race time recorded, exit early
+        if (!currentFinishTime) {
+            console.log("No finish time found in globalSimulationData.");
+            return;
+        }
+
+        try {
+            // 2. Query the existing leaderboard collection
+            const leaderboardRef = collection(db, "leaderboard");
+            const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
+            const querySnapshot = await getDocs(q);
+
+            let qualifies = false;
+
+            // LOGIC: If there are less than 10 names, they obviously belong to the Hall of Fame
+            if (querySnapshot.size < 10) {
+                qualifies = true;
+            } else {
+                // Find the longest entry.finalTime (the 10th item is the slowest because it's sorted 'asc')
+                const documents = querySnapshot.docs;
+                const worstDoc = documents[documents.length - 1].data();
+                const longestFinalTime = Number(worstDoc.finalTime);
+
+                // If their time is smaller (faster) than the longest time, they beat it!
+                if (Number(currentFinishTime) < longestFinalTime) {
+                    qualifies = true;
+                }
+            }
+
+            // 3. If they beat the time, pop up a message box prompting for their name
+            if (qualifies) {
+                const sailorName = prompt("🏆 Hall of Fame! You made the Top 10.\n\nPlease enter your skipper name:");
+                
+                if (sailorName !== null) {
+                    const finalName = sailorName.trim() || "Anonymous Skipper";
+                    
+                    // 4. Save his name and finish time in the database
+                    await addDoc(collection(db, "leaderboard"), {
+                        sailorName: finalName,
+                        finalTime: Number(currentFinishTime),
+                        timestamp: new Date()
+                    });
+
+                    alert("Record saved successfully! ⛵");
+                    
+                    // Redirects to your score page so they see their new score live!
+                    window.location.href = "scoreBoard.html";
+                }
+            } else {
+                alert("Good race, but your time didn't crack the top 10 today!");
+            }
+
+        } catch (err) {
+            console.error("Error processing leaderboard check:", err);
+        }
+    }
+
+    // Bind function to global scope window so the button's inline onclick can call it
+    window.checkLeaderboardQualification = checkLeaderboardQualification;
+  </script>
 </body>
 </html>
