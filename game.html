@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Execution routing block based on evaluated ranking rules
                     if (makesTop10) {
                         alert(`Congratulations! Your time of ${timeText} qualified for the Top 10!`);
-                        window.location.href = `enterName.html?score=${finalTimeScore}`;
+                        window.location.href = `enterName.html?time=${finalTimeScore}`;
                     } else {
                         alert(`Great race! However, your time of ${timeText} did not break into the Top 10.`);
                         window.location.href = "leaderboard.html";
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         }
-    }; // 👈 FIX: Added the missing function execution closing bracket
+    };
 </script>
 
 
