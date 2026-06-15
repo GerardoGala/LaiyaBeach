@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | ILCA Sailing Simulator</title>
+    <style>
+        :root {
+            --primary-blue: #007bff;
+            --navy: #0056b3;
+            --light-bg: #f8fafc;
+            --slate: #475569;
+            --yellow-btn: #ffcc00;
+            --yellow-hover: #e6b800;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--light-bg); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px;
+            margin: 0;
+            color: #1e293b;
+        }
+        .about-container { 
+            background: white; 
+            padding: 2.5rem; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            width: 95%; 
+            max-width: 750px; 
+            margin-top: 20px;
+            text-align: center;
+        }
+        header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: var(--navy); margin: 0; font-size: 2.2rem; }
+        h2 { text-align: left; color: var(--navy); font-size: 1.4rem; margin-top: 25px; border-left: 4px solid var(--primary-blue); padding-left: 10px; }
+        p { color: var(--slate); line-height: 1.6; font-size: 1.05rem; }
+        
+        .matrix-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        @media (max-width: 600px) {
+            .matrix-box { grid-template-columns: 1fr; }
+        }
+        
+        .feature-card {
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .does { background: #f0fdf4; border-color: #bbf7d0; }
+        .does h3 { color: #166534; margin-top: 0; }
+        .does-not { background: #fff1f2; border-color: #fecdd3; }
+        .does-not h3 { color: #9f1239; margin-top: 0; }
+
+        ul { padding-left: 20px; margin: 10px 0; }
+        li { margin-bottom: 8px; color: var(--slate); line-height: 1.5; font-size: 0.95rem; }
+        
+        .footer-nav {
+            margin-top: 35px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+        .btn-yellow {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--yellow-btn);
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background 0.15s, transform 0.1s;
+        }
+        .btn-yellow:hover { 
+            background: var(--yellow-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="about-container">
+        <header>
+            <h1>About the Simulator</h1>
+            <p>Technical Scope, Physics Capabilities, and Engine Limits</p>
+        </header>
+
+        <p>This reference guide clarifies what variables are actively calculated by our simulation loop. By dividing our system parameters across distinct HTML page links, we keep our environment clean for precise debugging.</p>
+
+        <div class="matrix-box">
+            <!-- WHAT IT DOES -->
+            <div class="feature-card does">
+                <h3>What It Simulates ⛵</h3>
+                <ul>
+                    <li><strong>Rigging Adjustments:</strong> Evaluates the combined drag and power effects of your Vang, Cunningham, Outhaul, and Mainsheet on speed.</li>
+                    <li><strong>Velocity Made Good (VMG):</strong> Tracks your real velocity vector moving toward the active mark.</li>
+                    <li><strong>Dynamic Heel Angles:</strong> Calculates rolling momentum shifts and records values directly to your cockpit Clinometer.</li>
+                    <li><strong>Capsizing Mechanics:</strong> Drops speed to zero if the hull rolls past 45° due to over-tightened sheets or improper hiking positions.</li>
+                    <li><strong>Target Highlights:</strong> Visually markers and points out the current destination buoy on the active map tracking view.</li>
+                </ul>
+            </div>
+
+            <!-- WHAT IT DOES NOT DO -->
+            <div class="feature-card does-not">
+                <h3>What It Does NOT Do 🚫</h3>
+                <ul>
+                    <li><strong>Manual Rudder Steering:</strong> Active tiller controls are hidden to focus completely on speed tracking and trim parameters.</li>
+                    <li><strong>Manual Mark Rounding:</strong> The ship automates turning maneuvers with an auto-tack routine once the hull glides within 5 meters of a buoy.</li>
+                    <li><strong>Wave & Current Drift:</strong> Hydrodynamics assume a flat sea state, calculating drag profiles without active wave chop or current vectors.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2 style="text-align: left;">Heavy Weather Advisory</h2>
+        <p style="text-align: left;">Sailing inside our hardcoded 20-knot race frame with random wind gusts passing 22 knots demands strict precision. Because sheet calculations scale non-linearly, leaving your weight profile sitting centered inside the cockpit while turning across the wind results in an immediate capsize.</p>
+
+        <div class="footer-nav">
+            <a href="index.html" class="btn-yellow">Return to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -7,6 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=.5">
   
   <style>
+    /* ✅ FIXED: Define the root variables so var(--light-bg) works perfectly */
+    :root {
+      --light-bg: #f8fafc;
+    }
+
     body.welcome {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -15,45 +20,70 @@
       text-align: center;
       position: relative;
       min-height: 100vh;
-      overflow: hidden;
     }
+    
     /* Responsive fonts */
     h1 {
       color: #0066cc;
-      font-size: clamp(1.8em, 3vw, 2.6em); /* bigger base, scales with screen */
+      font-size: clamp(1.8em, 3vw, 2.6em);
+      margin-top: 20px;
       margin-bottom: 10px;
     }
 
     p {
       font-size: clamp(1.1em, 2vw, 1.6em);
       line-height: 1.5em;
-      margin: 10px 0;
+      margin: 10px auto;
+      max-width: 800px;
+      padding: 0 20px;
     }
 
     button {
-      margin-top: 15px;
+      margin: 5px;
       padding: 10px 20px;
       font-size: clamp(1em, 2vw, 1.4em);
       background-color: #ffcc00;
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      font-weight: bold;
     }
     button:hover {
       background-color: #ffdb4d;
     }
 
     #enterSimulationBtn {
-      padding: 30px 20px; /* Increased top/bottom padding from 10px to 30px */
+      padding: 20px 40px; 
       background: #007acc;
       color: #fff;
       cursor: pointer;
+      font-size: clamp(1.2em, 2.5vw, 1.8em);
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    #enterSimulationBtn:hover {
+      background: #0066b3;
+    }
+
+    #leaderBoardBtn {
+      margin-top: 20px;
+      background-color: #ffcc00;
+    }
+
+    /* ✅ FIXED: Added a button row container to keep the 4 yellow buttons perfectly lined up */
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 15px auto;
+      max-width: 90%;
     }
 
     /* Mobile boost: double font size */
     @media screen and (max-width: 767px) {
       h1, p {
-        font-size: 200%; /* double whatever the clamp resolved to */
+        font-size: 200%; 
       }
     }
   </style>
@@ -74,19 +104,24 @@
     Experience the thrill of ILCA sailing with interactive controls, live wind data, and a dynamic map view.
     Every decision you make echoes the reality of the water, teaching you how physics drives performance.
   </p>
+  
   <div>
     <button id="enterSimulationBtn" onclick="location.href='game.html'">Enter Simulator</button>
   </div>
-  <div>
+  
+  <!-- ✅ FIXED: Wrapped buttons inside the new button-row layout container -->
+  <div class="button-row">
+    <button id="aboutBtn" onclick="openModal('about.html')">About</button> <!-- ◄ Added cleanly as the 4th button -->
     <button id="objectiveBtn" onclick="openModal('objective.html')">Objective</button>
     <button id="raceCourseBtn" onclick="openModal('raceCourse.html')">Race Course</button>
     <button id="physicsBtn" onclick="openModal('physics.html')">Physics of Sailing</button>
   </div>
+  
   <div>
     <button id="leaderBoardBtn" onclick="location.href='leaderBoard.html'">Leader Board ⛵</button>
   </div>
 
-<!-- FIXED: Mobile-optimized dynamic fullscreen dialog -->
+<!-- Mobile-optimized dynamic fullscreen dialog -->
 <dialog id="dynamicModal" style="position: fixed; inset: 0; width: 100dvw; height: 100dvh; max-width: 100dvw; max-height: 100dvh; margin: 0; padding: 20px; border: none; box-sizing: border-box; background: #f0f8ff;">
   
   <!-- Top Bar for the Close Button -->
@@ -100,8 +135,6 @@
   <iframe id="modalIframe" src="" style="width: 100%; height: calc(100dvh - 100px); border: none; display: block;"></iframe>
 
 </dialog>
-
-
 
 <script>
   function openModal(pageUrl) {
@@ -123,7 +156,6 @@
     iframe.src = ""; // Clear iframe source on close
   }
 </script>
-
 
 </body>
 </html>
