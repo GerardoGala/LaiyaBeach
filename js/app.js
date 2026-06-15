@@ -37,6 +37,24 @@ async function loadConfig() {
 
     // Update ILCA physics if launched
     if (launched) {
+      // --- Capsize Halting Check ---
+      // If physics layer flags a capsize, freeze simulation clocks instantly
+      if (window.globalSimulationData.ILCA.capsized) {
+        console.warn("Simulation stopped due to capsize.");
+        
+        // Hide warning bar and clear active loops
+        const warningDiv = document.getElementById("heelWarningContainer");
+        if (warningDiv) {
+          warningDiv.style.display = "none";
+          warningDiv.classList.remove("danger-shake");
+        }
+
+        clearInterval(window.globalSimulationData.ILCA._timerInterval);
+        alert("Boom! You capsized! Make sure to hike out or ease your sheet when the wind picks up.");
+        stopSimulation();
+        return;
+      }
+
       updateILCA(map);
 
       const windSpeed = Number(window.globalSimulationData.windSpeed) || 0;
@@ -58,6 +76,34 @@ async function loadConfig() {
     updateWindControl(map);
     updateILCAControl();
     updateVMGControl();
+
+    // --- Dynamic Cockpit Warning UI Management ---
+    const ilcaData = window.globalSimulationData?.ILCA;
+    const warningDiv = document.getElementById("heelWarningContainer");
+    const heelDegSpan = document.getElementById("uiHeelDegrees");
+
+    if (warningDiv && ilcaData) {
+      // Show dashboard element if boat heels past 30 degrees (and isn't flipped yet)
+      if (ilcaData.heelAngle >= 30 && !ilcaData.capsized && launched) {
+        warningDiv.style.display = "block";
+        if (heelDegSpan) {
+          heelDegSpan.textContent = Math.round(ilcaData.heelAngle);
+        }
+        
+        // Trigger intense shaking animation class if critically close to tipping over (38°+)
+        if (ilcaData.heelAngle >= 38) {
+          warningDiv.classList.add("danger-shake");
+          warningDiv.style.background = "#fca5a5"; // Deepen panel to warning red
+        } else {
+          warningDiv.classList.remove("danger-shake");
+          warningDiv.style.background = "#fee2e2"; // Keep default alert tint
+        }
+      } else {
+        // Suppress warning layout safely if flat or out of simulation window parameters
+        warningDiv.style.display = "none";
+        warningDiv.classList.remove("danger-shake");
+      }
+    }
   }, 1000);
 }
 
@@ -83,6 +129,10 @@ async function updateWindFromAPI() {
 export function launchSimulation() {
   launched = true;
   fetchWind();
+
+  // Reset core simulation variables back to fresh upright conditions
+  window.globalSimulationData.ILCA.capsized = false;
+  window.globalSimulationData.ILCA.heelAngle = 0;
 
   // ILCA stuck in irons
   window.globalSimulationData.ILCA.heading = (0) % 360;

@@ -1,4 +1,5 @@
 // physics.js
+import { calculateHeelAndCapsize } from './capsize.js'; // ◄ Imported from separate capsize engine
 
 /**
  * Calculates a smooth penalty curve based on distance from a "sweet spot".
@@ -17,6 +18,13 @@ function getTrimMultiplier(currentValue, targetValue, tolerance = 0.2, penaltyWe
  * Returns the final calculated boat speed.
  */
 export function applyControls(pointOfSail, windSpeed, controls) {
+  // --- CAPSIZE CHECK ---
+  // If the boat is already marked as capsized, force speed to zero instantly
+  if (controls.capsized) {
+    controls.heelAngle = 90;
+    return 0.0;
+  }
+
   let baseFactor = 0.5; // Baseline physics efficiency
   let modifier = 1.0;   // Accumulator for trim modifiers
   controls.leeway = 0;  // Default sideways slip
@@ -31,6 +39,8 @@ export function applyControls(pointOfSail, windSpeed, controls) {
 
   switch(pointOfSail) {
     case "In Irons":
+      // Reset the heel angle smoothly back to 0 since there is no aerodynamic pressure on the sail side profile
+      controls.heelAngle = 0; 
       return 0.0; // Hard stall, zero speed
 
     case "Close Hauled":
@@ -48,8 +58,8 @@ export function applyControls(pointOfSail, windSpeed, controls) {
       modifier *= getTrimMultiplier(d, 0.1, 0.1, 0.4); 
       modifier *= getTrimMultiplier(o, 0.0, 0.1, 0.4); 
 
-      // --- Sailor Position ---
-      if (controls.sailorPosition === "Hike Hard") modifier *= 1.08;
+      // --- Sailor Position (FIXED: Supports both "Hike Out" and "Hike Hard" formatting strings) ---
+      if (controls.sailorPosition === "Hike Out" || controls.sailorPosition === "Hike Hard") modifier *= 1.08;
       else if (controls.sailorPosition === "Neutral") modifier *= 0.95;
       else if (controls.sailorPosition === "Aft") modifier *= 0.85;
 
@@ -78,7 +88,7 @@ export function applyControls(pointOfSail, windSpeed, controls) {
         controls.leeway = 3 + Math.abs(1 - db) * 6; 
       }
 
-      if (controls.sailorPosition === "Hike Hard") modifier *= 1.05;
+      if (controls.sailorPosition === "Hike Out" || controls.sailorPosition === "Hike Hard") modifier *= 1.05;
       break;
 
     case "Beam Reach":
@@ -96,7 +106,7 @@ export function applyControls(pointOfSail, windSpeed, controls) {
       modifier *= (1.05 - Math.abs(0 - db) * 0.06); 
       controls.leeway = 3 + Math.abs(0 - db) * 4;
 
-      if (controls.sailorPosition === "Hike Hard") modifier *= 1.05;
+      if (controls.sailorPosition === "Hike Out" || controls.sailorPosition === "Hike Hard") modifier *= 1.05;
       break;
 
     case "Broad Reach":
@@ -140,6 +150,13 @@ export function applyControls(pointOfSail, windSpeed, controls) {
       break;
   }
 
+  // --- CALLED CAPSIZE AND HEEL CALCULATION FILE LAYER ---
+  // Delegates calculations down to the clean standalone capsize helper module
+  const isCapsized = calculateHeelAndCapsize(pointOfSail, windSpeed, controls); // ◄ Isolated call loop
+  if (isCapsized) {
+    return 0.0;
+  }
+ 
   // Final performance matrix processing
   const finalSpeedFactor = baseFactor * modifier;
   return Math.min(windSpeed * finalSpeedFactor, 12);

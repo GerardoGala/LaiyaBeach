@@ -179,6 +179,7 @@ export function updateWindControl(map) {
 }
 
 // --- Refresh function to update ILCA status + time ---
+// --- Refresh function to update ILCA status + time ---
 export function updateILCAControl() {
   if (!ilcaControlDiv) return;
   if (window.globalSimulationData.raceFinished) return; 
@@ -190,9 +191,21 @@ export function updateILCAControl() {
   const pointOfSail = ilca.pointOfSail;
   const timer = ilca.displayTimer || "0:00";
  
+  // ✅ PURE DISPLAY: Fetch values directly from the stored simulation object
+  const uiRotation = ilca.clinometer || 0;
+  const absoluteHeel = Math.abs(uiRotation);
+
+  // Set visual alert gauge color thresholds purely from raw values
+  let needleColor = "#38bdf8"; // Safe Blue Zone
+  if (absoluteHeel >= 38) {
+    needleColor = "#ef4444";   // Danger Red Zone
+  } else if (absoluteHeel >= 25) {
+    needleColor = "#f59e0b";   // Caution Orange Zone
+  }
+
   ilcaControlDiv.innerHTML = `
-<div><strong>ILCA Status</strong></div>
-    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50" style="margin:4px 0;">
+    <div><strong>ILCA Status</strong></div>
+    <svg xmlns="http://w3.org" width="50" height="50" viewBox="0 0 50 50" style="margin:4px 0;">
       <circle cx="25" cy="25" r="22" fill="none" stroke="#ccc" stroke-width="2"/>
       <text x="25" y="10" font-size="8" text-anchor="middle" fill="#666">N</text>
       <g transform="rotate(${Number(heading)}, 25, 25)">
@@ -204,8 +217,29 @@ export function updateILCAControl() {
     <div>Point of Sail: ${pointOfSail}</div>
     <div>Speed: ${speedKnots} knots (${speedMS} m/s)</div>
     <div>Timer: ${timer}</div>
+
+    <!-- --- PURE VIEW RETRO CLINOMETER DISPLAY --- -->
+    <div id="clinometerBox" style="background: #0f172a; border: 1px solid #334155; padding: 8px; border-radius: 4px; margin-top: 8px; text-align: center; color: #f8fafc; font-family: monospace;">
+        <div style="font-size: 9px; letter-spacing: 0.5px; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">HEEL CLINOMETER</div>
+        
+        <div style="position: relative; width: 100px; height: 50px; border: 1px solid #475569; border-radius: 50px 50px 0 0; background: #020617; margin: 0 auto; overflow: hidden;">
+            <div style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100%; text-align: center; font-size: 8px; color: #475569; bottom: 1px;">
+                45° [ 0° ] 45°
+            </div>
+
+            <!-- Needle transforms react strictly to pre-calculated state variables -->
+            <div style="position: absolute; left: 50%; bottom: 0; width: 2px; height: 42px; background: ${needleColor}; transform-origin: bottom center; transform: translateX(-50%) rotate(${uiRotation}deg); transition: transform 0.2s ease-out;">
+                <div style="position: absolute; top: 0; left: -2px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></div>
+            </div>
+        </div>
+
+        <div style="margin-top: 4px; font-size: 11px; font-weight: bold;">
+            Angle: <span style="color: ${needleColor};">${Math.round(absoluteHeel)}°</span>
+        </div>
+    </div>
   `;
 }
+
 
 // --- Refresh function to update VMG ruler dynamically ---
 // --- Refresh function to update VMG ruler dynamically ---
