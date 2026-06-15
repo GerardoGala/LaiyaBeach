@@ -1,5 +1,5 @@
 // =========================================================================
-// ⚓ FLAT TACTICAL WIND ENGINE (wind.js) - CHAOTIC OSCILLATION
+// ⚓ FLAT TACTICAL WIND ENGINE (wind.js) - CHAOTIC OSCILLATION + GUST ENGINE
 // =========================================================================
 
 window.globalSimulationData = window.globalSimulationData || {
@@ -10,7 +10,7 @@ window.globalSimulationData = window.globalSimulationData || {
 // Calculate & Freeze Wind Speed Immediately on Page Load
 const now = new Date();
 const decimalHour = now.getHours() + (now.getMinutes() / 60);
-const BASE_WIND = 9.0;   
+const BASE_WIND = 20.0;   
 const DIURNAL_AMPLITUDE = 3.5; 
 const timeRadians = (2 * Math.PI * (decimalHour - 14)) / 24;
 
@@ -26,6 +26,10 @@ window.globalSimulationData.windDirection = 0;
 let macroTimeline = Math.random() * 100;
 let microTimeline = Math.random() * 100;
 let graceTicksRemaining = 450; // 45 seconds steady scouting window
+
+// --- 💨 GUST ENGINE STATE VARIATION TRACKING ---
+let gustDurationTicks = 0; // Duration container tracker for an active gust cycle
+let activeGustSpeed = 0;   // The temporary velocity spike value container
 
 setInterval(() => {
   let shiftDegrees = 0;
@@ -54,9 +58,29 @@ setInterval(() => {
     if (shiftDegrees < -14) shiftDegrees = -14;
   }
   
+  // --- ⛵ DYNAMIC 10% RANDOM HEAVY GUST INJECTION LOOP ---
+  let currentActiveWindSpeed = FROZEN_RACE_SPEED;
+
+  if (gustDurationTicks > 0) {
+    // A gust is currently active! Countdown its execution cycle life framework
+    gustDurationTicks--;
+    currentActiveWindSpeed = activeGustSpeed;
+  } else {
+    // No active gust running. Roll a 10% chance probability on every 5-second interval boundary
+    // Since this runs every 100ms, a 1-in-500 chance perfectly replicates a 10% threat matrix over a 5s window
+    if (Math.random() < (0.10 / 50)) {
+      // 💨 Gust triggered! Calculate an intense wind warning spike (> 22 Knots)
+      activeGustSpeed = parseFloat((22.5 + Math.random() * 3.5).toFixed(1));
+      // Keep the gust alive for a realistic duration (between 3 to 7 seconds long)
+      gustDurationTicks = Math.round(30 + Math.random() * 40); 
+      currentActiveWindSpeed = activeGustSpeed;
+      console.warn(`💨 GUST INJECTED! Wind velocity spiked to ${activeGustSpeed} knots for ${gustDurationTicks / 10} seconds!`);
+    }
+  }
+
   // 🔑 Continuously update global data properties directly
   window.globalSimulationData.windDirection = shiftDegrees;
-  window.globalSimulationData.windSpeed = FROZEN_RACE_SPEED;
+  window.globalSimulationData.windSpeed = currentActiveWindSpeed;
 
   let shiftType = "Steady (Scouting Course)";
   if (graceTicksRemaining <= 0) {
@@ -65,10 +89,15 @@ setInterval(() => {
     if (shiftDegrees >= -2 && shiftDegrees <= 2) shiftType = "Steady";
   }
 
+  // If a gust is raging, append a text flag warning directly onto your telemetry container window
+  if (gustDurationTicks > 0) {
+    shiftType += " 🔥 [⚠️ HEAVY GUST ACTIVE]";
+  }
+
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
     const statusText = graceTicksRemaining > 0 ? `⏳ [Steady Lock: ${Math.ceil(graceTicksRemaining / 10)}s] ` : "";
-    windDiv.textContent = `🌬️ Wind: ${FROZEN_RACE_SPEED.toFixed(1)} knots from ${shiftDegrees}° (${statusText}${shiftType})`;
+    windDiv.textContent = `🌬️ Wind: ${currentActiveWindSpeed.toFixed(1)} knots from ${shiftDegrees}° (${statusText}${shiftType})`;
   }
 }, 100);
 

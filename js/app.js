@@ -25,10 +25,6 @@ async function loadConfig() {
   masterIntervalId = setInterval(async () => {
     tick++;
 
-    // Update wind every 5 seconds
-    if (tick % 5 === 0) {
-      await updateWindFromAPI();
-    }
 
     // Update ILCA local time
     const now = new Date();
