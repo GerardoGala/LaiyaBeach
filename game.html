@@ -23,7 +23,7 @@
       <div id="heelWarningContainer" style="display: none; text-align: center; margin: 10px 0; padding: 10px; border-radius: 8px; font-weight: bold; background: #fee2e2; border: 2px solid #ef4444; color: #b91c1c;">
         <span id="warningLabel">⚠️ WARNING: HIGH HEEL ANGLE!</span>
         <div style="font-size: 0.85rem; font-weight: normal; margin-top: 4px;">
-          Heel: <span id="uiHeelDegrees">0</span>° | Switch Position to <span style="font-weight: bold; text-decoration: underline;">HIKE HARD</span> or ease sheet!
+          Heel: <span id="uiHeelDegrees">0</span>° | Switch Position to <span style="font-weight: bold; text-decoration: underline;">HIKE HARD</span> or ease boom angle!
         </div>
       </div>
 
@@ -271,36 +271,16 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 
   <script>
-    function updateSheetControl(sheet) {
-      showNotification('Sheet: ' + sheet);
-      window.globalSimulationData.ILCA.sheet = sheet;
+    function updateBoomControl(boomAngle) {
+      showNotification('Boom Angle: ' + boomAngle);
+      window.globalSimulationData.ILCA.boomAngle = boomAngle;
       
       // Update only the label, not the whole container
-      document.getElementById('sheetControlLabel').textContent = 
-          'SHEET CONTROL = ' + sheet;
+      document.getElementById('boomControlLabel').textContent = 
+          'BOOM ANGLE = ' + boomAngle;
     }
   </script>
     
-   <script>
-    function increaseSheetControl(delta) {
-      // Current sheet value
-      let current = window.globalSimulationData.ILCA.sheet || 20;
-
-      // Add delta and clamp between 20 and 90
-      const newSheet = Math.max(20, Math.min(90, current + delta));
-
-      // Save back to global state
-      window.globalSimulationData.ILCA.sheet = newSheet;
-
-      // Show notification
-      showNotification('Sheet: ' + newSheet);
-
-      // Update only the label, not the whole container
-      document.getElementById('sheetControlLabel').textContent =
-          'SHEET CONTROL = ' + newSheet;
-    }
-  </script>
-
   <script>
     function updateSailorPosition(position) {
       showNotification('Sailor Position: ' + position);
