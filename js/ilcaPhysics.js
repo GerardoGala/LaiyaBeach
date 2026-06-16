@@ -1,5 +1,5 @@
 // physics.js
-import { calculateHeelAndCapsize } from './capsize.js'; // ◄ Imported from separate capsize engine
+import { calculateHeelAndCapsize } from './ilcaCapsize.js'; // ◄ Imported from separate capsize engine
 
 /**
  * Calculates a smooth penalty curve based on distance from a "sweet spot".

@@ -2,7 +2,7 @@
 import { initMap, updateWindControl, updateILCAControl, updateVMGControl } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
-import { applyControls } from './physics.js'; // ◄ Imported from separate physics layer
+import { applyControls } from './ilcaPhysics.js'; // ◄ Imported from separate physics layer
 
 let map;
 let launched = false;
