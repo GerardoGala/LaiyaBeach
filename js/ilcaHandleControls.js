@@ -1,4 +1,4 @@
-// ilcaControls.js
+// ilcaHandleControls.js
 import { computeBearing } from "./ilcaUtils.js";
 
 export function handleControls(windDir, windSpeed) {

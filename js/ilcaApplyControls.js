@@ -1,4 +1,4 @@
-// physics.js
+// ilcaApplyControls.js
 import { calculateHeelAndCapsize } from './ilcaCapsize.js'; // ◄ Imported from separate capsize engine
 
 /**

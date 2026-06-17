@@ -2,7 +2,7 @@
 import { initMap, updateWindControl, updateILCAControl, updateVMGControl } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
-import { applyControls } from './ilcaPhysics.js'; // ◄ Imported from separate physics layer
+import { applyControls } from './ilcaApplyControls.js'; // ◄ Imported from separate physics layer
 
 let map;
 let launched = false;
@@ -12,7 +12,7 @@ async function loadConfig() {
   map = initMap();
 
   // Fetch wind immediately so overlays show something
-  await updateWindFromAPI();
+  await updateWind();
 
   // Show initial status immediately
   updateWindControl(map);
@@ -105,7 +105,7 @@ async function loadConfig() {
 
 
 // --- Clean, flat helper to sync the wind state ---
-async function updateWindFromAPI() {
+async function updateWind() {
   try {
     const windData = await fetchWind(); // Returns { direction, speed }
     if (windData) {

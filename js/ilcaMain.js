@@ -1,5 +1,5 @@
 // ilcaMain.js
-import { handleControls } from "./ilcaControls.js";
+import { handleControls } from "./ilcaHandleControls.js";
 import { drawILCAOnMap } from "./ilcaMap.js";
 
 // Calculate ILCA speed based on wind speed and beam reach assumption
