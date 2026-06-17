@@ -52,7 +52,7 @@ function updateWindSimulation(timestamp) {
   // 🧪 TESTING OVERRIDE: START
   // Multiply the baseline knots by 4 to speed up testing workflows.
   // TO UNDO: Delete or comment out the single line directly below!
-  windKnots = windKnots * 4;
+  //windKnots = windKnots * 4;
   // 🧪 TESTING OVERRIDE: END
   // ==========================================
 
