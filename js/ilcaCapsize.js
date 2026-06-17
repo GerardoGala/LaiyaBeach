@@ -32,7 +32,7 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
 
   // --- REFACTORED EXPONENTIAL TENSION MATH ---
   // Extract mainsheet angle inputs. A value of 0 means block-to-block (pinned tight).
-  const sheet = controls.sheet || 0;
+  const sheet = controls.boomAngle || 0;
   
   // Calculate raw linear tension fraction where 0° = 1.0 (Max power) and 90° = 0.1 (Dumped wind)
   const linearTension = Math.max(0.1, (90 - sheet) / 90);

@@ -68,6 +68,24 @@ export function applyControls(pointOfSail, windSpeed, controls) {
       else if (controls.sailorPosition === "Aft") modifier *= 0.85;
 
       modifier *= (0.50 + (db + 2) * 0.1375); 
+      controls.leeway = Math.max(2, 2 + (2 - db) * 8.25);
+      
+            // --- HEEL SPILLING LOGIC ---
+      // Target upwind boom angle is roughly 1.5°. Calculate how far it is over-eased.
+      const targetUpwindAngle = windSpeed < 8.0 ? 5.5 : (windSpeed < 15.0 ? 1.5 : 10.0);
+      
+      if (boomAngle > targetUpwindAngle) {
+        // Calculate an easing factor. If boom is wide open (e.g., 50°), this drops drastically.
+        const easeDeg = boomAngle - targetUpwindAngle;
+        const heelMultiplier = Math.max(0.0, 1.0 - (easeDeg / 45.0)); // Fully spilled by 45+ degrees out
+        
+        // Pass this reduction parameter to your capsize engine
+        controls.heelingForceMultiplier = heelMultiplier; 
+      } else {
+        controls.heelingForceMultiplier = 1.0;
+      }
+
+      modifier *= (0.50 + (db + 2) * 0.1375); 
       controls.leeway = Math.max(2, 2 + (2 - db) * 8.25); 
       break;
 
