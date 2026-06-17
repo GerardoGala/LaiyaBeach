@@ -69,8 +69,9 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
     controls.heelAngle += (maximumCalculatedAngle - controls.heelAngle) * 0.6;
   }
 
-  // Determine heel rotation swing alignment based on wind profile load sides (Port vs Starboard)
-  const relativeAngle = ((controls.heading - windSpeed) + 540) % 360 - 180; // Simple orientation check
+  // FIXED: Subtract the wind's directional angle (degrees), not its velocity (knots)
+  const windDirection = 0; // Or link this to controls.windDirection / your global wind angle variable
+  const relativeAngle = ((controls.heading - windDirection) + 540) % 360 - 180;
   const displayDirectionMultiplier = relativeAngle >= 0 ? 1 : -1;
 
   // STORE PRE-CALCULATED VALUE WITH INDICATION DIRECTION FOR THE UI GAUGE
