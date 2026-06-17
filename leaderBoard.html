@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hall of Fame | Laser Sailing Simulator</title>
+    <title>Hall of Fame | ILCA Sailing Simulator</title>
     <style>
         :root {
             --primary-blue: #007bff;
@@ -25,7 +25,7 @@
             border-radius: 15px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
             width: 95%; 
-            max-width: 600px; 
+            max-width: 700px; /* Widened slightly to display 5 columns nicely */
             margin-top: 20px;
         }
         header { text-align: center; margin-bottom: 30px; }
@@ -42,6 +42,8 @@
 
         .rank { font-weight: bold; width: 60px; }
         .sailor-name { font-weight: 500; }
+        .wind-strength { color: #4a5568; }
+        .race-date { color: #718096; font-size: 0.9rem; }
         .time { text-align: right; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: var(--navy); }
         
         .nav-links { margin-top: 30px; display: flex; gap: 15px; }
@@ -69,11 +71,13 @@
                 <tr>
                     <th>Rank</th>
                     <th>Sailor</th>
+                    <th>Wind</th>
+                    <th>Date</th>
                     <th style="text-align: right;">Time</th>
                 </tr>
             </thead>
             <tbody id="leaderboardBody">
-                <tr><td colspan="3" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
+                <tr><td colspan="5" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
             </tbody>
         </table>
     </div>
@@ -86,17 +90,17 @@
         <a href="game.html" class="btn btn-play" style="background: #28a745;">New Race</a>
     </div>
 
-<script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
-        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
-        authDomain: "laser-sailing-simulator.firebaseapp.com",
-        projectId: "laser-sailing-simulator",
-        storageBucket: "laser-sailing-simulator.firebasestorage.app",
-        messagingSenderId: "45397375888",
-        appId: "1:45397375888:web:1ca8d7688170787624d115"
+            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+            authDomain: "laser-sailing-simulator.firebaseapp.com",
+            projectId: "laser-sailing-simulator",
+            storageBucket: "laser-sailing-simulator.firebasestorage.app",
+            messagingSenderId: "45397375888",
+            appId: "1:45397375888:web:1ca8d7688170787624d115"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -106,18 +110,14 @@
             const tableBody = document.getElementById('leaderboardBody');
             
             try {
-                // 1. Reference the collection
                 const leaderboardRef = collection(db, "leaderboard");
-                
-                // 2. Simple query first to ensure we see data
-                // If this works, you can re-add: orderBy("finalTime", "asc"), limit(10)
                 const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
                 
                 const querySnapshot = await getDocs(q);
                 tableBody.innerHTML = ''; 
 
                 if (querySnapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
                     return;
                 }
 
@@ -125,9 +125,18 @@
                 querySnapshot.forEach((doc) => {
                     const entry = doc.data();
                     
-                    // Handle potential different field names or missing data
                     const sailor = entry.sailorName || "Anonymous Skipper";
                     const time = entry.finalTime ? Number(entry.finalTime).toFixed(2) : "N/A";
+                    
+                    // Extract wind field matching your Firestore console key exactly
+                    const wind = entry.windStrength !== undefined ? entry.windStrength : "N/A";
+                    
+                    // Safely extract and format your Firestore timestamp object
+                    let dateDisplay = "N/A";
+                    if (entry.timestamp) {
+                        const dateObj = entry.timestamp.toDate ? entry.timestamp.toDate() : new Date(entry.timestamp);
+                        dateDisplay = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                    }
 
                     let rankDisplay = `#${rank}`;
                     if(rank === 1) rankDisplay = '🏆';
@@ -138,6 +147,8 @@
                         <tr>
                             <td class="rank">${rankDisplay}</td>
                             <td class="sailor-name">${sailor}</td>
+                            <td class="wind-strength">${wind}kts</td>
+                            <td class="race-date">${dateDisplay}</td>
                             <td class="time">${time}s</td>
                         </tr>
                     `;
@@ -147,14 +158,12 @@
 
             } catch (err) {
                 console.error("Board error:", err);
-                // This will show the EXACT error message on the screen if it fails
-                tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">
                     Error: ${err.code || err.message}
                 </td></tr>`;
             }
         }
 
-        // Share functionality stays outside the async loop for reliability
         document.getElementById('shareBoardBtn').onclick = async () => {
             try {
                 await navigator.share({

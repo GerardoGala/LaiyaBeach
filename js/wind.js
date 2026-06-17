@@ -44,7 +44,19 @@ function updateWindSimulation(timestamp) {
   // 🌪️ 1. Mellow Wind Gust (Ensures speed never drops below 3.6 m/s / 7 knots)
   const gustVarianceMS = Math.sin(timeSeconds * 0.15) * 0.5; 
   const currentSpeedMS = Math.max(3.6, baseWindSpeedMS + gustVarianceMS);
-  const windKnots = (currentSpeedMS * 1.94384).toFixed(1);
+  
+  // Calculate calculated baseline knots
+  let windKnots = currentSpeedMS * 1.94384;
+
+  // ==========================================
+  // 🧪 TESTING OVERRIDE: START
+  // Multiply the baseline knots by 4 to speed up testing workflows.
+  // TO UNDO: Delete or comment out the single line directly below!
+  windKnots = windKnots * 4;
+  // 🧪 TESTING OVERRIDE: END
+  // ==========================================
+
+  const formattedWindKnots = windKnots.toFixed(1);
 
   // 🧭 2. Mellow Direction Oscillation
   const baseDirection = 0;
@@ -54,13 +66,13 @@ function updateWindSimulation(timestamp) {
   // 🔑 3. Update global simulation state
   if (window.globalSimulationData) {
     window.globalSimulationData.windDirection = windDeg;
-    window.globalSimulationData.windSpeed = windKnots;
+    window.globalSimulationData.windSpeed = formattedWindKnots;
   }
    
   // 🖥️ 4. Update the UI
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
-    windDiv.textContent = `🌬️ Wind: ${windKnots} knots from ${windDeg}°`;
+    windDiv.textContent = `🌬️ Wind: ${formattedWindKnots} knots from ${windDeg}°`;
   }
 
   // 🔄 Keep the animation loop running

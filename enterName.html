@@ -76,7 +76,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
@@ -92,50 +92,46 @@
     const leaderboardRef = collection(db, "leaderboard");
 
     document.getElementById('submissionForm').addEventListener('submit', async (e) => {
-        // Stop default browser form refresh actions
         e.preventDefault();
         
         const submitBtn = document.getElementById('submitBtn');
         const formElement = e.target;
         
-        // Safely extract text string straight from form data mapping
         const formData = new FormData(formElement);
         const sailorName = formData.get('sailorName')?.trim();
 
         if (!sailorName) return;
 
-        // 1. Try to read from the simulation app first
         let finalTime = window.globalSimulationData?.ILCA?.timer;
 
-        // 2. Fallback: If not found, look for "?time=X" in the browser URL bar
         if (finalTime === undefined) {
             const urlParams = new URLSearchParams(window.location.search);
             const timeParam = urlParams.get('time');
-            
-            // Parse the URL value, or use 33 if the URL parameter is also missing
             finalTime = timeParam ? parseFloat(timeParam) : 33;
         }
+
+        // Accurately capture wind properties from either configuration layout name
+        const rawWind = window.globalSimulationData?.windStrength || window.globalSimulationData?.windSpeed;
+        const windStrength = rawWind !== undefined ? parseFloat(rawWind) : 0;
 
         try {
             submitBtn.disabled = true;
             submitBtn.textContent = "Saving...";
 
-            // Save document into Firestore DB
             await addDoc(leaderboardRef, {
                 sailorName: sailorName,
                 finalTime: finalTime,
-                timestamp: new Date()
+                timestamp: serverTimestamp(), // This will run perfectly now
+                datetime: new Date().toISOString(),
+                windStrength: windStrength
             });
 
-            // Prompt congratulatory note to user
             alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s`);
-            
-            // Forward viewer immediately to the layout view board page
             window.location.href = "leaderBoard.html";
 
         } catch (err) {
             console.error("Firestore Error:", err);
-            alert("Submission error. Please check your network connection.");
+            alert(`Submission error: ${err.message}`);
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = "Enter Name";

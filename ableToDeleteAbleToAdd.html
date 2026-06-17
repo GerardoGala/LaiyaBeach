@@ -95,17 +95,20 @@
                 <tr>
                     <th>Rank</th>
                     <th>Sailor</th>
+                    <th style="text-align: right;">Wind</th>
                     <th style="text-align: right;">Time</th>
+                    <th style="text-align: right;">Date</th>
                 </tr>
             </thead>
             <tbody id="leaderboardBody">
-                <tr><td colspan="3" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
+                <tr><td colspan="5" style="text-align:center; padding: 40px;">Checking the race results...</td></tr>
             </tbody>
         </table>
 
         <!-- Submission Form Interface -->
         <form id="submissionForm" class="input-form">
             <input type="text" id="sailorNameInput" placeholder="Enter Name" required autocomplete="off">
+            <input type="number" id="windStrengthInput" placeholder="Wind Strength (knots)" step="0.1" min="0" required autocomplete="off">
             <input type="number" id="finalTimeInput" placeholder="Time in Seconds" step="0.01" min="0" required autocomplete="off">
             <div class="action-buttons">
                 <button type="submit" id="submitBtn">Enter Time</button>
@@ -114,17 +117,18 @@
         </form>
     </div>
 
+
 <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
-        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
-        authDomain: "laser-sailing-simulator.firebaseapp.com",
-        projectId: "laser-sailing-simulator",
-        storageBucket: "laser-sailing-simulator.firebasestorage.app",
-        messagingSenderId: "45397375888",
-        appId: "1:145397375888:web:1ca8d7688170787624d115"
+            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+            authDomain: "://firebaseapp.com",
+            projectId: "laser-sailing-simulator",
+            storageBucket: "laser-sailing-simulator.firebasestorage.app",
+            messagingSenderId: "45397375888",
+            appId: "1:145397375888:web:1ca8d7688170787624d115"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -141,7 +145,7 @@
                 tableBody.innerHTML = ''; 
 
                 if (querySnapshot.empty) {
-                    tableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No records yet! Be the first to sail.</td></tr>';
                     return;
                 }
 
@@ -150,7 +154,15 @@
                     const entry = snapshotItem.data();
                     
                     const sailor = entry.sailorName || "Anonymous Skipper";
+                    const wind = entry.windStrength ? `${Number(entry.windStrength).toFixed(1)} kts` : "N/A";
                     const time = entry.finalTime ? Number(entry.finalTime).toFixed(2) : "N/A";
+                    
+                    // Format Timestamp to a readable short local date
+                    let dateDisplay = "N/A";
+                    if (entry.timestamp) {
+                        const dateObj = entry.timestamp.toDate ? entry.timestamp.toDate() : new Date(entry.timestamp);
+                        dateDisplay = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' });
+                    }
 
                     let rankDisplay = `#${rank}`;
                     if(rank === 1) rankDisplay = '🏆';
@@ -161,7 +173,9 @@
                         <tr>
                             <td class="rank">${rankDisplay}</td>
                             <td class="sailor-name">${sailor}</td>
+                            <td class="wind-strength">${wind}</td>
                             <td class="time">${time}s</td>
+                            <td class="timestamp">${dateDisplay}</td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
@@ -170,7 +184,7 @@
 
             } catch (err) {
                 console.error("Board error:", err);
-                tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">
                     Error: ${err.code || err.message}
                 </td></tr>`;
             }
@@ -182,12 +196,14 @@
             
             const submitBtn = document.getElementById('submitBtn');
             const nameInput = document.getElementById('sailorNameInput');
+            const windInput = document.getElementById('windStrengthInput');
             const timeInput = document.getElementById('finalTimeInput');
             
             const sailorName = nameInput.value.trim();
+            const windStrength = parseFloat(windInput.value);
             const finalTime = parseFloat(timeInput.value);
 
-            if (!sailorName || isNaN(finalTime)) return;
+            if (!sailorName || isNaN(windStrength) || isNaN(finalTime)) return;
 
             try {
                 submitBtn.disabled = true;
@@ -195,10 +211,13 @@
 
                 await addDoc(leaderboardRef, {
                     sailorName: sailorName,
-                    finalTime: finalTime
+                    windStrength: windStrength,
+                    finalTime: finalTime,
+                    timestamp: serverTimestamp() // Uses Firebase server-side time token
                 });
 
                 nameInput.value = '';
+                windInput.value = '';
                 timeInput.value = '';
                 await initBoard();
 
@@ -213,52 +232,24 @@
 
         // Functionality behind the Clear All Records button using Atomic WriteBatch
         document.getElementById('clearBtn').addEventListener('click', async () => {
-            if (!confirm("Are you absolutely sure you want to permanently delete ALL leaderboard records?")) {
-                return;
-            }
-
-            const clearBtn = document.getElementById('clearBtn');
-            const submitBtn = document.getElementById('submitBtn');
-
+            if (!confirm("Are you absolutely sure you want to clear all records?")) return;
             try {
-                clearBtn.disabled = true;
-                submitBtn.disabled = true;
-                clearBtn.textContent = "Clearing...";
-
-                // Fetch all documents currently in the leaderboard collection
                 const querySnapshot = await getDocs(leaderboardRef);
-                
-                if (querySnapshot.empty) {
-                    alert("Leaderboard is already empty.");
-                    return;
-                }
-
-                // Initialize Firestore batch operation
                 const batch = writeBatch(db);
-                
-                // Add each document deletion reference to the batch queue
-                querySnapshot.forEach((snapshotItem) => {
-                    batch.delete(snapshotItem.ref);
+                querySnapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
                 });
-
-                // Commit the entire deletion transaction all at once
                 await batch.commit();
-                
-                // Force board UI interface refresh
                 await initBoard();
-                alert("Leaderboard cleared successfully!");
-
             } catch (err) {
-                console.error("Clear database failed:", err);
-                alert(`Error clearing database: ${err.message}`);
-            } finally {
-                clearBtn.disabled = false;
-                submitBtn.disabled = false;
-                clearBtn.textContent = "Clear All Records";
+                console.error("Clear failed:", err);
+                alert(`Error clearing records: ${err.message}`);
             }
         });
 
+        // Initialize board UI on load
         initBoard();
-    </script>
+</script>
+
 </body>
 </html>
