@@ -421,7 +421,119 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
+  // Map dashboard label id -> input section id
+  const dashboardToInput = {
+    ilcaLabel: 'ilcaControl',
+    boomControlLabel: 'boomControl',
+    sailorPositionLabel: 'sailorPositionControl',
+    daggerboardLabel: 'daggerboardControl',
+    vangLabel: 'vangControl',
+    downhaulLabel: 'downhaulControl',
+    outhaulLabel: 'outhaulControl'
+  };
+
+  // Map input section -> property name in window.globalSimulationData.ILCA
+  const inputToILCAprop = {
+    ilcaControl: 'maneuver',
+    boomControl: 'boomAngle',         // adjust if your code uses a different property name
+    sailorPositionControl: 'sailorPosition',
+    daggerboardControl: 'daggerboard',
+    vangControl: 'vang',
+    downhaulControl: 'downhaul',
+    outhaulControl: 'outhaul'
+  };
+
+  // Highlight the button inside the input section that matches ILCA current value
+  function highlightSelectionFromILCA(inputId) {
+    if (!window.globalSimulationData || !window.globalSimulationData.ILCA) return;
+    const ilca = window.globalSimulationData.ILCA;
+    const prop = inputToILCAprop[inputId];
+    if (!prop) return;
+
+    const currentValue = ilca[prop];
+    const currentStr = currentValue === null || currentValue === undefined ? '' : String(currentValue);
+
+    const section = document.getElementById(inputId);
+    if (!section) return;
+
+    // find all buttons that belong to this control (data-control attr equal to prop name OR by section)
+    // Prefer data-control attribute (recommended). Fallback: all .control-button in this section.
+    const selectorByAttr = '.control-button[data-control="' + prop + '"]';
+    let buttons = section.querySelectorAll(selectorByAttr);
+    if (!buttons || buttons.length === 0) {
+      buttons = section.querySelectorAll('.control-button');
+    }
+
+    // remove active from all
+    buttons.forEach(b => b.classList.remove('active'));
+
+    // Try to match data-value first
+    let matched = false;
+    buttons.forEach(b => {
+      const dataVal = b.getAttribute('data-value');
+      if (dataVal !== null && String(dataVal) === currentStr) {
+        b.classList.add('active');
+        matched = true;
+      }
+    });
+
+    // Fallback: match by button text
+    if (!matched) {
+      buttons.forEach(b => {
+        const txt = (b.textContent || '').trim();
+        if (txt && txt === currentStr) {
+          b.classList.add('active');
+          matched = true;
+        }
+      });
+    }
+
+    // If still nothing matched and your daggerboard uses a different label mapping,
+    // you could add custom mapping here (e.g., 0 -> "Center"). Example:
+    if (!matched && inputId === 'daggerboardControl') {
+      // map ILCA numeric values to button labels if needed
+      const map = { '0': 'Center', '1': 'Mid Up', '-1': 'Mid Down', '2': 'Up', '-2': 'Down' };
+      const mappedLabel = map[currentStr];
+      if (mappedLabel) {
+        buttons.forEach(b => {
+          if ((b.textContent || '').trim() === mappedLabel) b.classList.add('active');
+        });
+      }
+    }
+  }
+
+  // Open input section and highlight appropriate button
+  function openInputAndHighlight(inputId, dashboardItem) {
+    // mark dashboard item active
+    document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
+    if (dashboardItem) dashboardItem.classList.add('active');
+
+    // show only the chosen input section
+    document.querySelectorAll('.input-section').forEach(s => s.classList.remove('active'));
+    const section = document.getElementById(inputId);
+    if (!section) return;
+    section.classList.add('active');
+
+    // highlight from ILCA state
+    highlightSelectionFromILCA(inputId);
+  }
+
+  // Wire dashboard clicks
+  document.querySelectorAll('.dashboard-item').forEach(item => {
+    item.addEventListener('click', function () {
+      const targetId = this.getAttribute('data-target') || dashboardToInput[this.id];
+      if (!targetId) return;
+      openInputAndHighlight(targetId, this);
+    });
+  });
+
+
+
+});
+</script>
 
 
 </body>
