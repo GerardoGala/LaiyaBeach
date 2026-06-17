@@ -12,7 +12,7 @@ async function loadConfig() {
   map = initMap();
 
   // Fetch wind immediately so overlays show something
-  await updateWind();
+  await updateWindFromAPI();
 
   // Show initial status immediately
   updateWindControl(map);
@@ -105,7 +105,7 @@ async function loadConfig() {
 
 
 // --- Clean, flat helper to sync the wind state ---
-async function updateWind() {
+async function updateWindFromAPI() {
   try {
     const windData = await fetchWind(); // Returns { direction, speed }
     if (windData) {
