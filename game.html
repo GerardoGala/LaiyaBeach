@@ -270,80 +270,160 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   </script>
 
-  <script>
-    function updateBoomControl(boomAngle) {
-      showNotification('Boom Angle: ' + boomAngle);
-      window.globalSimulationData.ILCA.boomAngle = boomAngle;
-      
-      // Update only the label, not the whole container
-      document.getElementById('boomControlLabel').textContent = 
-          'BOOM ANGLE = ' + boomAngle;
-    }
-  </script>
-    
-  <script>
-    function updateSailorPosition(position) {
-      showNotification('Sailor Position: ' + position);
-      window.globalSimulationData.ILCA.sailorPosition = position;
-      
-      // Update only the label, not the whole container
-      document.getElementById('sailorPositionLabel').textContent = 
-          'SAILOR POSITION = ' + position;
-    }
-  </script>
+<script>
+  // Helper: set the active class on input buttons that match control/value.
+  function setActiveInputButton(controlName, value) {
+    if (value === null || value === undefined) value = '';
+    const valueStr = String(value);
+    // Find all buttons with data-control attribute equal to controlName
+    const selector = '.control-button[data-control="' + controlName + '"]';
+    const buttons = document.querySelectorAll(selector);
 
-  <script>
-    function updateDaggerboardControl(daggerboard) {
-      const labels = {
-        '-2': 'Down',
-        '-1': 'MidDown',
-        '0':  'Mid',
-        '1':  'MidUp',
-        '2':  'Up'
-      };
-      const key = String(daggerboard);
-      const label = labels[key] ?? 'Unknown';
-      showNotification('Daggerboard: ' + key + ' ' + label);
-      window.globalSimulationData.ILCA.daggerboard = daggerboard;
-      
-      // Update only the label, not the whole container
-      document.getElementById('daggerboardLabel').textContent = 
-          'DAGGERBOARD = ' + window.globalSimulationData.ILCA.daggerboard + ' ' + label;
-    }
-  </script>
+    // First clear active from all buttons in the same input section(s)
+    buttons.forEach(btn => btn.classList.remove('active'));
 
-  <script>
-    function updateVangControl(vang) {
-      showNotification('Vang: ' + vang);
-      window.globalSimulationData.ILCA.vang = vang;
-      
-      // Update only the label, not the whole container
-      document.getElementById('vangLabel').textContent = 
-          'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
-    }
-  </script>
+    // Try to match data-value first
+    let matched = false;
+    buttons.forEach(btn => {
+      const dataVal = btn.getAttribute('data-value');
+      if (dataVal !== null && String(dataVal) === valueStr) {
+        btn.classList.add('active');
+        matched = true;
+      }
+    });
 
-  <script>
-    function updateDownhaulControl(downhaul) {
-      showNotification('Downhaul: ' + downhaul);
-      window.globalSimulationData.ILCA.downhaul = downhaul;
-      
-      // Update only the label, not the whole container
-      document.getElementById('downhaulLabel').textContent = 
-          'DOWNHAUL CONTROL = ' + window.globalSimulationData.ILCA.downhaul;
+    // Fallback: try matching by button label text (for human strings like "Mid Center")
+    if (!matched) {
+      buttons.forEach(btn => {
+        const txt = (btn.textContent || '').trim();
+        if (txt && txt === valueStr) {
+          btn.classList.add('active');
+          matched = true;
+        }
+      });
     }
-  </script>
 
-  <script>
-    function updateOuthaulControl(outhaul) {
-      showNotification('Outhaul: ' + outhaul);
-      window.globalSimulationData.ILCA.outhaul = outhaul;
-      
-      // Update only the label, not the whole container
-      document.getElementById('outhaulLabel').textContent = 
-          'OUTHAUL CONTROL = ' + window.globalSimulationData.ILCA.outhaul;
+    // If still not matched, do nothing (no highlighted button)
+  }
+
+  // Helper: set dashboard label 'active' class for corresponding control
+  function setDashboardActiveForControl(controlName) {
+    // mapping control -> dashboard label id
+    const map = {
+      boom: 'boomControlLabel',
+      sailorPosition: 'sailorPositionLabel',
+      daggerboard: 'daggerboardLabel',
+      vang: 'vangLabel',
+      downhaul: 'downhaulLabel',
+      outhaul: 'outhaulLabel',
+      maneuver: 'ilcaLabel'
+    };
+
+    // remove active from all dashboard items
+    document.querySelectorAll('.dashboard-item').forEach(el => el.classList.remove('active'));
+
+    const labelId = map[controlName];
+    if (labelId) {
+      const el = document.getElementById(labelId);
+      if (el) el.classList.add('active');
     }
-  </script>
+  }
+
+  // --- Update functions (replace the originals) ---
+
+  function updateBoomControl(boomAngle) {
+    showNotification('Boom Angle: ' + boomAngle);
+    window.globalSimulationData.ILCA.boomAngle = boomAngle;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('boomControlLabel');
+    if (lbl) lbl.textContent = 'BOOM ANGLE = ' + boomAngle;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('boom', boomAngle);
+    setDashboardActiveForControl('boom');
+  }
+
+  function updateSailorPosition(position) {
+    showNotification('Sailor Position: ' + position);
+    window.globalSimulationData.ILCA.sailorPosition = position;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('sailorPositionLabel');
+    if (lbl) lbl.textContent = 'SAILOR POSITION = ' + position;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('sailorPosition', position);
+    setDashboardActiveForControl('sailorPosition');
+  }
+
+  function updateDaggerboardControl(daggerboard) {
+    // Updated labels so 0 maps to "Center"
+    const labels = {
+      '-2': 'Down',
+      '-1': 'Mid Down',
+      '0':  'Center',
+      '1':  'Mid Up',
+      '2':  'Up'
+    };
+    const key = String(daggerboard);
+    const label = labels[key] ?? 'Unknown';
+    showNotification('Daggerboard: ' + key + ' ' + label);
+    window.globalSimulationData.ILCA.daggerboard = daggerboard;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('daggerboardLabel');
+    if (lbl) lbl.textContent = 'DAGGERBOARD = ' + window.globalSimulationData.ILCA.daggerboard + ' ' + label;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('daggerboard', daggerboard);
+    setDashboardActiveForControl('daggerboard');
+  }
+
+  function updateVangControl(vang) {
+    showNotification('Vang: ' + vang);
+    window.globalSimulationData.ILCA.vang = vang;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('vangLabel');
+    if (lbl) lbl.textContent = 'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('vang', vang);
+    setDashboardActiveForControl('vang');
+  }
+
+  function updateDownhaulControl(downhaul) {
+    showNotification('Downhaul: ' + downhaul);
+    window.globalSimulationData.ILCA.downhaul = downhaul;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('downhaulLabel');
+    if (lbl) lbl.textContent = 'DOWNHAUL CONTROL = ' + window.globalSimulationData.ILCA.downhaul;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('downhaul', downhaul);
+    setDashboardActiveForControl('downhaul');
+  }
+
+  function updateOuthaulControl(outhaul) {
+    showNotification('Outhaul: ' + outhaul);
+    window.globalSimulationData.ILCA.outhaul = outhaul;
+
+    // Update only the label, not the whole container
+    const lbl = document.getElementById('outhaulLabel');
+    if (lbl) lbl.textContent = 'OUTHAUL CONTROL = ' + window.globalSimulationData.ILCA.outhaul;
+
+    // Highlight the input button and dashboard item
+    setActiveInputButton('outhaul', outhaul);
+    setDashboardActiveForControl('outhaul');
+  }
+</script>
+
+
+
+
+
 </body>
 
 </html>

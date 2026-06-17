@@ -15,70 +15,70 @@
 </div>
 
 
-  <div id="boomControl" class="input-section">
-      <div class="control-row">
-        <button class="control-button" onclick="updateBoomControl(0)">0</button>
-        <button class="control-button" onclick="updateBoomControl(5)">5</button>
-        <button class="control-button" onclick="updateBoomControl(10)">10</button>
-        <button class="control-button" onclick="updateBoomControl(50)">50</button>
-        <button class="control-button" onclick="updateBoomControl(80)">80</button>
-        <button class="control-button" onclick="updateBoomControl(100)">100</button>
-      </div>
+<div id="boomControl" class="input-section">
+  <div class="control-row">
+    <button class="control-button" data-control="boom" data-value="0" onclick="updateBoomControl(0)">0</button>
+    <button class="control-button" data-control="boom" data-value="5" onclick="updateBoomControl(5)">5</button>
+    <button class="control-button" data-control="boom" data-value="10" onclick="updateBoomControl(10)">10</button>
+    <button class="control-button" data-control="boom" data-value="50" onclick="updateBoomControl(50)">50</button>
+    <button class="control-button" data-control="boom" data-value="80" onclick="updateBoomControl(80)">80</button>
+    <button class="control-button" data-control="boom" data-value="100" onclick="updateBoomControl(100)">100</button>
   </div>
+</div>
 
-  <div id="daggerboardControl" class="input-section">
-    <div class="control-column">
-      <button class="control-button" onclick="updateDaggerboardControl(2)">Up</button>
-      <button class="control-button" onclick="updateDaggerboardControl(1)">Mid Up</button>
-      <button class="control-button" onclick="updateDaggerboardControl(0)">Center</button>
-      <button class="control-button" onclick="updateDaggerboardControl(-1)">Mid Down</button>
-      <button class="control-button" onclick="updateDaggerboardControl(-2)">Down</button>
-    </div>
+<div id="daggerboardControl" class="input-section">
+  <div class="control-column">
+    <button class="control-button" data-control="daggerboard" data-value="2" onclick="updateDaggerboardControl(2)">Up</button>
+    <button class="control-button" data-control="daggerboard" data-value="1" onclick="updateDaggerboardControl(1)">Mid Up</button>
+    <button class="control-button" data-control="daggerboard" data-value="0" onclick="updateDaggerboardControl(0)">Center</button>
+    <button class="control-button" data-control="daggerboard" data-value="-1" onclick="updateDaggerboardControl(-1)">Mid Down</button>
+    <button class="control-button" data-control="daggerboard" data-value="-2" onclick="updateDaggerboardControl(-2)">Down</button>
   </div>
+</div>
 
-  <div id="sailorPositionControl" class="input-section">
-    <div class="control-row">
-      <button class="control-button" onclick="updateSailorPosition('Fore')">Fore</button>
-    </div>
-    <div class="control-row">    
-      <button class="control-button" onclick="updateSailorPosition('Hike Out')">Hike Out</button>
-      <button class="control-button" onclick="updateSailorPosition('Mid Center')">Mid Center</button>
-      <button class="control-button" onclick="updateSailorPosition('Leeward')">Leeward</button>
-    </div>
-    <div class="control-row">      
-      <button class="control-button" onclick="updateSailorPosition('Aft')">Aft</button>
-    </div>
+<div id="sailorPositionControl" class="input-section">
+  <div class="control-row">
+    <button class="control-button" data-control="sailorPosition" data-value="Fore" onclick="updateSailorPosition('Fore')">Fore</button>
   </div>
+  <div class="control-row">
+    <button class="control-button" data-control="sailorPosition" data-value="Hike Out" onclick="updateSailorPosition('Hike Out')">Hike Out</button>
+    <button class="control-button" data-control="sailorPosition" data-value="Mid Center" onclick="updateSailorPosition('Mid Center')">Mid Center</button>
+    <button class="control-button" data-control="sailorPosition" data-value="Leeward" onclick="updateSailorPosition('Leeward')">Leeward</button>
+  </div>
+  <div class="control-row">
+    <button class="control-button" data-control="sailorPosition" data-value="Aft" onclick="updateSailorPosition('Aft')">Aft</button>
+  </div>
+</div>
 
-  <div id="vangControl" class="input-section">
-    <div class="control-column">
-      <button class="control-button" onclick="updateVangControl(-2)">TIGHT</button>
-      <button class="control-button" onclick="updateVangControl(-1)">MID TIGHT</button>
-      <button class="control-button" onclick="updateVangControl(0)">CENTER</button>
-      <button class="control-button" onclick="updateVangControl(1)">MID LOOSE</button>
-      <button class="control-button" onclick="updateVangControl(2)">LOOSE</button>
-    </div>
+<div id="vangControl" class="input-section">
+  <div class="control-column">
+    <button class="control-button" data-control="vang" data-value="-2" onclick="updateVangControl(-2)">TIGHT</button>
+    <button class="control-button" data-control="vang" data-value="-1" onclick="updateVangControl(-1)">MID TIGHT</button>
+    <button class="control-button" data-control="vang" data-value="0" onclick="updateVangControl(0)">CENTER</button>
+    <button class="control-button" data-control="vang" data-value="1" onclick="updateVangControl(1)">MID LOOSE</button>
+    <button class="control-button" data-control="vang" data-value="2" onclick="updateVangControl(2)">LOOSE</button>
   </div>
+</div>
 
-  <div id="downhaulControl" class="input-section">
-    <div class="control-column">
-      <button class="control-button" onclick="updateDownhaulControl(-2)">MAX LUFF</button>
-      <button class="control-button" onclick="updateDownhaulControl(-1)">TRIM</button>
-      <button class="control-button" onclick="updateDownhaulControl(0)">BASE</button>
-      <button class="control-button" onclick="updateDownhaulControl(1)">TWIST</button>
-      <button class="control-button" onclick="updateDownhaulControl(2)">OFF</button>
-    </div>
+<div id="downhaulControl" class="input-section">
+  <div class="control-column">
+    <button class="control-button" data-control="downhaul" data-value="-2" onclick="updateDownhaulControl(-2)">MAX LUFF</button>
+    <button class="control-button" data-control="downhaul" data-value="-1" onclick="updateDownhaulControl(-1)">TRIM</button>
+    <button class="control-button" data-control="downhaul" data-value="0" onclick="updateDownhaulControl(0)">BASE</button>
+    <button class="control-button" data-control="downhaul" data-value="1" onclick="updateDownhaulControl(1)">TWIST</button>
+    <button class="control-button" data-control="downhaul" data-value="2" onclick="updateDownhaulControl(2)">OFF</button>
   </div>
+</div>
 
-  <div id="outhaulControl" class="input-section">
-    <div class="control-column">
-      <button class="control-button" onclick="updateOuthaulControl(-2)">FLAT</button>
-      <button class="control-button" onclick="updateOuthaulControl(-1)">BLENDED</button>
-      <button class="control-button" onclick="updateOuthaulControl(0)">BASE</button>
-      <button class="control-button" onclick="updateOuthaulControl(1)">DEEP</button>
-      <button class="control-button" onclick="updateOuthaulControl(2)">FULL</button>
-    </div>
+<div id="outhaulControl" class="input-section">
+  <div class="control-column">
+    <button class="control-button" data-control="outhaul" data-value="-2" onclick="updateOuthaulControl(-2)">FLAT</button>
+    <button class="control-button" data-control="outhaul" data-value="-1" onclick="updateOuthaulControl(-1)">BLENDED</button>
+    <button class="control-button" data-control="outhaul" data-value="0" onclick="updateOuthaulControl(0)">BASE</button>
+    <button class="control-button" data-control="outhaul" data-value="1" onclick="updateOuthaulControl(1)">DEEP</button>
+    <button class="control-button" data-control="outhaul" data-value="2" onclick="updateOuthaulControl(2)">FULL</button>
   </div>
+</div>
 
 </div>
 
@@ -188,4 +188,101 @@
   box-sizing: border-box;
   text-transform: uppercase;
 }
+</style>
+
+<style>
+
+.control-row {
+  display: flex;
+  gap: 10px;
+}
+
+.row-directions .control-button {
+  flex: 1;
+}
+
+.row-adjustments .control-button {
+  flex: 1;
+}
+
+/* Container Layout */
+#input-pane {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  background: #000;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* Hide inactive sections cleanly */
+.input-section:not(.active) {
+  display: none !important;
+}
+
+.input-section.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.control-side-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+.control-center-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  gap: 6px;
+}
+
+.control-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 6px;
+}
+
+.control-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  gap: 6px;
+}
+
+.control-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  flex: 1;
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  text-transform: uppercase;
+}
+
+.control-button.active {
+  background: #343a40 !important; /* dark accent */
+  color: #fff;
+  border: 2px solid #fff;
+}
+
 </style>
