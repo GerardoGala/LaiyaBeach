@@ -218,25 +218,26 @@ export function updateILCAControl() {
     <div>Speed: ${speedKnots} knots (${speedMS} m/s)</div>
     <div>Timer: ${timer}</div>
 
-    <!-- --- PURE VIEW RETRO CLINOMETER DISPLAY --- -->
-    <div id="clinometerBox" style="background: #0f172a; border: 1px solid #334155; padding: 8px; border-radius: 4px; margin-top: 8px; text-align: center; color: #f8fafc; font-family: monospace;">
-        <div style="font-size: 9px; letter-spacing: 0.5px; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">HEEL CLINOMETER</div>
-        
-        <div style="position: relative; width: 100px; height: 50px; border: 1px solid #475569; border-radius: 50px 50px 0 0; background: #020617; margin: 0 auto; overflow: hidden;">
-            <div style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100%; text-align: center; font-size: 8px; color: #475569; bottom: 1px;">
-                45° [ 0° ] 45°
-            </div>
-
-            <!-- Needle transforms react strictly to pre-calculated state variables -->
-            <div style="position: absolute; left: 50%; bottom: 0; width: 2px; height: 42px; background: ${needleColor}; transform-origin: bottom center; transform: translateX(-50%) rotate(${uiRotation}deg); transition: transform 0.2s ease-out;">
-                <div style="position: absolute; top: 0; left: -2px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></div>
-            </div>
+<!-- --- PURE VIEW RETRO CLINOMETER DISPLAY --- -->
+<div id="clinometerBox" style="background: #ffffff; border: 1px solid #e2e8f0; padding: 8px; border-radius: 4px; margin-top: 8px; text-align: center; color: #1e293b; font-family: sans-serif;">
+    <div style="font-size: 11px; letter-spacing: 0.5px; color: #475569; font-weight: bold; margin-bottom: 6px; font-family: sans-serif;">HEEL CLINOMETER</div>
+    
+    <div style="position: relative; width: 100px; height: 50px; border: 1px solid #cbd5e1; border-radius: 50px 50px 0 0; background: #f8fafc; margin: 0 auto; overflow: hidden;">
+        <div style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100%; text-align: center; font-size: 8px; color: #94a3b8; bottom: 1px;">
+            45° [ 0° ] 45°
         </div>
 
-        <div style="margin-top: 4px; font-size: 11px; font-weight: bold;">
-            Angle: <span style="color: ${needleColor};">${Math.round(absoluteHeel)}°</span>
+        <!-- Needle transforms react strictly to pre-calculated state variables -->
+        <div style="position: absolute; left: 50%; bottom: 0; width: 2px; height: 42px; background: ${needleColor}; transform-origin: bottom center; transform: translateX(-50%) rotate(${uiRotation}deg); transition: transform 0.2s ease-out;">
+            <div style="position: absolute; top: 0; left: -2px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></div>
         </div>
     </div>
+
+    <div style="margin-top: 6px; font-size: 12px; font-weight: bold; color: #000000;">
+        Angle: <span style="color: ${needleColor};">${Math.round(absoluteHeel)}°</span>
+    </div>
+</div>
+
   `;
 }
 
