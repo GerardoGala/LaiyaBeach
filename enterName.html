@@ -73,10 +73,10 @@
             <button type="submit" id="submitBtn">Enter Name</button>
         </form>
     </div>
-
+<script src="js/globalSimulationData.js"></script>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
@@ -102,31 +102,22 @@
 
         if (!sailorName) return;
 
-        let finalTime = window.globalSimulationData?.ILCA?.timer;
+        let finalTime = window.globalSimulationData.ILCA.timer;
 
-        if (finalTime === undefined) {
-            const urlParams = new URLSearchParams(window.location.search);
-            const timeParam = urlParams.get('time');
-            finalTime = timeParam ? parseFloat(timeParam) : 33;
-        }
-
-        // Accurately capture wind properties from either configuration layout name
-        const rawWind = window.globalSimulationData?.windStrength || window.globalSimulationData?.windSpeed;
-        const windStrength = rawWind !== undefined ? parseFloat(rawWind) : 0;
-
+    const windSpeed = window.globalSimulationData.windSpeed;
         try {
             submitBtn.disabled = true;
             submitBtn.textContent = "Saving...";
 
-            await addDoc(leaderboardRef, {
-                sailorName: sailorName,
-                finalTime: finalTime,
-                timestamp: serverTimestamp(), // This will run perfectly now
-                datetime: new Date().toISOString(),
-                windStrength: windStrength
-            });
+                await addDoc(leaderboardRef, {
+                    sailorName: sailorName,
+                    windStrength: windSpeed,
+                    finalTime: finalTime,
+                    timestamp: serverTimestamp() // Uses Firebase server-side time token
+                });
 
-            alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s`);
+        // FIXED: Now displays the wind speed in the final confirmation popup
+            alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s\nWind: ${windSpeed}kts`);
             window.location.href = "leaderBoard.html";
 
         } catch (err) {
