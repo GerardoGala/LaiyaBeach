@@ -78,14 +78,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
-        authDomain: "laser-sailing-simulator.firebaseapp.com",
-        projectId: "laser-sailing-simulator",
-        storageBucket: "laser-sailing-simulator.firebasestorage.app",
-        messagingSenderId: "45397375888",
-        appId: "1:145397375888:web:1ca8d7688170787624d115"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+            authDomain: "://firebaseapp.com",
+            projectId: "laser-sailing-simulator",
+            storageBucket: "laser-sailing-simulator.firebasestorage.app",
+            messagingSenderId: "45397375888",
+            appId: "1:145397375888:web:1ca8d7688170787624d115"
+        };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -102,31 +102,30 @@
 
         if (!sailorName) return;
 
-        let finalTime = window.globalSimulationData.ILCA.timer;
-
-    const windSpeed = window.globalSimulationData.windSpeed;
-        try {
-            submitBtn.disabled = true;
-            submitBtn.textContent = "Saving...";
+        const finalTime = parseFloat(window.globalSimulationData.ILCA.finishTime);
+        const windStrength = parseFloat(window.globalSimulationData.windSpeed);
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Saving...";
 
                 await addDoc(leaderboardRef, {
                     sailorName: sailorName,
-                    windStrength: windSpeed,
+                    windStrength: windStrength,
                     finalTime: finalTime,
                     timestamp: serverTimestamp() // Uses Firebase server-side time token
                 });
 
-        // FIXED: Now displays the wind speed in the final confirmation popup
-            alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s\nWind: ${windSpeed}kts`);
-            window.location.href = "leaderBoard.html";
+            // FIXED: Now displays the wind speed in the final confirmation popup
+                alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s\nWind: ${windStrength}kts`);
+                window.location.href = "leaderBoard.html";
 
-        } catch (err) {
-            console.error("Firestore Error:", err);
-            alert(`Submission error: ${err.message}`);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = "Enter Name";
-        }
+            } catch (err) {
+                console.error("Firestore Error:", err);
+                alert(`Submission error: ${err.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Enter Name";
+            }
     });
 </script>
 </body>
