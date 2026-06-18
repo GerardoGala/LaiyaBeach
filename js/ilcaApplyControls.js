@@ -29,6 +29,11 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   let modifier = 1.0;   // Accumulator for trim modifiers
   controls.leeway = 0;  // Default sideways slip
 
+  // Grab current heel state from memory (default to 0 if undefined)
+  let currentClinometer = controls.clinometer || 0;
+  let targetClinometer = 0; // Initialize target variable
+
+
   // --- INTERFACE TRANSLATION LAYER (Normalized to 0.0 to 1.0) ---
   const v = (controls.vang + 2) / 4;          // 0.0 (Tight) to 1.0 (Loose)
   const d = (controls.downhaul + 2) / 4;      // 0.0 (Tight) to 1.0 (Loose)
@@ -40,8 +45,14 @@ export function applyControls(pointOfSail, windSpeed, controls) {
 
   switch(pointOfSail) {
     case "In Irons":
-      controls.heelAngle = 0; 
-      return 0.0; // Hard stall
+      // FIX: Instead of snapping to 0, set the TARGET to 0.
+      targetClinometer = 0; 
+      
+      // Let momentum run: step 60% of the way to 0 every 1-second tick
+      controls.clinometer = currentClinometer + (targetClinometer - currentClinometer) * 0.6;
+
+      // Return 0 speed since we are in irons
+      return 0.0; 
 
     case "Close Hauled":
       baseFactor = 0.7;
@@ -87,6 +98,9 @@ export function applyControls(pointOfSail, windSpeed, controls) {
 
       modifier *= (0.50 + (db + 2) * 0.1375); 
       controls.leeway = Math.max(2, 2 + (2 - db) * 8.25); 
+
+
+      
       break;
 
     case "Close Reach":
