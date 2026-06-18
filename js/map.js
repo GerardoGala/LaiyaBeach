@@ -242,7 +242,7 @@ export function updateILCAControl() {
 }
 
 
-// --- Refresh function to update VMG ruler dynamically ---
+
 // --- Refresh function to update VMG ruler dynamically ---
 export function updateVMGControl() {
   if (!vmgControlDiv) return;
