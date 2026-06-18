@@ -178,7 +178,7 @@ export function updateWindControl(map) {
   `;
 }
 
-// --- Refresh function to update ILCA status + time ---
+
 // --- Refresh function to update ILCA status + time ---
 export function updateILCAControl() {
   if (!ilcaControlDiv) return;
