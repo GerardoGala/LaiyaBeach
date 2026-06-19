@@ -89,7 +89,8 @@
                     // Execution routing block based on evaluated ranking rules
                     if (makesTop10) {
                         alert(`Congratulations! Your time of ${timeText} qualified for the Top 10!`);
-                        window.location.href = `enterName.html?time=${finalTimeScore}`;
+                        // Pass BOTH time and wind speed via the URL parameters
+                        window.location.href = `enterName.html?time=${finalTimeScore}&wind=${data.windSpeed}`;
                     } else {
                         alert(`Great race! However, your time of ${timeText} did not break into the Top 10.`);
                         window.location.href = "leaderboard.html";

@@ -102,8 +102,10 @@
 
         if (!sailorName) return;
 
-        const finalTime = parseFloat(window.globalSimulationData.ILCA.finishTime);
-        const windStrength = parseFloat(window.globalSimulationData.windSpeed);
+            //  FIXED: Extract the actual race results directly out of the URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const finalTime = parseFloat(urlParams.get('time')) || 0;
+            const windStrength = parseFloat(urlParams.get('wind')) || 0;
             try {
                 submitBtn.disabled = true;
                 submitBtn.textContent = "Saving...";
