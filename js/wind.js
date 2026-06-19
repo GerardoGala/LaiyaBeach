@@ -1,80 +1,79 @@
-// 📦 Global variable to store the base wind speed in m/s
-// Defaulted to 3.6 m/s (which equals exactly 7.0 knots)
-let baseWindSpeedMS = 3.6; 
+// js/wind.js
+export let baseWindSpeedMS = 3.6; // default fallback (3.6 m/s ≈ 7.0 knots)
 
 /**
- * Fetches the initial wind data from the API once.
+ * Fetch initial wind from OpenWeatherMap and start the simulation loop.
  */
 export async function fetchWind() {
   try {
-    const baseUrl = "https://openweathermap.org";
+    const baseUrl = "https://api.openweathermap.org/data/2.5/weather";
     const latitude = 13.676;
     const longitude = 121.437;
-    const apiKey = "2ae1f247f2de797baacea07fe09b19b6"; 
+    const apiKey = "2ae1f247f2de797baacea07fe09b19b6"; // ensure this key is valid for API usage
     const units = "metric";
 
     const url = `${baseUrl}?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`;
+    console.log("[wind] Fetching:", url);
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Network response was not ok");
+    if (!response.ok) throw new Error("Network response was not ok: " + response.status);
     const data = await response.json();
+    console.log("[wind] API data:", data);
 
-    // Enforce 3.6 m/s (7 knots) minimum wind speed rule
-    baseWindSpeedMS = data.wind.speed < 3.6 ? 3.6 : data.wind.speed;
+    if (data && data.wind && typeof data.wind.speed === "number") {
+      // Keep the minimum 3.6 m/s rule
+      baseWindSpeedMS = data.wind.speed < 3.6 ? 3.6 : data.wind.speed;
+      console.log("[wind] baseWindSpeedMS set to", baseWindSpeedMS, "m/s");
+    } else {
+      console.warn("[wind] Missing wind.speed in API response; falling back to 3.6 m/s");
+      baseWindSpeedMS = 3.6;
+    }
 
-    // Start the continuous simulation loop after a successful fetch
+    // Start animation loop
     requestAnimationFrame(updateWindSimulation);
 
   } catch (err) {
-    console.error("Wind API error. Falling back to 7 knots:", err);
-    
-    // 🛡️ API Fallback: Set base to 3.6 m/s (7.0 knots)
+    console.error("[wind] Fetch error; using fallback 3.6 m/s:", err);
     baseWindSpeedMS = 3.6;
-    
-    // Start simulation loop anyway so the app continues running smoothly
     requestAnimationFrame(updateWindSimulation);
   }
 }
 
 /**
- * Continuous loop that adds mellow, real-time gusts and oscillations.
+ * Continuous loop adding gentle gusts and updating global state.
  */
 function updateWindSimulation(timestamp) {
-  const timeSeconds = timestamp / 1000;
+  const timeSeconds = (timestamp || performance.now()) / 1000;
 
-  // 🌪️ 1. Mellow Wind Gust (Ensures speed never drops below 3.6 m/s / 7 knots)
-  const gustVarianceMS = Math.sin(timeSeconds * 0.15) * 0.5; 
+  // gust / variance
+  const gustVarianceMS = Math.sin(timeSeconds * 0.15) * 0.5;
   const currentSpeedMS = Math.max(3.6, baseWindSpeedMS + gustVarianceMS);
-  
-  // Calculate calculated baseline knots
+
+  // convert to knots (numeric)
   let windKnots = currentSpeedMS * 1.94384;
 
-  // ==========================================
-  // 🧪 TESTING OVERRIDE: START
-  // Multiply the baseline knots by 4 to speed up testing workflows.
-  // TO UNDO: Delete or comment out the single line directly below!
-  //windKnots = windKnots * 4;
-  // 🧪 TESTING OVERRIDE: END
-  // ==========================================
+  // IMPORTANT: ensure no test multiplier here (do NOT multiply windKnots)
+   windKnots = windKnots * 5; // <-- remove/commented
 
-  const formattedWindKnots = windKnots.toFixed(1);
+  const formattedWindKnots = Number(windKnots.toFixed(1));
 
-  // 🧭 2. Mellow Direction Oscillation
+  // direction oscillation
   const baseDirection = 0;
   const directionOscillation = Math.sin(timeSeconds * 0.08) * 5;
   const windDeg = Math.round((baseDirection + directionOscillation + 360) % 360);
 
-  // 🔑 3. Update global simulation state
-  if (window.globalSimulationData) {
-    window.globalSimulationData.windDirection = windDeg;
-    window.globalSimulationData.windSpeed = formattedWindKnots;
-  }
-   
-  // 🖥️ 4. Update the UI
+  // Update global state as numbers
+  window.globalSimulationData = window.globalSimulationData || {};
+  window.globalSimulationData.windDirection = windDeg;
+  window.globalSimulationData.windSpeed = formattedWindKnots;
+
+  // UI update (if element exists)
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
     windDiv.textContent = `🌬️ Wind: ${formattedWindKnots} knots from ${windDeg}°`;
   }
 
-  // 🔄 Keep the animation loop running
+  // Debug logging (optional; remove when stable)
+  // console.debug('[wind] currentSpeedMS', currentSpeedMS, 'knots', formattedWindKnots, 'deg', windDeg);
+
   requestAnimationFrame(updateWindSimulation);
 }
