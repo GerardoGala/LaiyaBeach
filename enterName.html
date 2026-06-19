@@ -75,17 +75,17 @@
     </div>
 <script src="js/globalSimulationData.js"></script>
 <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
-            authDomain: "://firebaseapp.com",
-            projectId: "laser-sailing-simulator",
-            storageBucket: "laser-sailing-simulator.firebasestorage.app",
-            messagingSenderId: "45397375888",
-            appId: "1:145397375888:web:1ca8d7688170787624d115"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyC_ayepAzJV_vfV5Qh8m52tGnn1Iw7CRnY",
+        authDomain: "laser-sailing-simulator.firebaseapp.com", // FIXED: Cleaned up incorrect domain path
+        projectId: "laser-sailing-simulator",
+        storageBucket: "laser-sailing-simulator.firebasestorage.app",
+        messagingSenderId: "45397375888",
+        appId: "1:145397375888:web:1ca8d7688170787624d115"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -102,32 +102,33 @@
 
         if (!sailorName) return;
 
-            //  FIXED: Extract the actual race results directly out of the URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const finalTime = parseFloat(urlParams.get('time')) || 0;
-            const windStrength = parseFloat(urlParams.get('wind')) || 0;
-            try {
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Saving...";
+        // FIXED: Extract parameters from URL and parse time as an integer to maintain whole seconds
+        const urlParams = new URLSearchParams(window.location.search);
+        const finalTime = parseInt(urlParams.get('time'), 10) || 0;
+        const windStrength = parseFloat(urlParams.get('wind')) || 0;
 
-                await addDoc(leaderboardRef, {
-                    sailorName: sailorName,
-                    windStrength: windStrength,
-                    finalTime: finalTime,
-                    timestamp: serverTimestamp() // Uses Firebase server-side time token
-                });
+        try {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Saving...";
 
-            // FIXED: Now displays the wind speed in the final confirmation popup
-                alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime.toFixed(2)}s\nWind: ${windStrength}kts`);
-                window.location.href = "leaderBoard.html";
+            await addDoc(leaderboardRef, {
+                sailorName: sailorName,
+                windStrength: windStrength,
+                finalTime: finalTime, // Saves clean integer seconds (e.g., 630) directly to Firestore
+                timestamp: serverTimestamp() 
+            });
 
-            } catch (err) {
-                console.error("Firestore Error:", err);
-                alert(`Submission error: ${err.message}`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = "Enter Name";
-            }
+            // FIXED: Cleaned up formatting string to show explicit seconds unit label
+            alert(`Successfully recorded!\n\nSailor: ${sailorName}\nTime: ${finalTime} sec\nWind: ${windStrength.toFixed(1)} kts`);
+            window.location.href = "leaderboard.html";
+
+        } catch (err) {
+            console.error("Firestore Error:", err);
+            alert(`Submission error: ${err.message}`);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Enter Name";
+        }
     });
 </script>
 </body>
