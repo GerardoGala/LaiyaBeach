@@ -52,7 +52,7 @@ function updateWindSimulation(timestamp) {
   let windKnots = currentSpeedMS * 1.94384;
 
   // IMPORTANT: ensure no test multiplier here (do NOT multiply windKnots)
-   windKnots = windKnots * 5; // <-- remove/commented
+  //   windKnots = windKnots * 5; // <-- remove/commented 
 
   const formattedWindKnots = Number(windKnots.toFixed(1));
 
