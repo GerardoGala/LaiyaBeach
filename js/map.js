@@ -74,7 +74,7 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
     metric: true            
   }).addTo(map);
 
-  // --- topleft (Wind & ILCA) ---
+  // --- topleft ---
   const TopLeftControls = L.Control.extend({
     options: { position: 'topleft' },
     onAdd: function(map) {
@@ -109,19 +109,7 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
       ilcaControlDiv.style.lineHeight = '1.4em';
       ilcaControlDiv.style.color = '#222';
       ilcaControlDiv.style.fontWeight = 'bold'; 
-      updateILCAControl();
-
-      return container;
-    }
-  });
-
-  // --- top-right Controls (VMG) ---
-  const TopRightControls = L.Control.extend({
-    options: { position: 'topright' },
-    onAdd: function(map) {
-      const container = L.DomUtil.create('div', 'top-right-controls-container');
-      
-      L.DomEvent.disableClickPropagation(container);
+      updateILCAControl(map);
 
       // --- VMG Status ---
       vmgControlDiv = L.DomUtil.create('div', 'vmg-status-container', container);
@@ -141,8 +129,7 @@ window.globalSimulationData.activeMarker = L.marker([windwardMarkLat, windwardMa
     }
   });
 
-  // Render both custom control groups onto the UI
-  map.addControl(new TopRightControls());
+  // Render custom control group onto the UI
   map.addControl(new TopLeftControls());
 
   // Define bounds safely encompassing all three active race marks
