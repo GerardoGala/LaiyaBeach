@@ -34,7 +34,7 @@
       font-size: clamp(1.1em, 2vw, 1.6em);
       line-height: 1.5em;
       margin: 10px auto;
-      max-width: 800px;
+
       padding: 0 20px;
     }
 
@@ -80,6 +80,84 @@
       max-width: 90%;
     }
 
+    /* Weather Widget Styling */
+    #wind-display {
+      font-size: clamp(1.1em, 2vw, 1.5em);
+      font-weight: bold;
+      color: #0066cc;
+      margin: 15px auto;
+      padding: 10px;
+      background: #e6f2ff;
+      border-radius: 8px;
+      display: inline-block;
+      max-width: 300px;
+    }
+
+    /* Mobile Landscape Overlay Blocker */
+    #orientation-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(10, 25, 47, 0.98);
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    /* Enforce portrait blocking up to standard tablet/mobile break lines */
+    @media screen and (max-width: 950px) and (orientation: portrait) {
+      #orientation-overlay {
+        display: flex;
+      }
+    }
+
+    /* Hardware Accelerated CSS Phone Rotation Animation */
+    .phone-icon {
+      width: 50px;
+      height: 85px;
+      border: 4px solid #ffffff;
+      border-radius: 8px;
+      position: relative;
+      animation: rotatePhone 2.5s ease-in-out infinite;
+      margin-bottom: 25px;
+    }
+
+    .phone-icon::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #ffffff;
+    }
+
+    @keyframes rotatePhone {
+      0% { transform: rotate(0deg); }
+      40% { transform: rotate(-90deg); }
+      100% { transform: rotate(-90deg); }
+    }
+
+    .overlay-title {
+      font-size: 2.2rem;
+      margin: 10px 0;
+      color: #ffcc00;
+    }
+
+    .overlay-text {
+      font-size: 1.4rem;
+      color: #f8fafc;
+      padding: 0 20px;
+    }
+
     /* Mobile boost: double font size */
     @media screen and (max-width: 767px) {
       h1, p {
@@ -90,9 +168,15 @@
 </head>
 <body class="welcome">
 
+  <!-- Mobile Orientation Blocker Screen -->
+  <div id="orientation-overlay">
+    <div class="phone-icon"></div>
+    <div class="overlay-title">Rotate Device</div>
+    <div class="overlay-text">Please switch to landscape mode for the best sailing experience.</div>
+  </div>
+
   <h1>ILCA Simulator</h1>
-  <br>
-  <p>
+   <p>
     Welcome to the world of <strong>Sailing ILCA Physics</strong> —
     where wind, trim, and heading converge to reveal the science behind speed and control.
   </p>
@@ -101,7 +185,7 @@
     from sheet tension to sailor position — transforms your <em>Velocity Made Good (VMG)</em> across each point of sail.
   </p>
   <p>
-    Experience the thrill of ILCA sailing with interactive controls, live wind data, and a dynamic map view.
+    Experience the thrill of ILCA sailing with interactive controls.
     Every decision you make echoes the reality of the water, teaching you how physics drives performance.
   </p>
   
@@ -138,6 +222,7 @@
 </dialog>
 
 <script>
+
   function openModal(pageUrl) {
     const modal = document.getElementById('dynamicModal');
     const iframe = document.getElementById('modalIframe');
@@ -156,6 +241,7 @@
     modal.close();
     iframe.src = ""; // Clear iframe source on close
   }
+
 </script>
 
 </body>
