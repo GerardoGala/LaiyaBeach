@@ -108,12 +108,24 @@
   }
 
   function updateVangControl(vang) {
-    showNotification('Vang: ' + vang);
+    // Create a mapping object for your display text
+    const labelMapping = {
+        '2': 'LOOSE',
+        '1': 'MID LOOSE',
+        '0': 'CENTER',
+        '-1': 'MID TIGHT',
+        '-2': 'TIGHT'
+    };
+
+        // Safely get the text representation, default back to the number if not found
+    const displayValue = labelMapping[vang] || vang;
+
+    showNotification('Vang: ' + displayValue);
     window.globalSimulationData.ILCA.vang = vang;
 
     // Update only the label, not the whole container
     const lbl = document.getElementById('vangLabel');
-    if (lbl) lbl.textContent = 'VANG CONTROL = ' + window.globalSimulationData.ILCA.vang;
+    if (lbl) lbl.textContent = 'VANG = ' + displayValue;
 
     // Highlight the input button and dashboard item
     setActiveInputButton('vang', vang);
@@ -121,12 +133,25 @@
   }
 
   function updateDownhaulControl(downhaul) {
-    showNotification('Downhaul: ' + downhaul);
+    // Create a mapping object for your display text
+    const labelMapping = {
+        '2': 'OFF',
+        '1': 'TWIST',
+        '0': 'BASE',
+        '-1': 'TRIM',
+        '-2': 'MAX LUFF'
+    };
+
+    // Safely get the text representation, default back to the number if not found
+    const displayValue = labelMapping[downhaul] || downhaul;
+
+
+    showNotification('Downhaul: ' + displayValue);
     window.globalSimulationData.ILCA.downhaul = downhaul;
 
     // Update only the label, not the whole container
     const lbl = document.getElementById('downhaulLabel');
-    if (lbl) lbl.textContent = 'DOWNHAUL CONTROL = ' + window.globalSimulationData.ILCA.downhaul;
+    if (lbl) lbl.textContent = 'DOWNHAUL = ' + displayValue;
 
     // Highlight the input button and dashboard item
     setActiveInputButton('downhaul', downhaul);
@@ -134,12 +159,24 @@
   }
 
   function updateOuthaulControl(outhaul) {
-    showNotification('Outhaul: ' + outhaul);
+        // Create a mapping object for your display text
+    const labelMapping = {
+        '2': 'FULL',
+        '1': 'DEEP',
+        '0': 'BASE',
+        '-1': 'BLENDED',
+        '-2': 'FLAT'
+    };
+
+    // Safely get the text representation, default back to the number if not found
+    const displayValue = labelMapping[outhaul] || outhaul;
+
+    showNotification('Outhaul: ' + displayValue);
     window.globalSimulationData.ILCA.outhaul = outhaul;
 
     // Update only the label, not the whole container
     const lbl = document.getElementById('outhaulLabel');
-    if (lbl) lbl.textContent = 'OUTHAUL CONTROL = ' + window.globalSimulationData.ILCA.outhaul;
+    if (lbl) lbl.textContent = 'OUTHAUL = ' + displayValue;
 
     // Highlight the input button and dashboard item
     setActiveInputButton('outhaul', outhaul);
