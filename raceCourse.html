@@ -5,101 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sailing the 5-Leg Olympic Race Course - ILCA Simulator</title>
     <style>
-        :root {
-            --primary-color: #0056b3;
-            --text-color: #333333;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: Arial, sans-serif;
             line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--bg-color);
+            color: #222;
+            background: #f0f8ff;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        h1, h2 {
+            color: #0066cc;
+            font-size: clamp(1.5em, 2.5vw, 2.2em);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007acc;
+            padding-bottom: 8px;
         }
 
         h1 {
-            color: var(--primary-color);
-            font-size: 2.5rem;
             margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
         }
 
-        h2 {
-            color: var(--primary-color);
-            font-size: 1.5rem;
-            margin-top: 30px;
-            margin-bottom: 15px;
+        h3 {
+            color: #333;
+            font-size: clamp(1.1em, 1.8vw, 1.4em);
+            margin-top: 0;
+            margin-bottom: 8px;
         }
 
         p {
+            font-size: clamp(1em, 1.5vw, 1.2em);
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 20px;
             margin-bottom: 20px;
+        }
+
+        li {
+            font-size: clamp(0.95em, 1.4vw, 1.15em);
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: #0066cc;
+            font-weight: bold;
         }
 
         .course-image-container {
             text-align: center;
-            margin: 30px 0;
+            margin: 20px 0;
             padding: 15px;
-            background: #f1f5f9;
+            background: #fff;
             border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffcc00;
         }
 
         .course-image {
             max-width: 100%;
             height: auto;
             border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .image-caption {
             font-style: italic;
-            color: #64748b;
+            color: #555;
             margin-top: 10px;
-            font-size: 0.9rem;
+            font-size: clamp(0.85em, 1.2vw, 1em);
         }
 
-        ol, ul {
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
             margin-bottom: 20px;
-            padding-left: 20px;
         }
 
-        li {
-            margin-bottom: 10px;
-        }
-
-        .tip-box {
-            background-color: #eff6ff;
-            border-left: 4px solid var(--primary-color);
-            padding: 15px 20px;
-            margin: 30px 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .tip-box h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.1rem;
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ffcc00;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
     <h1>Sailing the 5-Leg Olympic Race Course</h1>
     
     <p>The 5-leg Olympic course is the ultimate test of an ILCA sailor. It challenges your tactical execution across every primary angle of sail by stacking a traditional outer triangle lap on top of a classic downwind "sausage" loop. Mastering this course requires swift control modifications to balance power, drag, and speed at each turning mark.</p>
@@ -109,48 +105,65 @@
         <div class="image-caption">Figure 1: Overview of the 5-Leg Olympic Race Course showing the initial triangle loop followed by a vertical wind-axis upwind/downwind finish loop.</div>
     </div>
 
-    <h2>1. Leg 1: The First Upwind Beat (Leeward to Windward Mark)</h2>
-    <p>The race begins at the bottom of the course, tracking hard against the wind vector. Because an ILCA dinghy cannot sail directly into irons, you must progress by "beating"—tacking left and right at close-hauled angles (45 degrees off the true wind).</p>
-    <ul>
-        <li><strong>Sail Trim:</strong> Sheet the main block-to-block (fully tight). Apply heavy Vang, flatten the sail bottom using the Outhaul, and pull the Downhaul (Cunningham) tight to lock the sail draft forward.</li>
-        <li><strong>Daggerboard & Body:</strong> Keep the daggerboard fully down (Position 2) to eliminate sideways leeway. Hike hard to keep the hull flat.</li>
-    </ul>
+    <div class="grid-container">
+        <!-- LEG 1 -->
+        <div class="card">
+            <h3>1. Leg 1: The First Upwind Beat</h3>
+            <p>The race begins at the bottom of the course, tracking hard against the wind vector. Because an ILCA dinghy cannot sail directly into irons, you must progress by "beating"—tacking left and right at close-hauled angles (45 degrees off the true wind).</p>
+            <ul>
+                <li><strong>Sail Trim:</strong> Sheet the main block-to-block (fully tight). Apply heavy Vang, flatten the sail bottom using the Outhaul, and pull the Downhaul (Cunningham) tight to lock the sail draft forward.</li>
+                <li><strong>Daggerboard & Body:</strong> Keep the daggerboard fully down (Position 2) to eliminate sideways leeway. Hike hard to keep the hull flat.</li>
+            </ul>
+        </div>
 
-    <h2>2. Leg 2: The Fast Beam Reach (Windward to Gybe Mark)</h2>
-    <p>Rounding the Windward Mark for the first time, you will bear away 90 degrees onto a blisteringly fast <strong>Beam Reach</strong> targeting the western outer mark.</p>
-    <ul>
-        <li><strong>Sail Trim:</strong> Ease the mainsheet roughly halfway out immediately. Relax the Vang, Downhaul, and Outhaul to intermediate mid-points to let the sail belly fill with power.</li>
-        <li><strong>Daggerboard & Body:</strong> Raise the daggerboard to the center sweet spot (Position 0) to shed skin drag. Hike hard to turn aerodynamic lift into plane speed.</li>
-    </ul>
+        <!-- LEG 2 -->
+        <div class="card">
+            <h3>2. Leg 2: The Fast Beam Reach</h3>
+            <p>Rounding the Windward Mark for the first time, you will bear away 90 degrees onto a blisteringly fast <span class="highlight">Beam Reach</span> targeting the western outer mark.</p>
+            <ul>
+                <li><strong>Sail Trim:</strong> Ease the mainsheet roughly halfway out immediately. Relax the Vang, Downhaul, and Outhaul to intermediate mid-points to let the sail belly fill with power.</li>
+                <li><strong>Daggerboard & Body:</strong> Raise the daggerboard to the center sweet spot (Position 0) to shed skin drag. Hike hard to turn aerodynamic lift into plane speed.</li>
+            </ul>
+        </div>
 
-    <h2>3. Leg 3: The Broad Reach (Gybe to Leeward Mark)</h2>
-    <p>The Gybe Mark requires a tactical downwind turn, throwing the boom across the centerline onto a deep, sweeping <strong>Broad Reach</strong> pointing back down toward the bottom buoy.</p>
-    <ul>
-        <li><strong>The Maneuver:</strong> Initiate a fluid, controlled gybe. Flip the sail over smoothly as the stern crosses the eye of the wind, using your body weight to counter-balance the hull.</li>
-        <li><strong>Sail Trim:</strong> Ease the mainsheet out deep. Pull the daggerboard up further (Position -1) to bleed drag. Ease the Downhaul and Outhaul completely loose to build a deep, bagged sail profile.</li>
-    </ul>
+        <!-- LEG 3 -->
+        <div class="card">
+            <h3>3. Leg 3: The Broad Reach</h3>
+            <p>The Gybe Mark requires a tactical downwind turn, throwing the boom across the centerline onto a deep, sweeping <span class="highlight">Broad Reach</span> pointing back down toward the bottom buoy.</p>
+            <ul>
+                <li><strong>The Maneuver:</strong> Initiate a fluid, controlled gybe. Flip the sail over smoothly as the stern crosses the eye of the wind, using your body weight to counter-balance the hull.</li>
+                <li><strong>Sail Trim:</strong> Ease the mainsheet out deep. Pull the daggerboard up further (Position -1) to bleed drag. Ease the Downhaul and Outhaul completely loose to build a deep, bagged sail profile.</li>
+            </ul>
+        </div>
 
-    <h2>4. Leg 4: The Second Upwind Beat (Leeward back to Windward Mark)</h2>
-    <p>Rounding the bottom mark transitions you back into upwind tracking. You must climb right back up the course axis to reach the top mark one final time.</p>
-    <ul>
-        <li><strong>The Maneuver:</strong> Round wide and exit tight right next to the buoy. Do not wait to adjust your trim; turn too early before sheeting in, and the hull will stall and slide sideways.</li>
-        <li><strong>Sail Trim:</strong> Re-engage tight upwind settings instantly: sheet hard, throw the daggerboard fully down (Position 2), and pull your control lines tight to flatten the sail.</li>
-    </ul>
+        <!-- LEG 4 -->
+        <div class="card">
+            <h3>4. Leg 4: The Second Upwind Beat</h3>
+            <p>Rounding the bottom mark transitions you back into upwind tracking. You must climb right back up the course axis to reach the top mark one final time.</p>
+            <ul>
+                <li><strong>The Maneuver:</strong> Round wide and exit tight right next to the buoy. Do not wait to adjust your trim; turn too early before sheeting in, and the hull will stall and slide sideways.</li>
+                <li><strong>Sail Trim:</strong> Re-engage tight upwind settings instantly: sheet hard, throw the daggerboard fully down (Position 2), and pull your control lines tight to flatten the sail.</li>
+            </ul>
+        </div>
 
-    <h2>5. Leg 5: The Dead Downwind Run (Windward Mark to Leeward Finish)</h2>
-    <p>The final leg is a technical, tactical dead downwind <strong>Run</strong> (180 degrees away from the wind) directly down the center track to cross the finish line at the bottom mark.</p>
-    <ul>
-        <li><strong>Sail Trim:</strong> Square the mainsheet completely out to 90 degrees. Keep the Downhaul and Outhaul fully loose to maximize projected surface area. Set the Vang to a medium tension (0.5) to keep the boom stable and prevent the sail leech from twisting open too far.</li>
-        <li><strong>Daggerboard & Body:</strong> Pull the daggerboard completely UP (Position -2) to eliminate underwater drag. Move your body position far AFT in the cockpit to lift the bow out of the water and prevent nose-diving into the waves.</li>
-    </ul>
+        <!-- LEG 5 -->
+        <div class="card">
+            <h3>5. Leg 5: The Dead Downwind Run</h3>
+            <p>The final leg is a technical, tactical dead downwind <span class="highlight">Run</span> (180 degrees away from the wind) directly down the center track to cross the finish line at the bottom mark.</p>
+            <ul>
+                <li><strong>Sail Trim:</strong> Square the mainsheet completely out to 90 degrees. Keep the Downhaul and Outhaul fully loose to maximize projected surface area. Set the Vang to a medium tension (0.5) to keep the boom stable and prevent the sail leech from twisting open too far.</li>
+                <li><strong>Daggerboard & Body:</strong> Pull the daggerboard completely UP (Position -2) to eliminate underwater drag. Move your body position far AFT in the cockpit to lift the bow out of the water and prevent nose-diving into the waves.</li>
+            </ul>
+        </div>
 
-    <div class="tip-box">
-        <h3>ILCA Simulator Pro-Tip</h3>
-        <p>Anticipate your adjustments ahead of time! Do not wait until you hit the mark to fiddle with your control panels. Prepare your outhaul, downhaul, and vang slightly before turning to guarantee optimal sail physics the exact second you enter the next leg.</p>
-        <p><strong>UI Alert:</strong> A warning prompt will flash on your dashboard when you are within 50 meters of your target mark.</p>
-        <p><strong>Waypoint Target Switch:</strong> Your active destination target changes to the next sequential mark when you get within 20 meters of the current buoy. Use that exact 20-meter threshold to initiate your maneuver!</p>
+        <!-- PRO TIP BOX -->
+        <div class="card">
+            <h3>ILCA Simulator Pro-Tip 💡</h3>
+            <p>Anticipate your adjustments ahead of time! Do not wait until you hit the mark to fiddle with your control panels. Prepare your outhaul, downhaul, and vang slightly before turning to guarantee optimal sail physics the exact second you enter the next leg.</p>
+            <p><span class="highlight">UI Alert:</span> A warning prompt will flash on your dashboard when you are within 50 meters of your target mark.</p>
+            <p><span class="highlight">Waypoint Target Switch:</span> Your active destination target changes to the next sequential mark when you get within 20 meters of the current buoy. Use that exact 20-meter threshold to initiate your maneuver!</p>
+        </div>
     </div>
-</div>
 
 </body>
 </html>
