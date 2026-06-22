@@ -55,10 +55,7 @@ button:hover {
     background: #0066b3;
 }
 
-#leaderBoardBtn {
-    margin-top: 20px;
-    background-color: #ffcc00;
-}
+
 
 /* ✅ FIXED: Added a button row container to keep the 4 yellow buttons perfectly lined up */
 .button-row {
