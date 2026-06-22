@@ -1,96 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      color: #222;
-      background: #f0f8ff;
-      margin: 0;
-      padding: 10px;
-    }
-    h2 {
-      color: #0066cc;
-      font-size: clamp(1.5em, 2.5vw, 2.2em);
-      margin-top: 0;
-      border-bottom: 2px solid #007acc;
-      padding-bottom: 8px;
-    }
-    h3 {
-      color: #333;
-      font-size: clamp(1.1em, 1.8vw, 1.4em);
-      margin-bottom: 8px;
-    }
-    p {
-      font-size: clamp(1em, 1.5vw, 1.2em);
-      margin-bottom: 15px;
-    }
-    ul {
-      padding-left: 20px;
-      margin-bottom: 20px;
-    }
-    li {
-      font-size: clamp(0.95em, 1.4vw, 1.15em);
-      margin-bottom: 10px;
-    }
-    .highlight {
-      color: #0066cc;
-      font-weight: bold;
-    }
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 15px;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      border-left: 4px solid #ffcc00;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About the Simulator - ILCA Documentation</title>
+    <link rel="stylesheet" href="css/shared.css">
 </head>
 <body>
 
+    <h2>About the Simulator</h2>
+    <p>Technical Scope, Physics Capabilities, and Engine Limits</p>
+    <p>This reference guide clarifies what variables are actively calculated by our simulation loop. By dividing our system parameters across distinct HTML page links, we keep our environment clean for precise debugging.</p>
 
-
-            <h2>About the Simulator</h2>
-            <p>Technical Scope, Physics Capabilities, and Engine Limits</p>
-  
-
-        <p>This reference guide clarifies what variables are actively calculated by our simulation loop. By dividing our system parameters across distinct HTML page links, we keep our environment clean for precise debugging.</p>
-
-        
-  <div class="grid-container">
-              <div class="card">
-                <h3>What It Simulates ⛵</h3>
-                <ul>
-                    <li><strong>Rigging Adjustments:</strong> Evaluates the combined drag and power effects of your Vang, Cunningham, Outhaul, and Mainsheet on speed.</li>
-                    <li><strong>Velocity Made Good (VMG):</strong> Tracks your real velocity vector moving toward the active mark.</li>
-                    <li><strong>Dynamic Heel Angles:</strong> Calculates rolling momentum shifts and records values directly to your cockpit Clinometer.</li>
-                    <li><strong>Capsizing Mechanics:</strong> Drops speed to zero if the hull rolls past 45° due to over-tightened sheets or improper hiking positions.</li>
-                    <li><strong>Target Highlights:</strong> Visually markers and points out the current destination buoy on the active map tracking view.</li>
-                </ul>
-            </div>
-
-            <!-- WHAT IT DOES NOT DO -->
-            <div class="card">
-                <h3>What It Does NOT Do 🚫</h3>
-                <ul>
-                    <li><strong>Manual Rudder Steering:</strong> Active tiller controls are hidden to focus completely on speed tracking and trim parameters.</li>
-                    <li><strong>Manual Mark Rounding:</strong> The ship automates turning maneuvers with an auto-tack routine once the hull glides within 5 meters of a buoy.</li>
-                    <li><strong>Wave & Current Drift:</strong> Hydrodynamics assume a flat sea state, calculating drag profiles without active wave chop or current vectors.</li>
-                </ul>
-            </div>
+    <div class="grid-container">
+        <!-- WHAT IT SIMULATES -->
+        <div class="card">
+            <h3>What It Simulates ⛵</h3>
+            <ul>
+                <li><strong>Rigging Adjustments:</strong> Evaluates the combined drag and power effects of your Vang, Cunningham, Outhaul, and Mainsheet on speed.</li>
+                <li><strong>Velocity Made Good (VMG):</strong> Tracks your real velocity vector moving toward the active mark.</li>
+                <li><strong>Dynamic Heel Angles:</strong> Calculates rolling momentum shifts and records values directly to your cockpit Clinometer.</li>
+                <li><strong>Capsizing Mechanics:</strong> Drops speed to zero if the hull rolls past 45° due to over-tightened sheets or improper hiking positions.</li>
+                <li><strong>Target Highlights:</strong> Visually markers and points out the current destination buoy on the active map tracking view.</li>
+            </ul>
         </div>
 
-        <h2 style="text-align: left;">Heavy Weather Advisory</h2>
-        <p style="text-align: left;">Sailing inside our hardcoded 20-knot race frame with random wind gusts passing 22 knots demands strict precision. Because sheet calculations scale non-linearly, leaving your weight profile sitting centered inside the cockpit while turning across the wind results in an immediate capsize.</p>
+        <!-- WHAT IT DOES NOT DO -->
+        <div class="card">
+            <h3>What It Does NOT Do 🚫</h3>
+            <ul>
+                <li><strong>Manual Rudder Steering:</strong> Active tiller controls are hidden to focus completely on speed tracking and trim parameters.</li>
+                <li><strong>Manual Mark Rounding:</strong> The ship automates turning maneuvers with an auto-tack routine once the hull glides within 5 meters of a buoy.</li>
+                <li><strong>Wave & Current Drift:</strong> Hydrodynamics assume a flat sea state, calculating drag profiles without active wave chop or current vectors.</li>
+            </ul>
+        </div>
     </div>
+
+    <h2>Heavy Weather Advisory</h2>
+    <p>Sailing inside our hardcoded 20-knot race frame with random wind gusts passing 22 knots demands strict precision. Because sheet calculations scale non-linearly, leaving your weight profile sitting centered inside the cockpit while turning across the wind results in an immediate capsize.</p>
 
 </body>
 </html>
