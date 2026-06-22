@@ -1,0 +1,215 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+  }
+
+  /* Default: mobile layout (vertical stack) */
+  .container {
+    display: flex;
+    flex-direction: column; 
+    height: 100vh;
+  }
+
+  #map {
+    flex: 1;
+    width: 100%;
+    border-bottom: 2px solid #333;
+    position: relative;   /* needed for absolute children */
+    min-height: 300px;    /* ensures visibility on mobile */
+  }
+
+  #controls {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #111;
+    padding: 12px;
+  }
+
+  /* Desktop/Laptop: switch to side-by-side */
+  @media screen and (min-width: 768px) {
+    .container {
+      flex-direction: row; /* forces horizontal split */
+    }
+    #map {
+      flex: 1; 
+      width: auto; /* allows layout to shrink side-by-side */
+      border-bottom: none;
+    }
+    #controls {
+      flex: 0 0 300px; 
+      width: 300px;
+      max-width: 300px;
+      border-right: 2px solid #333;
+    }
+  }
+
+  #notification-container {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+  .notification {
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    opacity: 0;
+    animation: slideUpFade 10s forwards;
+  }
+  @keyframes slideUpFade {
+    0% { transform: translateY(30px); opacity: 0; }
+    20% { transform: translateY(0); opacity: 1; }
+    80% { transform: translateY(-10px); opacity: 1; }
+    100% { transform: translateY(-20px); opacity: 0; }
+  }
+
+/* Rows that contain multiple buttons */
+  #sheetControl div,
+  #daggerboardControl div,
+  #sailorPositionControl div,
+  #ilcaControl div,
+  #vangControl div,
+  #downhaulControl div,
+  #outhaulControl div{
+    display: flex;          /* lay out buttons in a row */
+    gap: 6px;               /* consistent spacing */
+    justify-content: center;
+  }
+
+  #mapStartSimulationBtn {
+    position: absolute;
+    bottom: 30px;       /* lower center */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: #007acc;
+    color: #fff;
+    border: none;
+    padding: 16px 32px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  @keyframes intenseShake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(0px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(2px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(2px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.danger-shake {
+    animation: intenseShake 0.4s infinite;
+}
+
+/* =========================================================================
+   ORIENTATION SHIELD RULES & CORE TELEMETRY DETECTORS
+   ========================================================================= */
+
+/* 
+   1. BASE STATE: DEFINE THE FULL-SCREEN BACKDROP
+   By default, this panel uses 'display: none'. Desktop systems and laptops 
+   will pass completely over this node without wasting processing cycles rendering it.
+*/
+#orientation-overlay {
+    display: none;                  /* Kept invisible during standard desktop views */
+    position: fixed;                /* Locks it relative to the physical screen boundaries */
+    top: 0;
+    left: 0;
+    width: 100vw;                   /* Spans the entire width of the mobile device */
+    height: 100vh;                  /* Spans the entire height of the mobile device */
+    background-color: rgba(10, 25, 47, 0.98); /* Deep ocean-dark navy overlay tint */
+    
+    /* 
+       ⚠️ CRITICAL PORTABLE FIX: 
+       Leaflet maps map internal layers at z-index: 1000+. 
+       Setting this to a massive 999999 ensures it shatters Leaflet's layers 
+       on real hardware screens and stays on the very top of the mobile glass.
+    */
+    z-index: 999999 !important; 
+    
+    flex-direction: column;         /* Arranges elements vertically in a centered strip */
+    align-items: center;            /* Centers elements horizontally */
+    justify-content: center;        /* Centers elements vertically */
+    text-align: center;
+    color: #ffffff;
+}
+
+/* 
+   2. TRAP LAYER: THE PORTRAIT DETECTION ENGINE
+   Matches your clean, original launcher page query.
+*/
+@media screen and (max-width: 950px) and (orientation: portrait) {
+    #orientation-overlay {
+        display: flex !important;   /* Forces structural flexible block visibility */
+    }
+}
+
+/* 
+   3. VISUAL ANCHOR: DESIGNING THE SMARTPHONE RECTANGLE
+   This builds a physical mockup of a phone frame out of pure CSS properties.
+*/
+.phone-icon {
+    width: 50px;
+    height: 85px;
+    border: 4px solid #ffffff;       /* White frame border lines */
+    border-radius: 8px;              /* Smooth curved device corners */
+    position: relative;
+    margin-bottom: 25px;
+    /* Links directly to the keyframe routine below. Runs continuously. */
+    animation: rotatePhone 2.5s ease-in-out infinite; 
+}
+
+/* Draws the subtle circular Home Button dot at the bottom of our mock phone */
+.phone-icon::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);    /* Offsets center perfectly regardless of line width */
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ffffff;
+}
+
+/* 
+   4. ENGINE LOOP: THE HARDWARE-ACCELERATED TRANSFORMS
+   This directs the device model to tilt smoothly on its center mass. It holds 
+   at a 90-degree side tilt for a split second to simulate a landscape holding position.
+*/
+@keyframes rotatePhone {
+    0% { transform: rotate(0deg); }         /* Starts at natural upright orientation */
+    40% { transform: rotate(-90deg); }     /* Rotates horizontally to the left side */
+    100% { transform: rotate(-90deg); }    /* Sustains the horizontal state before looping */
+}
+
+/* Decorative Title header spacing */
+.overlay-title {
+    font-size: 2.2rem;
+    margin: 10px 0;
+    color: #ffcc00;                 /* Signature yellow tint to prompt an alert action */
+}
+
+/* Decorative Detail paragraph formatting text blocks */
+.overlay-text {
+    font-size: 1.4rem;
+    color: #f8fafc;
+    padding: 0 20px;
+}
