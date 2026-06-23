@@ -121,16 +121,17 @@
   display: none !important;
 }
 
-/* Make active sections fill the container entirely */
+/* Make active sections fill the container entirely and distribute space evenly */
 .input-section.active {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: stretch; /* Stretches the children elements to fit perfectly */
   height: 100%;
   width: 100%;
   gap: 6px;            /* Matches the black gap thickness from the dashboard */
   box-sizing: border-box;
 }
+
 
 
 
@@ -164,9 +165,11 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100%;
+  flex: 1;                /* FORCES rows to split the parent vertical height equally */
   gap: 6px;               /* Adds uniform spacing between buttons */
+  min-height: 0;          /* Prevents rows from bursting past flex parent bounds */
 }
+
 
 /* Buttons stretch to fill 100% of their available space evenly */
 .control-button {
@@ -205,29 +208,41 @@
 }
 
 /* Container Layout */
+/* Container Layout */
 #input-pane {
   display: flex;
   flex-direction: column;
-  height: 300px;
-  background: #000;
-  padding: 6px;
+  height: 100%;        /* Fills exactly the leftover space provided by #input-container */
+  background: #000;    /* Dark background to match the black divider theme */
+  padding: 6px;        /* Matches the outer border spacing */
   box-sizing: border-box;
 }
 
-/* Hide inactive sections cleanly */
-.input-section:not(.active) {
-  display: none !important;
-}
-
+/* Make active sections fill the container entirely and distribute rows evenly */
 .input-section.active {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: stretch;
   height: 100%;
   width: 100%;
-  gap: 6px;
+  gap: 6px;            /* Matches the black gap thickness from the dashboard */
   box-sizing: border-box;
 }
+
+/* Row layouts distribute buttons horizontally across the screen */
+.control-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 1;             /* FORCES active rows to share the leftover space equally */
+  gap: 6px;            /* Adds uniform spacing between buttons */
+  min-height: 0;       /* Prevents buttons from expanding past the layout limit */
+}
+
+
+
+
+
 
 .control-side-column {
   display: flex;
@@ -251,13 +266,7 @@
   gap: 6px;
 }
 
-.control-row {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  gap: 6px;
-}
+
 
 .control-button {
   background: #007bff;

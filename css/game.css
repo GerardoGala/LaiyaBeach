@@ -14,6 +14,16 @@ html, body {
     height: 100vh;
   }
 
+  #dashboard-container {
+  flex: 0 0 auto;        /* Take ONLY what space it naturally requires; do not shrink or grow */
+}
+
+#input-container {
+  flex: 1 1 0%;          /* Consume 100% of the remaining leftover vertical space */
+  min-height: 0;         /* CRITICAL: Prevents contents from expanding past leftover space */
+}
+
+
   #map {
     flex: 1;
     width: 100%;
@@ -22,12 +32,15 @@ html, body {
     min-height: 300px;    /* ensures visibility on mobile */
   }
 
-  #controls {
-    flex: 1;
-    overflow-y: auto;
-    background-color: #111;
-    padding: 12px;
-  }
+#controls {
+  display: flex;         /* Turn sidebar into a flexible flex wrapper */
+  flex-direction: column;/* Stack dashboard and inputs vertically */
+  height: 100vh;         /* Limit sidebar strictly to the viewport height */
+  background-color: #111;
+  padding: 12px;
+  box-sizing: border-box;/* Ensures padding is included inside the 100vh calculation */
+}
+
 
   /* Desktop/Laptop: switch to side-by-side */
   @media screen and (min-width: 768px) {
