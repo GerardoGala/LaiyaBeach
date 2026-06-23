@@ -1,10 +1,10 @@
 html, body {
     margin: 0;
-    padding: 0;
-    height: 100%;
     font-family: "Segoe UI", sans-serif;
     background-color: #1e1e1e;
     color: #d4d4d4;
+    height: 100vh; 
+    overflow: hidden;
   }
 
   /* Default: mobile layout (vertical stack) */
