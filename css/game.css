@@ -3,7 +3,9 @@ html, body {
     font-family: "Segoe UI", sans-serif;
     background-color: #1e1e1e;
     color: #d4d4d4;
-    height: 100vh; 
+   height: 100svh;          /* Forces strict compliance with the mobile viewport layout */
+  height: 100dvh;          /* Modern backup: tracks fluid toolbar state changes smoothly */
+
     overflow: hidden;
   }
 
@@ -11,7 +13,9 @@ html, body {
   .container {
     display: flex;
     flex-direction: column; 
-    height: 100vh;
+  height: 100svh;          /* Fixes mobile clipping */
+  height: 100dvh;          /* Dynamically sizes layout to always fit screen space */
+
   }
 
   #dashboard-container {
@@ -32,13 +36,13 @@ html, body {
     min-height: 300px;    /* ensures visibility on mobile */
   }
 
-#controls {
-  display: flex;         /* Turn sidebar into a flexible flex wrapper */
-  flex-direction: column;/* Stack dashboard and inputs vertically */
-  height: 100vh;         /* Limit sidebar strictly to the viewport height */
+  #controls {
+  display: flex;          /* Added so inner containers split vertical space */
+  flex-direction: column; /* Stacks dashboard and inputs safely */
+  flex: 1;                /* Shares mobile space equally alongside the map */
   background-color: #111;
   padding: 12px;
-  box-sizing: border-box;/* Ensures padding is included inside the 100vh calculation */
+  box-sizing: border-box; /* Crucial: includes padding inside calculations */
 }
 
 
