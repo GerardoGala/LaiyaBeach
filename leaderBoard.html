@@ -4,69 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hall of Fame | ILCA Sailing Simulator</title>
-    <style>
-        :root {
-            --primary-blue: #007bff;
-            --navy: #0056b3;
-            --light-bg: #f8fafc;
-        }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--light-bg); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 20px;
-            margin: 0;
-        }
-        .board-container { 
-            background: white; 
-            padding: 2rem; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-            width: 95%; 
-            max-width: 700px; /* Widened slightly to display 5 columns nicely */
-            margin-top: 20px;
-        }
-        header { text-align: center; margin-bottom: 30px; }
-        h1 { color: var(--navy); margin: 0; font-size: 2rem; }
-        p { color: #666; margin-top: 5px; }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; border-bottom: 2px solid #edf2f7; padding: 15px 10px; color: #4a5568; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; }
-        td { padding: 15px 10px; border-bottom: 1px solid #edf2f7; color: #2d3748; }
-        
-        tr:nth-child(1) .rank { color: #d4af37; font-size: 1.5rem; } /* Gold */
-        tr:nth-child(2) .rank { color: #aaa9ad; font-size: 1.3rem; } /* Silver */
-        tr:nth-child(3) .rank { color: #b08d57; font-size: 1.2rem; } /* Bronze */
-
-        .rank { font-weight: bold; width: 60px; }
-        .sailor-name { font-weight: 500; }
-        .wind-strength { color: #4a5568; }
-        .race-date { color: #718096; font-size: 0.9rem; }
-        .time { text-align: right; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: var(--navy); }
-        
-        .nav-links { margin-top: 30px; display: flex; gap: 15px; }
-        .btn { 
-            padding: 12px 25px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            transition: transform 0.2s;
-        }
-        .btn-play { background: var(--primary-blue); color: white; }
-        .btn-play:hover { transform: translateY(-2px); background: var(--navy); }
-    </style>
+    <link rel="stylesheet" href="css/shared.css">
 </head>
-<body>
+<body class="body-flex-center">
 
     <div class="board-container">
-        <header>
+        <header class="board-header">
             <h1>Global Leaderboard ⛵</h1>
             <p>The Top 10 Fastest Sailors</p>
         </header>
 
-        <table>
+        <table class="leaderboard-table">
             <thead>
                 <tr>
                     <th>Rank</th>
@@ -83,11 +31,11 @@
     </div>
 
     <div class="nav-links">
-        <button id="shareBoardBtn" class="btn" style="background: #6c757d; color: white; border: none; cursor: pointer;">
+        <button id="shareBoardBtn" class="btn btn-secondary">
             Share Leaderboard 🌐
         </button>
-        <a href="index.html" class="btn btn-play">Back to Dock</a>
-        <a href="game.html" class="btn btn-play" style="background: #28a745;">New Race</a>
+        <a href="index.html" class="btn btn-primary">Back to Dock</a>
+        <a href="game.html" class="btn btn-success">New Race</a>
     </div>
 
     <script type="module">
@@ -128,10 +76,8 @@
                     const sailor = entry.sailorName || "Anonymous Skipper";
                     const time = entry.finalTime ? Number(entry.finalTime).toFixed(2) : "N/A";
                     
-                    // Extract wind field matching your Firestore console key exactly
                     const wind = entry.windStrength !== undefined ? entry.windStrength : "N/A";
                     
-                    // Safely extract and format your Firestore timestamp object
                     let dateDisplay = "N/A";
                     if (entry.timestamp) {
                         const dateObj = entry.timestamp.toDate ? entry.timestamp.toDate() : new Date(entry.timestamp);
