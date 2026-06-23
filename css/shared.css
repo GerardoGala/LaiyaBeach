@@ -1,4 +1,4 @@
-/* Shared Stylesheet for ILCA Simulator Documentation */
+/* Shared Stylesheet for ILCA Simulator Documentation & Dashboard */
 
 body {
     font-family: Arial, sans-serif;
@@ -7,6 +7,14 @@ body {
     background: #f0f8ff;
     margin: 0;
     padding: 10px;
+}
+
+/* Flex layout utility for centered dashboard screens */
+.body-flex-center {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 20px;
 }
 
 h1, h2 {
@@ -56,7 +64,6 @@ li {
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 4px solid #ffcc00;
 }
 
 .course-image {
@@ -85,5 +92,124 @@ li {
     padding: 15px;
     border-radius: 6px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-left: 4px solid #ffcc00;
+}
+
+/* ==========================================================================
+   Leaderboard & Board Table UI Components 
+   ========================================================================== */
+
+.board-container { 
+    background: white; 
+    padding: 2rem; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+    width: 95%; 
+    max-width: 700px;
+    margin-top: 20px;
+}
+
+.board-header { 
+    text-align: center; 
+    margin-bottom: 30px; 
+}
+
+.board-header h1 {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.board-header p { 
+    color: #666; 
+    margin-top: 5px; 
+}
+
+.leaderboard-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.leaderboard-table th { 
+    text-align: left; 
+    border-bottom: 2px solid #edf2f7; 
+    padding: 15px 10px; 
+    color: #4a5568; 
+    text-transform: uppercase; 
+    font-size: 0.8rem; 
+    letter-spacing: 0.05em; 
+}
+
+.leaderboard-table td { 
+    padding: 15px 10px; 
+    border-bottom: 1px solid #edf2f7; 
+    color: #2d3748; 
+}
+
+.rank { 
+    font-weight: bold; 
+    width: 60px; 
+}
+
+.sailor-name { 
+    font-weight: 500; 
+}
+
+.wind-strength { 
+    color: #4a5568; 
+}
+
+.race-date { 
+    color: #718096; 
+    font-size: 0.9rem; 
+}
+
+.time { 
+    text-align: right; 
+    font-family: 'Courier New', Courier, monospace; 
+    font-weight: bold; 
+    color: #0066cc; 
+}
+
+/* Control Elements & Interaction Buttons */
+.nav-links { 
+    margin-top: 30px; 
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn { 
+    padding: 12px 25px; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    font-weight: bold; 
+    transition: transform 0.2s, background-color 0.2s;
+    font-size: clamp(0.9em, 1.2vw, 1.1em);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #6c757d; 
+    color: white; 
+}
+
+.btn-primary { 
+    background: #0066cc; 
+    color: white; 
+}
+
+.btn-primary:hover { 
+    transform: translateY(-2px); 
+    background: #0056b3; 
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    background: #218838;
 }
