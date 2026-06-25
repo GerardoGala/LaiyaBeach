@@ -100,7 +100,7 @@
 
     // Update only the label, not the whole container
     const lbl = document.getElementById('daggerboardLabel');
-    if (lbl) lbl.textContent = 'DAGGERBOARD = ' + window.globalSimulationData.ILCA.daggerboard + ' ' + label;
+    if (lbl) lbl.textContent = 'DAGGERBOARD = ' + label;
 
     // Highlight the input button and dashboard item
     setActiveInputButton('daggerboard', daggerboard);
