@@ -95,7 +95,7 @@
     };
     const key = String(daggerboard);
     const label = labels[key] ?? 'Unknown';
-    showNotification('Daggerboard: ' + key + ' ' + label);
+    showNotification('Daggerboard: ' + label);
     window.globalSimulationData.ILCA.daggerboard = daggerboard;
 
     // Update only the label, not the whole container

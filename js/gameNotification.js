@@ -6,5 +6,7 @@
       note.textContent = message;
       container.appendChild(note);
 
-      setTimeout(() => note.remove(), 10000);
-    }
+  // Shortened from 10000 to 3000 (3 seconds)
+  setTimeout(() => note.remove(), 3000);
+}
+
