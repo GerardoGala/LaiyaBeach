@@ -3,6 +3,14 @@ let windControlDiv; // keep reference so we can update later
 let ilcaControlDiv; // keep reference so we can update later
 let vmgControlDiv; // keep reference so we can update later
 
+// Helper function to format raw seconds into MM:SS format
+function formatTime(totalSeconds) {
+  if (isNaN(totalSeconds) || totalSeconds < 0) return "0:00";
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export function initMap() {
   const leewardMarkLat = window.globalSimulationData.leewardMarkLat;
   const leewardMarkLon = window.globalSimulationData.leewardMarkLon;
@@ -175,8 +183,10 @@ export function updateILCAControl() {
   const speedKnots = ilca.speed?.toFixed(1) || 0;
   const speedMS = (ilca.speed ? (ilca.speed * 0.514).toFixed(2) : "0.00");
   const heading = ilca.heading?.toFixed(0) || 0;
-  const pointOfSail = ilca.pointOfSail;
-  const timer = ilca.displayTimer || "0:00";
+  const pointOfSail = ilca.pointOfSail || "Unknown";
+  
+  // ✅ CALCULATED DISPLAY: Convert the raw numerical timer to MM:SS string here
+  const timer = formatTime(ilca.timer);
  
   // ✅ PURE DISPLAY: Fetch values directly from the stored simulation object
   const uiRotation = ilca.clinometer || 0;
