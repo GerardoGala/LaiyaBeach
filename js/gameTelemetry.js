@@ -35,4 +35,6 @@ export function recordTelemetrySnapshot() {
     distToMark: Math.round(ilca.distanceToBuoy || 0),
     bearingToMark: Math.round(ilca.bearingToBuoy || 0)
   });
+  // persist to localStorage each tick
+  localStorage.setItem("finalTelemetryData", JSON.stringify(window.globalSimulationData));
 }

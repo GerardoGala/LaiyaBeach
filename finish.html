@@ -2,103 +2,224 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Race Finished Modal</title>
+  <title>🏁 Race Finished</title>
   <style>
-    /* 1. Clear out margin and background so the iframe frame stays invisible */
-    html, body {
+    /* Clean, centered dark theme layout */
+    body {
+      background: #121212;
+      color: #fff;
       margin: 0;
-      padding: 0;
-      background: transparent;
-      overflow: hidden;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-sizing: border-box;
     }
 
-    /* 2. Your exact original nearRC CSS styling rules */
+    /* The main card matching your original nearRC style */
     .modal-box {
       background: #1e1e1e;
       color: #fff;
       padding: 24px;
       border-radius: 10px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 16px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      box-sizing: border-box;
-      width: 100%;
-      height: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      border: 1px solid #333;
+      width: 380px; /* Medium-width box layout */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h2 {
       margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* 3. Your exact original button style rules */
-    button {
+    /* Tall, scrollable text box for raw JSON data metrics */
+    .telemetry-container {
+      width: 100%;
+      height: 200px; /* Tall height configuration */
+      background: #111;
+      border: 1px solid #444;
+      border-radius: 6px;
       margin-top: 15px;
+      padding: 10px;
+      box-sizing: border-box;
+      overflow-y: auto; /* Enables vertical scrolling */
+      text-align: left;
+      font-family: monospace;
+      font-size: 12px;
+      color: #00ff66; /* Retro green terminal data look */
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* Button styling layout overrides */
+    button {
+      margin-top: 12px;
       background: #007bff;
       color: white;
       border: none;
-      padding: 8px 16px;
+      padding: 10px 16px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
+      width: 100%; /* Stretches buttons to align neatly */
       transition: background 0.15s ease;
     }
 
     button:hover {
       background: #0056b3;
     }
+
+    button.copy-btn {
+      background: #28a745; /* Green color accent for the data copy task */
+    }
+
+    button.copy-btn:hover {
+      background: #218838;
+    }
   </style>
 </head>
 <body>
 
-  <!-- The visual card interface matching your old template layout -->
   <div class="modal-box">
     <h2>🏁 Congratulations!</h2>
     <p id="raceSummary">
       Your race time is <span id="raceTime">--</span> seconds.<br>
       Wind: <span id="windSpeed">--</span> knots.
     </p>
+
+    <!-- Scrollable telemetry presentation workspace -->
+    <div class="telemetry-container" id="telemetryBox">Loading telemetry stream entries...</div>
+
+    <!-- Telemetry interaction utility -->
+    <button class="copy-btn" onclick="copyTelemetryToClipboard()">Copy Telemetry Data to Clipboard</button>
+
+    <!-- Conditional routing button -->
     <button onclick="closeFinishDialog()">Close</button>
   </div>
 
-<script>
-  /**
-   * Reads the score parameters directly out of the website URL address string
-   */
-  function loadUrlScores() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const raceTimeValue = urlParams.get('time') || '0';
-    const windSpeedValue = urlParams.get('wind') || '0';
-    
-    document.getElementById("raceTime").innerText = raceTimeValue;
-    document.getElementById("windSpeed").innerText = windSpeedValue;
-  }
+  <script>
+    let rawTelemetryData = "";
 
-  /**
-   * Handles the conditional button routing without needing direct database access
-   */
-  function closeFinishDialog() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const finalTimeScore = urlParams.get('time') || '0';
-    const windSpeedValue = urlParams.get('wind') || '0';
-    
-    // Read our new true/false flag from the URL link address string
-    const makesTop10 = urlParams.get('top10') === 'true';
+    /**
+     * Reads values from URL and pulls the history logs out of browser memory
+     */
+    function initResultsPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const raceTimeValue = urlParams.get('time') || '0';
+      const windSpeedValue = urlParams.get('wind') || '0';
+      
+      document.getElementById("raceTime").innerText = raceTimeValue;
+      document.getElementById("windSpeed").innerText = windSpeedValue;
 
-    if (makesTop10) {
-      alert(`Congratulations! Your time of ${finalTimeScore} seconds qualified for the Top 10!`);
-      window.location.href = `enterName.html?time=${finalTimeScore}&wind=${windSpeedValue}`;
-    } else {
-      alert(`Great race! However, your time of ${finalTimeScore} seconds did not break into the Top 10.`);
-      window.location.href = "leaderboard.html";
+      // Pull the real structural object history array we saved in localStorage
+      const savedData = localStorage.getItem("finalTelemetryData");
+      if (savedData) {
+        try {
+          const simData = JSON.parse(savedData);
+          const historyLog = simData.history || [];
+          
+          // Format into clean, readable JSON text structure strings
+          rawTelemetryData = JSON.stringify(historyLog, null, 2);
+          document.getElementById("telemetryBox").innerText = rawTelemetryData;
+        } catch (e) {
+          document.getElementById("telemetryBox").innerText = "Error parsing telemetry array structure.";
+        }
+      } else {
+        document.getElementById("telemetryBox").innerText = "No telemetry log array found in localStorage memory.";
+      }
     }
-  }
 
-  // Load numbers onto the screen instantly
-  loadUrlScores();
-</script>
+    /**
+     * Detects user hardware device system properties to execute 
+     * the safest possible clipboard injection routine.
+     */
+    function copyTelemetryToClipboard() {
+      if (!rawTelemetryData) {
+        alert("No data available to copy yet!");
+        return;
+      }
 
+      // Check if device supports touch events (Mobile/Tablet detection)
+      const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+      if (navigator.clipboard && navigator.clipboard.writeText && !isTouchDevice) {
+        // Desktop Method: Modern Clipboard API channel
+        navigator.clipboard.writeText(rawTelemetryData)
+          .then(() => alert("Telemetry data copied to desktop clipboard!"))
+          .catch(() => fallbackCopyEngine(rawTelemetryData));
+      } else {
+        // Mobile/Tablet/Legacy Method: Invisible textarea element focus injection channel
+        fallbackCopyEngine(rawTelemetryData);
+      }
+    }
+
+    /**
+     * Robust backup selection copy framework built for mobile web views and touch interfaces
+     */
+    function fallbackCopyEngine(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      
+      // Lock position out of view boundary frames
+      textArea.style.position = "fixed";
+      textArea.style.top = "0";
+      textArea.style.left = "0";
+      textArea.style.width = "2em";
+      textArea.style.height = "2em";
+      textArea.style.padding = "0";
+      textArea.style.border = "none";
+      textArea.style.outline = "none";
+      textArea.style.boxShadow = "none";
+      textArea.style.background = "transparent";
+      
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      // Specifically forces selection ranges for iOS Safari devices
+      textArea.setSelectionRange(0, 999999);
+
+      try {
+        document.execCommand("copy");
+        alert("Telemetry data copied to mobile clipboard!");
+      } catch (err) {
+        alert("Unable to copy telemetry stream automatically. Please manually highlight and select the green text box contents.");
+      }
+
+      document.body.removeChild(textArea);
+    }
+
+    /**
+     * Checks URL flag strings to determine correct leaderboard target routing channels
+     */
+    function closeFinishDialog() {
+      const urlParams = new URLSearchParams(window.location.search);
+      
+      const finalTimeScore = urlParams.get('time') || '0';
+      const windSpeedValue = urlParams.get('wind') || '0';
+      const makesTop10 = urlParams.get('top10') === 'true';
+
+      if (makesTop10) {
+        alert(`Congratulations! Your time of ${finalTimeScore} seconds qualified for the Top 10!`);
+        window.location.href = `enterName.html?time=${finalTimeScore}&wind=${windSpeedValue}`;
+      } else {
+        alert(`Great race! However, your time of ${finalTimeScore} seconds did not break into the Top 10.`);
+        window.location.href = "leaderboard.html";
+      }
+    }
+
+    // Launch execution loops on view loading
+    initResultsPage();
+  </script>
 </body>
 </html>
