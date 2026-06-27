@@ -64,23 +64,49 @@ html, body {
     }
   }
 
-  #notification-container {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-  }
-  .notification {
-    background: rgba(0,0,0,0.8);
-    color: #fff;
-    padding: 10px 20px;
-    margin-top: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    opacity: 0;
-    animation: slideUpFade 10s forwards;
-  }
+/* 1. THE CONTAINER AREA */
+#notification-container {
+  position: absolute;
+  bottom: 20px;
+  right: 10%;             /* Right end of the textbox is exactly 10% from the right edge */
+  z-index: 1000;
+  
+  /* Stacks notifications vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;   /* Aligns multiple boxes neatly along the right edge */
+}
+
+/* 2. THE TEXTBOX/NOTIFICATION CARDS */
+.notification {
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  
+  /* STATIONARY 3-SECOND LIFESPAN */
+  animation: pureStaticFade 3s forwards; 
+  
+  /* FIXED WIDTH SETTINGS */
+  width: 200px;            /* Forces a permanent, unchanging width */
+  box-sizing: border-box;  /* Prevents padding from breaking the width calculation */
+  word-wrap: break-word;   /* Safely wraps text to a new line if it is too long */
+}
+
+/* 3. THE FIXED, NO-MOTION FADE ANIMATION */
+@keyframes pureStaticFade {
+  0% { opacity: 0; }
+  20% { opacity: 1; }      /* Quickly fades in and holds perfectly still */
+  85% { opacity: 1; }      /* Remains still and visible until 2.5 seconds */
+  100% { opacity: 0; }     /* Smoothly fades out in place right before deletion */
+}
+
+
+
+
   @keyframes slideUpFade {
     0% { transform: translateY(30px); opacity: 0; }
     20% { transform: translateY(0); opacity: 1; }
