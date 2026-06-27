@@ -1,7 +1,21 @@
 // game.js
 function closeFinishDialog() {
-document.getElementById("nearRC").style.display = "none";
+  // 1. Grab the time and wind scores from our current URL bar
+  const urlParams = new URLSearchParams(window.location.search);
+  const finalTimeScore = urlParams.get('time') || '0';
+  const windSpeedValue = urlParams.get('wind') || '0';
+
+  // 2. Run your ranking check!
+  // (Make sure your 'makesTop10' logic or function is available here)
+  if (makesTop10) { 
+    alert(`Congratulations! Your time of ${finalTimeScore} seconds qualified for the Top 10!`);
+    window.location.href = `enterName.html?time=${finalTimeScore}&wind=${windSpeedValue}`;
+  } else {
+    alert(`Great race! However, your time of ${finalTimeScore} seconds did not break into the Top 10.`);
+    window.location.href = "leaderboard.html";
+  }
 }
+
 
 async function loadPartial(id, file) {
 const res = await fetch(file);
