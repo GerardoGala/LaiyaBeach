@@ -85,14 +85,13 @@ window.showFinishDialog = function showFinishDialog() {
                 }
 
                 // Execution routing block based on evaluated ranking rules
-                if (makesTop10) {
-                    alert(`Congratulations! Your time of ${finalTimeScore} seconds qualified for the Top 10!`);
-                    // Pass BOTH raw time and wind speed via the URL parameters to prevent data clearing
-                    window.location.href = `enterName.html?time=${finalTimeScore}&wind=${data.windSpeed}`;
-                } else {
-                    alert(`Great race! However, your time of ${finalTimeScore} seconds did not break into the Top 10.`);
-                    window.location.href = "leaderboard.html";
-                }
+// ... Your existing Firestore query code that calculates makesTop10 ...
+
+            // New Execution routing block: Pass the results to finish.html first!
+            const windSpeedValue = Number(data.windSpeed) || 0;
+
+            window.location.href = `finish.html?time=${finalTimeScore}&wind=${windSpeedValue}&top10=${makesTop10}`;
+
 
             } catch (error) {
                 console.error("Database Verification Loop Interrupted:", error);

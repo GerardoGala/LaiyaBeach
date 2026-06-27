@@ -94,6 +94,11 @@ export function trackRaceLegs(map) {
   const ilcaLon = window.globalSimulationData.ILCA.lon;
 
   let targetLat, targetLon, targetName, roundingRadius;
+  
+  // Create variables to store finish info so we can use them at the very end
+  let triggerRedirect = false;
+  let finalTimeScore = 0;
+  let finalWindSpeed = 0;
 
   // --- 1. TARGET ROUTING SYSTEM ---
   switch (window.globalSimulationData.currentLeg) {
@@ -218,10 +223,14 @@ export function trackRaceLegs(map) {
         if (window.globalSimulationData.activeMarker) {
           window.globalSimulationData.activeMarker.remove();
         }
-        if (window.globalSimulationData.windSpeed !== undefined) {
-          window.globalSimulationData.windSpeed = Number(window.globalSimulationData.windSpeed);
-        }
-        if (typeof showFinishDialog === "function") showFinishDialog();
+        
+        // Gather scores cleanly
+        finalTimeScore = window.globalSimulationData.ILCA.timer || 0;
+        finalWindSpeed = Number(window.globalSimulationData.windSpeed) || 0;
+        
+        // Flag that we need to switch pages, but wait for the code below to finish first!
+        triggerRedirect = true;
+
         if (typeof showNotification === "function") {
           showNotification("Race Completed! Final dead downwind finish registered.");
         }
@@ -245,7 +254,6 @@ export function trackRaceLegs(map) {
       }
 
       // ⛵ INSTANT RE-DRAW ENGINE
-      // Triggers immediate render update so the map icon matches your heading
       if (typeof updateILCA === "function") {
         updateILCA(map);
       }
@@ -262,7 +270,14 @@ export function trackRaceLegs(map) {
       }
     }
   }
+
+  // 🏁 THE ABSOLUTE BOTTOM: Now that all physics and updates are done, safely redirect!
+  if (triggerRedirect) {
+    window.location.href = `finish.html?time=${finalTimeScore}&wind=${finalWindSpeed}`;
+  }
 }
+
+
 
 
 

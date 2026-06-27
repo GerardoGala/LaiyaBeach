@@ -2,7 +2,8 @@
 import { initMap, updateWindControl, updateILCAControl, updateVMGControl } from './map.js';
 import { fetchWind } from './wind.js';
 import { updateILCA } from './ilcaMain.js';
-import { applyControls } from './ilcaApplyControls.js'; // ◄ Imported from separate physics layer
+import { applyControls } from './ilcaApplyControls.js'; 
+import { recordTelemetrySnapshot } from './gameTelemetry.js'; // ◄ Imported clean logging layer
 
 let map;
 let launched = false;
@@ -33,8 +34,11 @@ async function loadConfig() {
 
     // Update ILCA physics if launched
     if (launched) {
+      
+      // ⏱️ TIMER STEP: Numerical seconds counter increments cleanly here
+      window.globalSimulationData.ILCA.timer++;
+
       // --- Capsize Halting Check ---
-      // If physics layer flags a capsize, freeze simulation clocks instantly
       if (window.globalSimulationData.ILCA.capsized) {
         console.warn("Simulation stopped due to capsize.");
         
@@ -45,7 +49,6 @@ async function loadConfig() {
           warningDiv.classList.remove("danger-shake");
         }
 
-        clearInterval(window.globalSimulationData.ILCA._timerInterval);
         alert("Boom! You capsized! Make sure to hike out or ease your sheet when the wind picks up.");
         stopSimulation();
         return;
@@ -65,6 +68,9 @@ async function loadConfig() {
       const newSpeed = applyControls(pointOfSail, windSpeed, controls); // ◄ Calculated via imported function
 
       window.globalSimulationData.ILCA.speed = newSpeed;
+
+      // 📊 TELEMETRY STEP: Record our pruned log entry now that step calculations are updated
+      recordTelemetrySnapshot();
     }
 
 
@@ -135,29 +141,11 @@ export function launchSimulation() {
   window.globalSimulationData.ILCA.speed = 0;
 
   window.globalSimulationData.ILCA.timer = 0;
-  window.globalSimulationData.ILCA.displayTimer = "0:00";
-
-  const timerDiv = document.getElementById("timer");
-
-  window.globalSimulationData.ILCA._timerInterval = setInterval(() => {
-    if (launched) {
-      window.globalSimulationData.ILCA.timer++;
-      const minutes = Math.floor(window.globalSimulationData.ILCA.timer / 60);
-      const seconds = window.globalSimulationData.ILCA.timer % 60;
-      window.globalSimulationData.ILCA.displayTimer =
-        `${minutes}:${seconds.toString().padStart(2, "0")}`;
-
-      if (timerDiv) {
-        timerDiv.textContent = "Timer: " + window.globalSimulationData.ILCA.displayTimer;
-      }
-    }
-  }, 1000);
 }
 
 // Stop simulation
 export function stopSimulation() {
   launched = false;
-  clearInterval(window.globalSimulationData.ILCA._timerInterval);
   if (masterIntervalId) {
     clearInterval(masterIntervalId);
     masterIntervalId = null;
