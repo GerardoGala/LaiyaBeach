@@ -112,32 +112,45 @@
     /**
      * Reads values from URL and pulls the history logs out of browser memory
      */
+    /**
+     * Reads values from the URL and pulls the history logs straight from localStorage
+     */
     function initResultsPage() {
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      const raceTimeValue = urlParams.get('time') || '0';
-      const windSpeedValue = urlParams.get('wind') || '0';
-      
-      document.getElementById("raceTime").innerText = raceTimeValue;
-      document.getElementById("windSpeed").innerText = windSpeedValue;
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // 1. Grab primary headers straight out of the URL parameter strings
+  const raceTimeValue = urlParams.get('time') || '0';
+  const windSpeedValue = urlParams.get('wind') || '0';
+  
+  document.getElementById("raceTime").innerText = raceTimeValue;
+  document.getElementById("windSpeed").innerText = windSpeedValue;
 
-      // Pull the real structural object history array we saved in localStorage
-      const savedData = localStorage.getItem("finalTelemetryData");
-      if (savedData) {
-        try {
-          const simData = JSON.parse(savedData);
-          const historyLog = simData.history || [];
-          
-          // Format into clean, readable JSON text structure strings
-          rawTelemetryData = JSON.stringify(historyLog, null, 2);
-          document.getElementById("telemetryBox").innerText = rawTelemetryData;
-        } catch (e) {
-          document.getElementById("telemetryBox").innerText = "Error parsing telemetry array structure.";
-        }
+  // 2. Look for your exact localStorage data key name!
+  const storedTelemetryData = localStorage.getItem("finalTelemetryData");
+  
+  if (storedTelemetryData) {
+    try {
+      const parsedLogArray = JSON.parse(storedTelemetryData);
+      
+      // Handle array structures safely
+      let targetArray = Array.isArray(parsedLogArray) ? parsedLogArray : (parsedLogArray.history || []);
+
+      if (targetArray.length > 0) {
+        // 3. Format into pretty, green, nested JSON strings!
+        rawTelemetryData = JSON.stringify(targetArray, null, 2);
+        document.getElementById("telemetryBox").innerText = rawTelemetryData;
       } else {
-        document.getElementById("telemetryBox").innerText = "No telemetry log array found in localStorage memory.";
+        document.getElementById("telemetryBox").innerText = "// Telemetry array log is completely empty.";
       }
+      
+    } catch (error) {
+      document.getElementById("telemetryBox").innerText = "// Error decoding the raw localStorage JSON data strings.";
     }
+  } else {
+    document.getElementById("telemetryBox").innerText = "// No telemetry log array found under 'finalTelemetryData'.";
+  }
+}
+
 
     /**
      * Detects user hardware device system properties to execute 
