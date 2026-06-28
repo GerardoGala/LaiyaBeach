@@ -1,56 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Welcome to Laiya Beach ILCA Simulator</title>
-  <script src="js/index.js" defer></script>
-  <link href="https://googleapis.com" rel="stylesheet">
-  <link rel="stylesheet" href="css/index.css">
-  <meta name="viewport" content="width=device-width, initial-scale=.5">
+    <meta charset="UTF-8">
+    <title>Welcome to Laiya Beach ILCA Simulator</title>
+    <script src="js/index.js" defer></script>
+    <!-- 1) FIXED: Added a valid Google Font family (Roboto) -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=.5, user-scalable=no">
 </head>
 <body class="welcome">
 
-  <h1>ILCA Simulator</h1>
-   <p>
-    Welcome to the world of <strong>Sailing ILCA Physics</strong> —
-    where wind, trim, and heading converge to reveal the science behind speed and control.
-  </p>
-  <p>
-    This simulator is a training ground designed to show how every rig adjustment —
-    from sheet tension to sailor position — transforms your <em>Velocity Made Good (VMG)</em> across each point of sail.
-  </p>
-  <p>
-    Experience the thrill of ILCA sailing with interactive controls.
-    Every decision you make echoes the reality of the water, teaching you how physics drives performance.
-  </p>
-  
-  <div>
-    <button id="enterSimulationBtn" onclick="location.href='game.html'">Enter Simulator</button>
-  </div>
-  
-  <!-- ✅ FIXED: Replaced duplicate physicsBtn ID with unique proTipBtn ID -->
-  <div class="button-row">
-    <button id="aboutBtn" onclick="openModal('about.html')">About</button> 
-    <button id="objectiveBtn" onclick="openModal('objective.html')">Objective</button>
-    <button id="raceCourseBtn" onclick="openModal('raceCourse.html')">Race Course</button>
-    <button id="proTipBtn" onclick="openModal('proTip.html')">Pro Tips</button>
-    <button id="leaderBoardBtn" onclick="location.href='leaderBoard.html'">Leader Board</button>
-  </div>
+    <h1>ILCA Simulator</h1>
+    
+    <p>
+        Welcome to the world of <strong>Sailing ILCA Physics</strong> — where wind, trim, and heading converge to reveal the science behind speed and control.
+    </p>
+    
+    <p>
+        This simulator is a training ground designed to show how every rig adjustment — from sheet tension to sailor position — transforms your <em>Velocity Made Good (VMG)</em> across each point of sail.
+    </p>
 
-<!-- Mobile-optimized dynamic fullscreen dialog -->
-<dialog id="dynamicModal" style="position: fixed; inset: 0; width: 100dvw; height: 100dvh; max-width: 100dvw; max-height: 100dvh; margin: 0; padding: 20px; border: none; box-sizing: border-box; background: #f0f8ff;">
-  
-  <!-- Top Bar for the Close Button -->
-  <div style="text-align: right; margin-bottom: 10px; height: 50px;">
-    <button onclick="closeModal()" style="background: #ff4d4d; color: white; border: none; padding: 12px 24px; cursor: pointer; border-radius: 6px; font-size: clamp(1em, 2vw, 1.4em); font-weight: bold;">
-      Close
-    </button>
-  </div>
-  
-  <!-- Content container tracking the dynamic mobile height -->
-  <iframe id="modalIframe" src="" style="width: 100%; height: calc(100dvh - 100px); border: none; display: block;"></iframe>
+    <p>
+        Experience the thrill of ILCA sailing with interactive controls. Every decision you make echoes the reality of the water, teaching you how physics drives performance.
+    </p>
+    
+    <p>
+        At the end of the race, the simulator displays your telemetry data. Copy the data and submit it to an AI of your choice for analysis to help you improve your sailing strategy.
+        <!-- 2) ADDED: Link to trigger the sample analysis modal -->
+        <a href="#" id="sampleAnalysisLink" onclick="document.getElementById('analysisModal').showModal(); return false;" style="color: #0066cc; text-decoration: underline; margin-left: 5px; cursor: pointer;">See a sample analysis here</a>.
+    </p>
+    
 
-</dialog>
+
+    <div>
+        <button id="enterSimulationBtn" onclick="location.href='game.html'">Enter Simulator</button>
+    </div>
+
+    <!-- ✅ FIXED: Replaced duplicate physicsBtn ID with unique proTipBtn ID -->
+    <div class="button-row">
+        <button id="aboutBtn" onclick="openModal('about.html')">About</button>
+        <button id="objectiveBtn" onclick="openModal('objective.html')">Objective</button>
+        <button id="raceCourseBtn" onclick="openModal('raceCourse.html')">Race Course</button>
+        <button id="proTipBtn" onclick="openModal('proTip.html')">Pro Tips</button>
+        <button id="leaderBoardBtn" onclick="location.href='leaderBoard.html'">Leader Board</button>
+    </div>
+
+    <!-- Mobile-optimized dynamic fullscreen dialog for general buttons -->
+    <dialog id="dynamicModal" style="position: fixed; inset: 0; width: 100dvw; height: 100dvh; max-width: 100dvw; max-height: 100dvh; margin: 0; padding: 20px; border: none; box-sizing: border-box; background: #f0f8ff;">
+        <!-- Top Bar for the Close Button -->
+        <div style="text-align: right; margin-bottom: 10px; height: 50px;">
+            <button onclick="closeModal()" style="background: #ff4d4d; color: white; border: none; padding: 12px 24px; cursor: pointer; border-radius: 6px; font-size: clamp(1em, 2vw, 1.4em); font-weight: bold;">
+                Close
+            </button>
+        </div>
+        <!-- Content container tracking the dynamic mobile height -->
+        <iframe id="modalIframe" src="" style="width: 100%; height: calc(100dvh - 100px); border: none; display: block;"></iframe>
+    </dialog>
+
+    <!-- 2) ADDED: Modal dialog for the Sample AI Analysis with authoritative giant quotation styling -->
+    <dialog id="analysisModal" style="position: fixed; inset: 0; width: 90dvw; max-width: 600px; height: auto; max-height: 85dvh; margin: auto; padding: 25px; border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); font-family: 'Roboto', sans-serif; background: #ffffff; overflow-y: auto;">
+        <div style="text-align: right; margin-bottom: 15px;">
+            <button onclick="document.getElementById('analysisModal').close()" style="background: #e0e0e0; color: #333; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; font-weight: bold;">
+                ✕ Close
+            </button>
+        </div>
+        
+        <!-- Large Authoritative Blockquote Design -->
+        <blockquote style="position: relative; margin: 0; padding: 20px 40px 40px 50px; border-left: 5px solid #0066cc; background: #f9fbfd; color: #333; font-size: 0.95rem; line-height: 1.6;">
+            <!-- Giant opening quotation mark background anchor -->
+            <span style="position: absolute; left: 10px; top: -10px; font-size: 5rem; color: #0066cc; opacity: 0.2; font-family: Georgia, serif; line-height: 1;">“</span>
+            
+            <h3 style="margin-top: 0; color: #0066cc;">Leg 4 (Seconds 505–595): Running Downwind</h3>
+            <p><strong>Activity:</strong> The boat bears away to heading 180° for a direct downwind run.</p>
+            <p><strong>Key Adjustments:</strong><br>
+            • <em>Boom Angle:</em> For the first part of this leg (seconds 505–528), the boom remains at 10°, and boat speed is low (~1.3 knots). At second 529, the boom is let out to 80°, which immediately increases the boat speed to 2.0–2.3 knots.<br>
+            • <em>Sailor Position:</em> At second 541, the sailor moves from "Hike Out" to "Mid Center". This is a textbook adjustment for downwind sailing in light air to keep the hull flat and balanced.<br>
+            • <em>Heel:</em> Heel angle drops to 0°, representing a balanced, upright hull.</p>
+            
+            <h3 style="color: #0066cc; margin-top: 20px;">Key Takeaways & Observations</h3>
+            <p>• <strong>Upwind Efficiency:</strong> During the close-hauled legs (Leg 0 and Leg 3), the boat consistently maintains a speed of 1.6–1.8 knots with a heel angle of 6°–7°. The sailor is active in hiking out, which keeps the heel controlled in the 7–8 knot breeze.</p>
+            <p>• <strong>The "6-Knot Bursts":</strong> In Legs 0, 1, and 2, there are brief 2-to-3-second periods where boat speed jumps to exactly 6.0 knots. If this is simulated data, it may represent a momentary acceleration trigger or a tracking anomaly.</p>
+            <p>• <strong>Downwind Optimization (Leg 4):</strong> The transition in Leg 4 shows excellent tactical adjustments. Easing the boom from 10° to 80° and moving the sailor's weight to the center of the boat successfully optimized the hull's point of sail, resulting in a noticeable speed increase.</p>
+
+            <!-- FIXED: Giant closing quotation mark background anchor -->
+            <span style="position: absolute; right: 15px; bottom: -20px; font-size: 5rem; color: #0066cc; opacity: 0.2; font-family: Georgia, serif; line-height: 1;">”</span>
+        </blockquote>
+    </dialog>
+
 
 </body>
 </html>
