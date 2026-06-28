@@ -5,10 +5,10 @@ export function handleControls(windDir, windSpeed) {
   const ilca = window.globalSimulationData.ILCA;
   let currentHeading = ilca.heading;
   
-  // Calculate which tack we are on relative to the shifting wind
-  // Wrapping with a standard normalization to handle the 360-degree rollover cleanly
-  const relativeAngle = ((currentHeading - windDir + 540) % 360) - 180; 
-  const isStarboardTack = relativeAngle >= 0;
+  // --- TRACK OLD TACK STATE ---
+  // Calculate which tack we are on BEFORE the steering maneuver
+  const relativeAngleBefore = ((currentHeading - windDir + 540) % 360) - 180; 
+  const isStarboardTackBefore = relativeAngleBefore >= 0;
 
   // A crisp 3-degree adjustment step prevents over-steering near the buoys
   const STEERING_STEP = 3; 
@@ -18,17 +18,46 @@ export function handleControls(windDir, windSpeed) {
       launchILCA(windDir, windSpeed);
       break;
 
-    case "turn-port":
-      ilca.heading = (currentHeading - 45 + 360) % 360;
+    case "turn-port": {
+      // Calculate a standard 45-degree turn left
+      let targetHeading = (currentHeading - 45 + 360) % 360;
+      
+      // Check if this left turn would land the bow inside the "In Irons" no-go zone.
+      // An ILCA stalls if it gets closer than 45° to the wind axis.
+      const relativeAngleAfter = ((targetHeading - windDir + 540) % 360) - 180;
+      
+      if (Math.abs(relativeAngleAfter) < 45) {
+        // ⛵ INTENTIONAL TACK COMPENSATOR: Instead of stalling in irons,
+        // snap the boat perfectly to the opposite upwind Close Hauled tack (-45° from wind)
+        ilca.heading = (windDir - 45 + 360) % 360;
+        console.log(`⛵ Port Turn forced a tack! Compensating to Port Close Hauled at ${ilca.heading}° to avoid In Irons.`);
+      } else {
+        ilca.heading = targetHeading;
+      }
       break;
+    }
 
-    case "turn-starboard":
-      ilca.heading = (currentHeading + 45 + 360) % 360;
+    case "turn-starboard": {
+      // Calculate a standard 45-degree turn right
+      let targetHeading = (currentHeading + 45 + 360) % 360;
+      
+      // Check if this right turn would land the bow inside the "In Irons" no-go zone.
+      const relativeAngleAfter = ((targetHeading - windDir + 540) % 360) - 180;
+      
+      if (Math.abs(relativeAngleAfter) < 45) {
+        // ⛵ INTENTIONAL TACK COMPENSATOR: Instead of stalling in irons,
+        // snap the boat perfectly to the opposite upwind Close Hauled tack (+45° from wind)
+        ilca.heading = (windDir + 45) % 360;
+        console.log(`⛵ Starboard Turn forced a tack! Compensating to Starboard Close Hauled at ${ilca.heading}° to avoid In Irons.`);
+      } else {
+        ilca.heading = targetHeading;
+      }
       break;
+    }
 
     case "head-up":
       // ⛵ Head Up always steers the bow CLOSER to the wind axis
-      if (isStarboardTack) {
+      if (isStarboardTackBefore) {
         ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
       } else {
         ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
@@ -37,12 +66,34 @@ export function handleControls(windDir, windSpeed) {
 
     case "bear-away":
       // ⛵ Bear Away always steers the bow FURTHER AWAY from the wind axis
-      if (isStarboardTack) {
+      if (isStarboardTackBefore) {
         ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
       } else {
         ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
       }
       break;
+  }
+
+  // --- TACK PENALTY EVALUATION LAYER ---
+  // Calculate which tack we are on AFTER the steering maneuver completed
+  const relativeAngleFinal = ((ilca.heading - windDir + 540) % 360) - 180;
+  const isStarboardTackAfter = relativeAngleFinal >= 0;
+
+  // If the tack state switched (e.g. Starboard to Port or Port to Starboard)
+  if (isStarboardTackBefore !== isStarboardTackAfter) {
+    
+    // We must check if the crossing happened in front of the wind (a Tack) or behind it (a Jibe).
+    // If the absolute average angle to the wind is less than 90°, it means the bow crossed the wind axis.
+    const avgRelativeAngle = Math.abs((relativeAngleBefore + relativeAngleFinal) / 2);
+    
+    if (avgRelativeAngle < 90) {
+      // ⛵ CRITICAL TACK PENALTY: Damping momentum as the sail passes through the eye of the wind.
+      // Drops current speed by 35% instantly to simulate flapping sails and hull drag.
+      const oldSpeed = ilca.speed || 0;
+      ilca.speed = oldSpeed * 0.65;
+      
+      console.log(`⛵ TACK DETECTED! Heading changed through the wind axis. Speed penalized from ${oldSpeed.toFixed(1)}kn to ${ilca.speed.toFixed(1)}kn.`);
+    }
   }
 
   // Clear the maneuver state so it doesn't loop infinitely 
