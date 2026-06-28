@@ -64,14 +64,27 @@ export function handleControls(windDir, windSpeed) {
       }
       break;
 
-    case "bear-away":
-      // ⛵ Bear Away always steers the bow FURTHER AWAY from the wind axis
-      if (isStarboardTackBefore) {
-        ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
+    case "bear-away": {
+      // Check if the boat is currently trapped inside the 45-degree "In Irons" zone
+      if (Math.abs(relativeAngleBefore) < 45) {
+        // ⛵ IN IRONS ESCAPE VALVE: Force the boat's heading directly out to a working 
+        // Close Hauled upwind alignment (45° off the wind) based on its current tack.
+        if (isStarboardTackBefore) {
+          ilca.heading = (windDir + 45) % 360; // Snap right out to Starboard Close Hauled
+        } else {
+          ilca.heading = (windDir - 45 + 360) % 360; // Snap left out to Port Close Hauled
+        }
+        console.log(`⛵ Trapped In Irons! Bear away forced a clean recovery snap to Close Hauled at ${ilca.heading}°.`);
       } else {
-        ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
+        // ⛵ NORMAL OPERATION: Execute standard, smooth 3-degree adjustments when sailing freely
+        if (isStarboardTackBefore) {
+          ilca.heading = (currentHeading + STEERING_STEP + 360) % 360; // Turn right
+        } else {
+          ilca.heading = (currentHeading - STEERING_STEP + 360) % 360; // Turn left
+        }
       }
       break;
+    }
   }
 
   // --- TACK PENALTY EVALUATION LAYER ---
