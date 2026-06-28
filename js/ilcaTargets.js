@@ -11,13 +11,11 @@ export function getWindTier(windSpeed) {
 
 /**
  * Strictly maps the Outhaul Translation Matrix to UI values
- * 0.0 = FLAT, 0.25 = BLENDED, 0.5 = BASE, 0.75 = DEEP, 1.0 = FULL
+ * 0.0 = FLAT, 0.5 = BASE, 1.0 = FULL
  */
 export const OUTHAUL_MAP = {
   FLAT: 0.0,
-  BLENDED: 0.25,
   BASE: 0.5,
-  DEEP: 0.75,
   FULL: 1.0
 };
 
@@ -41,7 +39,7 @@ export const SCENARIO_TARGETS = {
       daggerboard: 2,      // Fully Down
       vang: 0.25,          // Firm (Tending tight)
       cunningham: 0.25,    // Snug
-      outhaul: OUTHAUL_MAP.BLENDED // Two fingers gap
+      outhaul: OUTHAUL_MAP.BASE // Switched from BLENDED to BASE (closest match)
     },
     "Heavy": {
       minBoom: 5, maxBoom: 15,
@@ -59,7 +57,7 @@ export const SCENARIO_TARGETS = {
       daggerboard: 0,      // Halfway Up
       vang: 1.0,           // Slack
       cunningham: 1.0,     // Completely off
-      outhaul: OUTHAUL_MAP.DEEP // Well eased / powerful pocket
+      outhaul: OUTHAUL_MAP.FULL // Switched from DEEP to FULL (maximum depth)
     },
     "Medium": {
       minBoom: 35, maxBoom: 65,
@@ -93,7 +91,7 @@ export const SCENARIO_TARGETS = {
       daggerboard: -1.5,   // Three-Quarters Up
       vang: 0.6,           // Set leech open to twist
       cunningham: 1.0,     // Eased completely off
-      outhaul: OUTHAUL_MAP.DEEP // Eased slightly / smooth profile
+      outhaul: OUTHAUL_MAP.FULL // Switched from DEEP to FULL (broad profile)
     },
     "Heavy": {
       minBoom: 90, maxBoom: 110,
