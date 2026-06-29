@@ -1,11 +1,16 @@
 // ilcaTraceRaceLegs.js
 
+// --- CONFIGURATION CONSTANTS ---
+// Change this single number to adjust how close the boat needs to get to trigger an auto-tack.
+const ROUNDING_RADIUS_METERS = 10;
+
 // Main leg manager execution block
 export function trackRaceLegs(map) {
   const ilcaLat = window.globalSimulationData.ILCA.lat;
   const ilcaLon = window.globalSimulationData.ILCA.lon;
 
-  let targetLat, targetLon, targetName, roundingRadius;
+  // Remove roundingRadius from here since we use the constant above
+  let targetLat, targetLon, targetName;
   
   let triggerRedirect = false;
   let finalTimeScore = 0;
@@ -17,37 +22,31 @@ export function trackRaceLegs(map) {
       targetLat = window.globalSimulationData.windwardMarkLat;
       targetLon = window.globalSimulationData.windwardMarkLon;
       targetName = "Windward Mark";
-      roundingRadius = 5;
       break;
     case 1:
       targetLat = window.globalSimulationData.gybeMarkLat;
       targetLon = window.globalSimulationData.gybeMarkLon;
       targetName = "Gybe Mark";
-      roundingRadius = 5; 
       break;
     case 2:
       targetLat = window.globalSimulationData.leewardMarkLat;
       targetLon = window.globalSimulationData.leewardMarkLon;
       targetName = "Leeward Mark"; 
-      roundingRadius = 5;
       break;
     case 3:
       targetLat = window.globalSimulationData.windwardMarkLat;
       targetLon = window.globalSimulationData.windwardMarkLon;
       targetName = "Windward Mark";
-      roundingRadius = 5;
       break;
     case 4:
       targetLat = window.globalSimulationData.leewardMarkLat;
       targetLon = window.globalSimulationData.leewardMarkLon;
       targetName = "Leeward Mark (Finish Line)";
-      roundingRadius = 5;
       break;
     default:
       return; 
   }
 
-  // Measure boat spatial distance relative to active waypoint coordinate
   const distanceToTarget = calculateDistance(ilcaLat, ilcaLon, targetLat, targetLon);
 
   // --- 🛰️ FIXED TELEMETRY PASS: CRITICAL MATCH ---
@@ -58,7 +57,6 @@ export function trackRaceLegs(map) {
   window.globalSimulationData.ILCA.distanceToBuoy = distanceToTarget;
   window.globalSimulationData.ILCA.bearingToBuoy = window.globalSimulationData.bearingToMark;
 
-  // 📝 NEW TELEMETRY HISTORY RECORDER PIPELINE
   if (!window.globalSimulationData.telemetryHistory) {
     window.globalSimulationData.telemetryHistory = [];
   }
@@ -72,8 +70,9 @@ export function trackRaceLegs(map) {
     speed: window.globalSimulationData.ILCA.speed || 0
   });
 
+
   // --- 2. TRIGGER ON ARRIVAL ---
-  if (distanceToTarget <= roundingRadius) {
+  if (distanceToTarget <= ROUNDING_RADIUS_METERS) {
     if (typeof showNotification === "function") {
       showNotification("ILCA rounded the buoy!");
     }
@@ -164,7 +163,7 @@ export function trackRaceLegs(map) {
   } else {
     const alertBox = document.getElementById("nearBuoy");
     if (alertBox) {
-      if (distanceToTarget > roundingRadius && distanceToTarget < 25) {
+      if (distanceToTarget > ROUNDING_RADIUS_METERS && distanceToTarget < 25) {
         alertBox.innerText = `Approaching ${targetName} (${distanceToTarget.toFixed(0)}m)`;
         alertBox.style.display = "block";
       } else {
