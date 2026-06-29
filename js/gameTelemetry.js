@@ -35,6 +35,7 @@ export function recordTelemetrySnapshot() {
     distToMark: Math.round(ilca.distanceToBuoy || 0),
     bearingToMark: Math.round(ilca.bearingToBuoy || 0)
   });
+  
   // ✅ Save ONLY the history array! (It has all your time/wind data, but no heavy map objects)
   if (window.globalSimulationData && window.globalSimulationData.history) {
     localStorage.setItem("finalTelemetryData", JSON.stringify(window.globalSimulationData.history));

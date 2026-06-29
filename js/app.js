@@ -1,7 +1,7 @@
 // app.js
 import { initMap, updateWindControl, updateILCAControl, updateVMGControl } from './map.js';
 import { fetchWind } from './wind.js';
-import { updateILCA } from './ilcaMain.js';
+import { updateILCA } from './ilcaUpdateILCA.js';
 import { applyControls } from './ilcaApplyControls.js'; 
 import { recordTelemetrySnapshot } from './gameTelemetry.js'; // ◄ Imported clean logging layer
 
