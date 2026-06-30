@@ -105,7 +105,7 @@ export const SCENARIO_TARGETS = {
   "Running": {
     "Light": {
       minBoom: 75, maxBoom: 85,
-      sailor: "Forward",   
+      sailor: "FORWARD",   
       daggerboard: DAGGERBOARD_MAP.UP,
       vang: 0.8,           
       cunningham: 1.0,     
