@@ -38,42 +38,49 @@ export async function fetchWind() {
   }
 }
 
-/**
- * Continuous loop adding gentle gusts and updating global state.
- */
+// Add these two variables at the very top of your js/wind.js file 
+// to keep track of the changing random wind over time.
+let randomWindShift = 0;
+let lastUpdateTime = performance.now() / 1000;
+
 function updateWindSimulation(timestamp) {
   const timeSeconds = (timestamp || performance.now()) / 1000;
+  const deltaTime = timeSeconds - lastUpdateTime;
+  lastUpdateTime = timeSeconds;
 
-  // gust / variance
+  // --- 1. SMOOTH GUST VARIANCE ---
   const gustVarianceMS = Math.sin(timeSeconds * 0.15) * 0.5;
   const currentSpeedMS = Math.max(3.6, baseWindSpeedMS + gustVarianceMS);
-
-  // convert to knots (numeric)
   let windKnots = currentSpeedMS * 1.94384;
-
-  // IMPORTANT: ensure no test multiplier here (do NOT multiply windKnots)
-  //   windKnots = windKnots * 5; // <-- remove/commented 
-
   const formattedWindKnots = Number(windKnots.toFixed(1));
 
-  // direction oscillation
+  // --- 2. UNPREDICTABLE RANDOM DIRECTION SHIFTS ---
+  // On every frame, there is a tiny chance the wind direction shifts randomly.
+  // This simulates real-world lake or ocean wind shifts.
+  if (Math.random() < 0.02) { 
+    // Shift the wind direction by a random amount between -3 and +3 degrees
+    const shiftDelta = (Math.random() - 0.5) * 6;
+    randomWindShift += shiftDelta;
+    
+    // Keep the total random shift within a realistic boundary (e.g., max 20 degrees left or right)
+    randomWindShift = Math.max(-20, Math.min(20, randomWindShift));
+  }
+
+  // Combine the original base direction, the smooth wave oscillation, and the new random shift
   const baseDirection = 0;
   const directionOscillation = Math.sin(timeSeconds * 0.08) * 5;
-  const windDeg = Math.round((baseDirection + directionOscillation + 360) % 360);
+  const windDeg = Math.round((baseDirection + directionOscillation + randomWindShift + 360) % 360);
 
-  // Update global state as numbers
+  // --- 3. UPDATE GLOBAL STATE & UI ---
   window.globalSimulationData = window.globalSimulationData || {};
   window.globalSimulationData.windDirection = windDeg;
   window.globalSimulationData.windSpeed = formattedWindKnots;
 
-  // UI update (if element exists)
   const windDiv = document.getElementById("windStatus");
   if (windDiv) {
     windDiv.textContent = `🌬️ Wind: ${formattedWindKnots} knots from ${windDeg}°`;
   }
 
-  // Debug logging (optional; remove when stable)
-  // console.debug('[wind] currentSpeedMS', currentSpeedMS, 'knots', formattedWindKnots, 'deg', windDeg);
-
   requestAnimationFrame(updateWindSimulation);
 }
+
