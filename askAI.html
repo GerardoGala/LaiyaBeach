@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Coaching Assessment</title>
+  <style>
+    /* --- STATIC LAYOUT STYLES --- */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    h2 {
+      margin-top: 0;
+      color: #007bff;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
+    .disclaim {
+      color: #dc3545;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: #fdf3f4;
+      padding: 8px 12px;
+      border-left: 4px solid #dc3545;
+      margin-bottom: 15px;
+    }
+    
+    /* --- NEW STATIC COACHING CARD CLASSES --- */
+    .tips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+    }
+    .tip-item {
+      background: #f8f9fa; 
+      border-left: 4px solid #ffc107; /* Amber alert line */
+      padding: 12px;
+      border-radius: 0 4px 4px 0;
+      font-size: 0.95rem;
+    }
+    .tip-item.critical-error {
+      border-left-color: #dc3545; /* Red alert line for capsizes/irons */
+      background: #fff5f5;
+    }
+    .tip-control-name {
+      color: #007bff; 
+      font-weight: bold;
+    }
+    .tip-target-value {
+      color: #28a745; 
+      font-weight: bold;
+    }
+    .perfect-badge {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 4px;
+      font-weight: bold;
+      border-left: 4px solid #28a745;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🤖 AI Coaching Assessment</h2>
+  <div class="disclaim">
+    ⚠️ NOTICE: Seeking coach assistance has officially disqualified this run from the Leaderboard.
+  </div>
+
+  <!-- Dynamic content zone -->
+  <div id="aiCoachContent">
+    Calculating metrics...
+  </div>
+
+  <!-- Script block executing the rule evaluations -->
+  <script type="module">
+    import { getWindTier, SCENARIO_TARGETS } from './js/ilcaTargets.js';
+
+    // Reach into the parent container window hosting the main simulation script context
+    const sim = window.parent.globalSimulationData;
+
+    function evaluateSnapshot() {
+      const container = document.getElementById("aiCoachContent");
+      if (!sim || !sim.ILCA) {
+        container.innerHTML = "<div class='tip-item critical-error'>Error: Active simulation context not detected.</div>";
+        return;
+      }
+
+      // Flag the runner profile as disqualified from official tracking leaderboards
+      sim.askedAI = true;
+
+      const ilca = sim.ILCA;
+
+      // System Guard Clauses using static CSS classes
+      if (ilca.capsized) {
+        container.innerHTML = "<div class='tip-item critical-error'>❌ <strong>You are capsized!</strong> Right the boat before trimming your lines.</div>";
+        return;
+      }
+      if (ilca.pointOfSail === "In Irons") {
+        container.innerHTML = "<div class='tip-item critical-error'>⛵ <strong>You are stuck in irons!</strong> Turn your boat away from the wind direction to catch clean air before adjusting sails.</div>";
+        return;
+      }
+
+      let lookupHeading = ilca.pointOfSail || "Close Hauled";
+      if (lookupHeading.includes("Reach")) lookupHeading = "Reaching";
+
+      const windTier = getWindTier(Number(sim.windSpeed) || 0);
+      const targets = SCENARIO_TARGETS[lookupHeading][windTier];
+
+      let tipsHTML = "<div class='tips-list'>";
+      let correctionsFound = 0;
+
+      // 1. BOOM ANGLE DIAGNOSTIC
+      if (ilca.boomAngle < targets.minBoom) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Mainsheet:</span> Your boom is too tight (${ilca.boomAngle}°). 
+            Ease your sail out toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
+          </div>`;
+        correctionsFound++;
+      } else if (ilca.boomAngle > targets.maxBoom) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Mainsheet:</span> Your sail is spilling too much wind (${ilca.boomAngle}°). 
+            Pull your mainsheet in toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
+          </div>`;
+        correctionsFound++;
+      }
+
+      // 2. Standardized DAGGERBOARD DIAGNOSTIC
+      if (ilca.daggerboard !== targets.daggerboard) {
+        const humanLabels = { '2': 'Fully DOWN', '0': 'CENTERED', '-2': 'Fully UP' };
+        const currentText = humanLabels[String(ilca.daggerboard)] || ilca.daggerboard;
+        const targetText = humanLabels[String(targets.daggerboard)] || "Adjusted";
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Daggerboard:</span> Your board is currently ${currentText}. 
+            Move your configuration to <span class='tip-target-value'>${targetText}</span> for this point of sail. This maximizes tracking stability and eliminates sideways leeway slippage.
+          </div>`;
+        correctionsFound++;
+      }
+
+      // 3. SAILOR POSITION DIAGNOSTIC
+      if (ilca.sailorPosition !== targets.sailor) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Hiking Stance:</span> Your body positioning is incorrect ("${ilca.sailorPosition}"). 
+            Move your sailor to <span class='tip-target-value'>"${targets.sailor}"</span> to establish the perfect weight distribution for these wind speeds.
+          </div>`;
+        correctionsFound++;
+      }
+
+      // 4. VANG FORCE DIAGNOSTIC 
+      if (targets.vang <= 0.25 && ilca.vang !== -2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Vang Line:</span> This breeze demands a flattened sail blueprint. 
+            Pull your Vang control to <span class='tip-target-value'>TIGHT</span>.
+          </div>`;
+        correctionsFound++;
+      } else if (targets.vang >= 0.75 && ilca.vang !== 2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Vang Line:</span> The wind is too soft for heavy boom tension. 
+            Ease your Vang control to <span class='tip-target-value'>LOOSE</span>.
+          </div>`;
+        correctionsFound++;
+      }
+
+      // 5. DOWNHAUL (CUNNINGHAM) DIAGNOSTIC
+      // Maps configuration targets (0.0 to 1.0) back to your user interface values (-2 to 2)
+      if (targets.cunningham <= 0.25 && ilca.downhaul !== -2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Downhaul:</span> Your luff tension is too soft for this breeze. 
+            Pull your Downhaul control to <span class='tip-target-value'>MAX LUFF</span>.
+          </div>`;
+        correctionsFound++;
+      } else if (targets.cunningham >= 0.75 && ilca.downhaul !== 2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Downhaul:</span> High luff tension is strangling your sail outline in these conditions. 
+            Ease your Downhaul control to <span class='tip-target-value'>OFF</span>.
+          </div>`;
+        correctionsFound++;
+      }
+
+      // 6. OUTHAUL DIAGNOSTIC
+      // Maps configuration targets (0.0 to 1.0) back to your user interface values (-2 to 2)
+      if (targets.outhaul <= 0.25 && ilca.outhaul !== -2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Outhaul:</span> Your lower sail outline is too full. 
+            Pull your Outhaul control to <span class='tip-target-value'>FLAT</span>.
+          </div>`;
+        correctionsFound++;
+      } else if (targets.outhaul >= 0.75 && ilca.outhaul !== 2) {
+        tipsHTML += `
+          <div class='tip-item'>
+            <span class='tip-control-name'>Outhaul:</span> Your foot profile is too flat to collect light air volume. 
+            Ease your Outhaul control to <span class='tip-target-value'>FULL</span>.
+          </div>`;
+        correctionsFound++;
+      }
+
+      tipsHTML += "</div>";
+
+      if (correctionsFound === 0) {
+        container.innerHTML = "<div class='perfect-badge'>🌟 Your trim settings are flawless! Your trim settings perfectly match the manual specs for this leg. Keep holding this line!</div>";
+      } else {
+        container.innerHTML = "<p>Here are your customized trim adjustments:</p>" + tipsHTML;
+      }
+    }
+
+    // Automatically execute evaluation check on document load injection
+    evaluateSnapshot();
+  </script>
+</body>
+</html>

@@ -15,6 +15,9 @@ window.globalSimulationData = {
   gybeMarkLat: 13.67091593,
   gybeMarkLon: 121.40082041,
 
+  askedAI: false,
+  paused: false,
+
 
     // 🎯 The Leaflet marker instance reference
   activeMarker: null, 

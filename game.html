@@ -27,7 +27,6 @@
   <script src="js/gameNotification.js" defer></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=.5, user-scalable=no">
-
 </head>
 <body>
 
@@ -50,6 +49,26 @@
   <div class="container">
     <div id="map">
       <button id="mapStartSimulationBtn">Start Simulation</button>
+
+      <!-- New Ask AI Button: Clones size, layout type, and location properties -->
+      <button id="askAiButton" style="display: none;">Ask AI</button>
+
+      <!-- Squeaky Clean Modal Wrapper using an Iframe overlay structure -->
+      <div id="aiCoachModalWrapper" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99999; justify-content: center; align-items: center;">
+        <div style="background: #fff; width: 90%; max-width: 600px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.5); display: flex; flex-direction: column;">
+          
+          <!-- Isolated iframe portal pulling from your askAI.html asset -->
+          <iframe id="aiCoachIframe" src="" style="width: 100%; height: 400px; border: none;"></iframe>
+          
+          <!-- Footer closing block wrapper -->
+          <div style="background: #f8f9fa; padding: 15px; border-top: 1px solid #dee2e6; display: flex; justify-content: flex-end;">
+            <button id="closeAiModalBtn" style="background: #28a745; color: #fff; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; cursor: pointer; font-size: 1rem; text-transform: uppercase;">
+              Resume Simulation ▶️
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div id="notification-container"></div>
       <div id="nearBuoy"
         style="display:none;position:absolute;bottom:0%;left:30%;
@@ -141,10 +160,18 @@
   <script>
     // Map start simulation button logic
     const mapStartSimulationBtn = document.getElementById('mapStartSimulationBtn');
+    const askAiButton = document.getElementById('askAiButton');
+
     if (mapStartSimulationBtn) {
         mapStartSimulationBtn.addEventListener('click', () => {
           launchSimulation();
           mapStartSimulationBtn.style.display = 'none';
+          
+          // Smooth swap: Reveal the Ask AI button in the exact slot vacated
+          if (askAiButton) {
+            askAiButton.style.display = 'block';
+          }
+
           // Show the feedback notification
           showNotification("You are in Irons! Do something to start moving.");
        });
@@ -154,10 +181,35 @@
   <!-- Content container tracking the dynamic mobile height -->
   <iframe id="modalIframe" src="" style="width: 100%; height: calc(100dvh - 100px); border: none; display: block;"></iframe>
 
+  <!-- Embedded script connector to control modal toggles & game state pauses -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const askBtn = document.getElementById("askAiButton");
+      const modalWrapper = document.getElementById("aiCoachModalWrapper");
+      const iframe = document.getElementById("aiCoachIframe");
+      const closeBtn = document.getElementById("closeAiModalBtn");
 
+      if (!askBtn || !modalWrapper || !iframe || !closeBtn) return;
+
+      // Handle Ask AI button interaction
+      askBtn.addEventListener("click", () => {
+        if (window.globalSimulationData) {
+          window.globalSimulationData.paused = true;
+        }
+        iframe.src = `askAI.html?t=${Date.now()}`;
+        modalWrapper.style.display = "flex";
+      });
+
+      // Handle modal resume interaction
+      closeBtn.addEventListener("click", () => {
+        modalWrapper.style.display = "none";
+        iframe.src = "";
+        if (window.globalSimulationData) {
+          window.globalSimulationData.paused = false;
+        }
+      });
+    });
+  </script>
 
   </body>
-
 </html>
-
-
