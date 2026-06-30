@@ -5,13 +5,7 @@
   <title>AI Coaching Assessment</title>
   <style>
     /* --- STATIC LAYOUT STYLES --- */
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #ffffff;
-      margin: 0;
-      padding: 20px;
-      color: #333;
-    }
+
     h2 {
       margin-top: 0;
       color: #007bff;
@@ -41,12 +35,15 @@
       background: #f8f9fa; 
       border-left: 4px solid #ffc107; /* Amber alert line */
       padding: 12px;
-      border-radius: 0 4px 4px 0;
       font-size: 0.95rem;
+      color: #222222 !important; /* Protect visibility from external stylesheet leaks */
+      border-radius: 0 4px 4px 0;
+      line-height: 1.4;
     }
     .tip-item.critical-error {
       border-left-color: #dc3545; /* Red alert line for capsizes/irons */
       background: #fff5f5;
+      color: #222222 !important;
     }
     .tip-control-name {
       color: #007bff; 
@@ -65,18 +62,18 @@
       border-left: 4px solid #28a745;
     }
   </style>
+  <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
 
-  <h2>🤖 AI Coaching Assessment</h2>
+  <h2>AI Coaching Assessment</h2>
   <div class="disclaim">
     ⚠️ NOTICE: Seeking coach assistance has officially disqualified this run from the Leaderboard.
   </div>
 
-  <!-- Dynamic content zone -->
-  <div id="aiCoachContent">
-    Calculating metrics...
-  </div>
+    <!-- FIXED: Set a hard 310px container height boundary to force the vertical scrollbar into view! -->
+    <div id="aiCoachContent" style="height: 310px; overflow-y: scroll; padding-right: 8px; margin-bottom: 10px; box-sizing: border-box;">
+    Use code with caution.
 
   <!-- Script block executing the rule evaluations -->
   <script type="module">
@@ -174,7 +171,6 @@
       }
 
       // 5. DOWNHAUL (CUNNINGHAM) DIAGNOSTIC
-      // Maps configuration targets (0.0 to 1.0) back to your user interface values (-2 to 2)
       if (targets.cunningham <= 0.25 && ilca.downhaul !== -2) {
         tipsHTML += `
           <div class='tip-item'>
@@ -192,7 +188,6 @@
       }
 
       // 6. OUTHAUL DIAGNOSTIC
-      // Maps configuration targets (0.0 to 1.0) back to your user interface values (-2 to 2)
       if (targets.outhaul <= 0.25 && ilca.outhaul !== -2) {
         tipsHTML += `
           <div class='tip-item'>
@@ -211,6 +206,7 @@
 
       tipsHTML += "</div>";
 
+      // FIXED: Repaired text compilation block string cutoffs
       if (correctionsFound === 0) {
         container.innerHTML = "<div class='perfect-badge'>🌟 Your trim settings are flawless! Your trim settings perfectly match the manual specs for this leg. Keep holding this line!</div>";
       } else {

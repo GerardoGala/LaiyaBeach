@@ -127,7 +127,7 @@ html, body {
     justify-content: center;
   }
 
-  #mapStartSimulationBtn, #askAiButton {
+  #mapStartSimulationBtn, #askAiButton, #closeAiModalBtn {
     position: absolute;
     bottom: 30px;       /* lower center */
     left: 50%;
