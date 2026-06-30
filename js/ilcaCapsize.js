@@ -42,6 +42,14 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   // spike in aerodynamic lift leverage instead of a slow, predictable, linear increase.
   const sheetTensionFactor = Math.pow(linearTension, 1.5);
 
+  // --- ⛵ NEW: DAGGERBOARD PIVOT FORCE ---
+  // Converts your standardized -2 (Up) to 2 (Down) scale into a tipping multiplier.
+  // Board Fully Down (2) = 1.20x tipping leverage (highly unstable in a breeze)
+  // Board Centered (0)   = 1.00x tipping leverage
+  // Board Fully Up (-2)  = 0.80x tipping leverage (boat slides instead of flipping over)
+  const db = typeof controls.daggerboard === 'number' ? controls.daggerboard : 2;
+  const daggerboardLeverage = 1.0 + (db * 0.10);
+
   // Sailor counter-weight stability multipliers (Righting Moment)
   // Selecting "Hike Out" reduces total tipping leverage down to 35% of raw capacity.
   // Staying sitting down ("Neutral" or "Aft") applies a massive stability penalty in a breeze.
@@ -55,8 +63,8 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   }
 
   // Calculate what the wind power vs righting levers wants the final angle to be.
-  // We apply a baseline modifier scalar of 2.1 to properly convert knots to real degrees of lean.
-  const targetHeelAngle = windSpeed * windHeelFactor * sheetTensionFactor * hikingEffort * 2.1;
+  // Added daggerboardLeverage into the calculation chain.
+  const targetHeelAngle = windSpeed * windHeelFactor * sheetTensionFactor * hikingEffort * daggerboardLeverage * 2.1;
   
   if (pointOfSail === "In Irons") {
     // If stalled out head-to-wind, bleed off your rolling momentum by 30% each game frame tick
@@ -70,7 +78,7 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   }
 
   // FIXED: Subtract the wind's directional angle (degrees), not its velocity (knots)
-  const windDirection = 0; // Or link this to controls.windDirection / your global wind angle variable
+  const windDirection = window.globalSimulationData?.windDirection || 0; 
   const relativeAngle = ((controls.heading - windDirection) + 540) % 360 - 180;
   const displayDirectionMultiplier = relativeAngle >= 0 ? 1 : -1;
 
