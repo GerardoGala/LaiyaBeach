@@ -62,7 +62,7 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   const v = (controls.vang + 2) / 4;          // 0.0 (Tight) to 1.0 (Loose)
   const d = (controls.downhaul + 2) / 4;      // 0.0 (Tight) to 1.0 (Loose)
   const o = (controls.outhaul + 2) / 4;        // 0.0 (Flat) to 1.0 (Full)
-  const db = controls.daggerboard;            // -2 (Up) to 2 (Down)
+  const db = controls.daggerboard;            // -2 (Up) to 2 (Down) [Now consistently standardized!]
   const boomAngle = controls.boomAngle;       // 0 to 110 degrees
 
   // --- 1. BOOM ANGLE PENALTY ---
@@ -89,11 +89,16 @@ export function applyControls(pointOfSail, windSpeed, controls) {
 
   // Dynamically set boat drift sideways depending on point of sail and daggerboard
   if (lookupHeading === "Close Hauled") {
+    // FIXED: Adjusted to expect 2 as Fully Down. 
+    // If board is fully down (db = 2), leeway is small. If pulled up (db = -2), leeway spikes!
     controls.leeway = Math.max(2, 2 + (2 - db) * 8.25);
   } else if (lookupHeading === "Reaching") {
+    // If board is dead center (db = 0), leeway is low. Deviation from center increases drift.
     controls.leeway = 3 + Math.abs(0 - db) * 4;
   } else {
-    controls.leeway = Math.max(1, 1 + (db + 2) * 0.5); // Running has low leeway
+    // FIXED: Adjusted to expect -2 as Fully Up during a run.
+    // If board is up (db = -2), ( -2 + 2 ) * 0.5 = 0 extra leeway penalty.
+    controls.leeway = Math.max(1, 1 + (db - (-2)) * 0.5); 
   }
 
   // --- 5. HEEL SPILLING LOGIC ---

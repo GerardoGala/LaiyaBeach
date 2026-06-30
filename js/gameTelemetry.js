@@ -15,7 +15,7 @@ export function recordTelemetrySnapshot() {
 
   // --- CONTROL TEXT LOOKUP DICTIONARIES ---
   // These match your UI lookup rules perfectly
-  const daggerboardLabels = { '-2': 'Down', '0': 'Center', '2': 'Up' };
+  const daggerboardLabels = { '2': 'Down', '0': 'Center', '-2': 'Up' };
   const vangLabels        = { '2': 'LOOSE', '0': 'CENTER', '-2': 'TIGHT' };
   const downhaulLabels    = { '2': 'OFF', '0': 'BASE', '-2': 'MAX LUFF' };
   const outhaulLabels     = { '2': 'FULL', '0': 'BASE', '-2': 'FLAT' };

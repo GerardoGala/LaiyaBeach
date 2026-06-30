@@ -10,8 +10,34 @@ export function getWindTier(windSpeed) {
 }
 
 /**
+ * Strictly maps the Daggerboard Matrix to UI values
+ */
+export const DAGGERBOARD_MAP = {
+  UP: -2,
+  CENTER: 0,
+  DOWN: 2
+};
+
+/**
+ * Strictly maps the Vang Matrix to UI values
+ */
+export const VANG_MAP = {
+  TIGHT: -2,
+  CENTER: 0,
+  LOOSE: 2
+};
+
+/**
+ * Strictly maps the Downhaul Matrix to UI values
+ */
+export const DOWNHAUL_MAP = {
+  MAX_LUFF: -2,
+  BASE: 0,
+  OFF: 2
+};
+
+/**
  * Strictly maps the Outhaul Translation Matrix to UI values
- * 0.0 = FLAT, 0.5 = BASE, 1.0 = FULL
  */
 export const OUTHAUL_MAP = {
   FLAT: 0.0,
@@ -21,85 +47,85 @@ export const OUTHAUL_MAP = {
 
 /**
  * Strict database mirroring the proTip.html specification matrix.
- * Normalizes all values to a 0.0 - 1.0 scale (except boom angle and daggerboard).
+ * Using our clean, standardized mapping variables throughout!
  */
 export const SCENARIO_TARGETS = {
   "Close Hauled": {
     "Light": {
       minBoom: 3, maxBoom: 8,
-      sailor: "Forward", // Mid-Forward / lean leeward
-      daggerboard: 2,    // Fully Down
-      vang: 1.0,         // Slack (Loose)
-      cunningham: 1.0,   // Loose
-      outhaul: OUTHAUL_MAP.BASE // Hand-width gap
+      sailor: "Forward", 
+      daggerboard: DAGGERBOARD_MAP.DOWN,
+      vang: 1.0,         
+      cunningham: 1.0,   
+      outhaul: OUTHAUL_MAP.BASE 
     },
     "Medium": {
       minBoom: 0, maxBoom: 3,
-      sailor: "Hike Hard", // Mid-Cockpit / hiking straight and hard
-      daggerboard: 2,      // Fully Down
-      vang: 0.25,          // Firm (Tending tight)
-      cunningham: 0.25,    // Snug
-      outhaul: OUTHAUL_MAP.BASE // Switched from BLENDED to BASE (closest match)
+      sailor: "Hike Hard", 
+      daggerboard: DAGGERBOARD_MAP.DOWN,
+      vang: 0.25,          
+      cunningham: 0.25,    
+      outhaul: OUTHAUL_MAP.BASE 
     },
     "Heavy": {
       minBoom: 5, maxBoom: 15,
-      sailor: "Hike Hard", // Max Hike Out
-      daggerboard: 1.2,    // Up 2-3 inches (approx 1.2 on a -2 to 2 scale)
-      vang: 0.0,           // Max Tight
-      cunningham: 0.0,     // Max Down
-      outhaul: OUTHAUL_MAP.FLAT // Rigidly Flat
+      sailor: "Hike Hard", 
+      daggerboard: DAGGERBOARD_MAP.DOWN,
+      vang: 0.0,           
+      cunningham: 0.0,     
+      outhaul: OUTHAUL_MAP.FLAT 
     }
   },
   "Reaching": {
     "Light": {
       minBoom: 35, maxBoom: 65,
-      sailor: "Forward",   // Clear out transom drag
-      daggerboard: 0,      // Halfway Up
-      vang: 1.0,           // Slack
-      cunningham: 1.0,     // Completely off
-      outhaul: OUTHAUL_MAP.FULL // Switched from DEEP to FULL (maximum depth)
+      sailor: "Forward",   
+      daggerboard: DAGGERBOARD_MAP.CENTER,
+      vang: 1.0,           
+      cunningham: 1.0,     
+      outhaul: OUTHAUL_MAP.FULL 
     },
     "Medium": {
       minBoom: 35, maxBoom: 65,
-      sailor: "Hike Out",  // Hiked out / shift aft on waves
-      daggerboard: 0,      // Halfway Up
-      vang: 0.5,           // Set top batten parallel (Blended/Base middle)
-      cunningham: 0.25,    // Snugged slightly
-      outhaul: OUTHAUL_MAP.BASE // Moderate depth
+      sailor: "Hike Out",  
+      daggerboard: DAGGERBOARD_MAP.CENTER,
+      vang: 0.5,           
+      cunningham: 0.25,    
+      outhaul: OUTHAUL_MAP.BASE 
     },
     "Heavy": {
       minBoom: 40, maxBoom: 70,
-      sailor: "Aft",       // Far Aft
-      daggerboard: -1,     // Up Significantly
-      vang: 0.1,           // Heavy tension
-      cunningham: 0.0,     // Hard down
-      outhaul: OUTHAUL_MAP.FLAT // Pulled flat
+      sailor: "Aft",       
+      daggerboard: DAGGERBOARD_MAP.UP,
+      vang: 0.1,           
+      cunningham: 0.0,     
+      outhaul: OUTHAUL_MAP.FLAT 
     }
   },
   "Running": {
     "Light": {
       minBoom: 75, maxBoom: 85,
-      sailor: "Forward",   // Forward / heel to windward
-      daggerboard: -1,     // Up High
-      vang: 0.8,           // Eased (prevents boom dipping)
-      cunningham: 1.0,     // Eased completely off
-      outhaul: OUTHAUL_MAP.FULL // Eased deep / broad cross-section
+      sailor: "Forward",   
+      daggerboard: DAGGERBOARD_MAP.UP,
+      vang: 0.8,           
+      cunningham: 1.0,     
+      outhaul: OUTHAUL_MAP.FULL 
     },
     "Medium": {
       minBoom: 90, maxBoom: 100,
-      sailor: "Neutral",   // Mid-Cockpit / active stance
-      daggerboard: -1.5,   // Three-Quarters Up
-      vang: 0.6,           // Set leech open to twist
-      cunningham: 1.0,     // Eased completely off
-      outhaul: OUTHAUL_MAP.FULL // Switched from DEEP to FULL (broad profile)
+      sailor: "Neutral",   
+      daggerboard: DAGGERBOARD_MAP.UP,
+      vang: 0.6,           
+      cunningham: 1.0,     
+      outhaul: OUTHAUL_MAP.FULL 
     },
     "Heavy": {
       minBoom: 90, maxBoom: 110,
-      sailor: "Aft",       // Transom Wall
-      daggerboard: 0,      // Halfway Down as stabilizer!
-      vang: 0.0,           // Tight (prevents death-rolls)
-      cunningham: 0.75,    // Pulled 1/4 down
-      outhaul: OUTHAUL_MAP.FLAT // Pulled tight to stabilize panels
+      sailor: "Aft",       
+      daggerboard: DAGGERBOARD_MAP.CENTER,
+      vang: 0.0,           
+      cunningham: 0.75,    
+      outhaul: OUTHAUL_MAP.FLAT 
     }
   }
 };

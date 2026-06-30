@@ -27,9 +27,11 @@
 
 <div id="daggerboardControl" class="input-section">
   <div class="control-column">
-    <button class="control-button" data-control="daggerboard" data-value="2" onclick="updateDaggerboardControl(2)">Up</button>
+    <!-- FIXED: -2 is now correctly mapped to Up -->
+    <button class="control-button" data-control="daggerboard" data-value="-2" onclick="updateDaggerboardControl(-2)">Up</button>
     <button class="control-button" data-control="daggerboard" data-value="0" onclick="updateDaggerboardControl(0)">Center</button>
-    <button class="control-button" data-control="daggerboard" data-value="-2" onclick="updateDaggerboardControl(-2)">Down</button>
+    <!-- FIXED: 2 is now correctly mapped to Down -->
+    <button class="control-button" data-control="daggerboard" data-value="2" onclick="updateDaggerboardControl(2)">Down</button>
   </div>
 </div>
 

@@ -87,11 +87,9 @@
   function updateDaggerboardControl(daggerboard) {
     // Updated labels so 0 maps to "Center"
     const labels = {
-      '-2': 'Down',
-      '-1': 'Mid Down',
+      '2': 'Down',
       '0':  'Center',
-      '1':  'Mid Up',
-      '2':  'Up'
+      '-2':  'Up'
     };
     const key = String(daggerboard);
     const label = labels[key] ?? 'Unknown';
@@ -111,9 +109,7 @@
     // Create a mapping object for your display text
     const labelMapping = {
         '2': 'LOOSE',
-        '1': 'MID LOOSE',
         '0': 'CENTER',
-        '-1': 'MID TIGHT',
         '-2': 'TIGHT'
     };
 
@@ -136,9 +132,7 @@
     // Create a mapping object for your display text
     const labelMapping = {
         '2': 'OFF',
-        '1': 'TWIST',
-        '0': 'BASE',
-        '-1': 'TRIM',
+         '0': 'BASE',
         '-2': 'MAX LUFF'
     };
 
@@ -162,9 +156,7 @@
         // Create a mapping object for your display text
     const labelMapping = {
         '2': 'FULL',
-        '1': 'DEEP',
-        '0': 'BASE',
-        '-1': 'BLENDED',
+         '0': 'BASE',
         '-2': 'FLAT'
     };
 
