@@ -143,15 +143,20 @@
         correctionsFound++;
       }
 
-      // 3. SAILOR POSITION DIAGNOSTIC
-      if (ilca.sailorPosition !== targets.sailor) {
-        tipsHTML += `
-          <div class='tip-item'>
-            <span class='tip-control-name'>Hiking Stance:</span> Your body positioning is incorrect ("${ilca.sailorPosition}"). 
-            Move your sailor to <span class='tip-target-value'>"${targets.sailor}"</span> to establish the perfect weight distribution for these wind speeds.
-          </div>`;
-        correctionsFound++;
-      }
+    // --- 3. SAILOR POSITION DIAGNOSTIC (Case-Insensitive Fix!) ---
+    // Convert both strings to lowercase using .toLowerCase() to avoid "FORWARD" vs "Forward" clashing!
+    const currentStance = (ilca.sailorPosition || "").toLowerCase().trim();
+    const targetStance = (targets.sailor || "").toLowerCase().trim();
+
+    if (currentStance !== targetStance) {
+    tipsHTML += `
+        <div class='tip-item'>
+        <span class='tip-control-name'>Hiking Stance:</span> Your body positioning is incorrect ("${ilca.sailorPosition}"). 
+        Move your sailor to <span class='tip-target-value'>"${targets.sailor}"</span> to establish the perfect weight distribution for these wind speeds.
+        </div>`;
+    correctionsFound++;
+}
+
 
       // 4. VANG FORCE DIAGNOSTIC 
       if (targets.vang <= 0.25 && ilca.vang !== -2) {

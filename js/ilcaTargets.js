@@ -87,7 +87,7 @@ export const SCENARIO_TARGETS = {
     },
     "Medium": {
       minBoom: 35, maxBoom: 65,
-      sailor: "Hike Out",  
+      sailor: "Hike Hard", // STANDARDIZED: Swapped "Hike Out" to "Hike Hard"
       daggerboard: DAGGERBOARD_MAP.CENTER,
       vang: 0.5,           
       cunningham: 0.25,    
@@ -105,7 +105,7 @@ export const SCENARIO_TARGETS = {
   "Running": {
     "Light": {
       minBoom: 75, maxBoom: 85,
-      sailor: "FORWARD",   
+      sailor: "Forward",   // FIXED: Changed from "FORWARD" to "Forward"
       daggerboard: DAGGERBOARD_MAP.UP,
       vang: 0.8,           
       cunningham: 1.0,     
