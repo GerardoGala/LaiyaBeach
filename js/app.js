@@ -26,12 +26,6 @@ async function loadConfig() {
   masterIntervalId = setInterval(async () => {
     tick++;
 
-
-    // Update ILCA local time
-    const now = new Date();
-    window.globalSimulationData.ILCA.localTime =
-      now.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
-
     // Update ILCA physics if launched
     if (launched) {
       
