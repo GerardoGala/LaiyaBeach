@@ -40,17 +40,24 @@ export function evaluateSnapshot(sim, container) {
   let correctionsFound = 0;
 
   // --- 1. BOOM ANGLE DIAGNOSTIC ---
-  if (ilca.boomAngle < targets.minBoom) {
+  // Safely parse the selected UI range string (e.g., "35-65") into separate numbers
+  const currentBoomStr = String(ilca.boomAngle || "0-0");
+  const parts = currentBoomStr.split('-');
+  const currentMinBoom = Number(parts[0]) || 0;
+  const currentMaxBoom = parts[1] ? Number(parts[1]) : currentMinBoom;
+
+  // Evaluate if the selected window falls completely outside the target window
+  if (currentMaxBoom < targets.minBoom) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Mainsheet:</span> Your boom is too tight (${ilca.boomAngle}°). 
+        <span class='tip-control-name'>Mainsheet:</span> Your boom setting (${currentBoomStr}°) is too tight. 
         Ease your sail out toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
       </div>`;
     correctionsFound++;
-  } else if (ilca.boomAngle > targets.maxBoom) {
+  } else if (currentMinBoom > targets.maxBoom) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Mainsheet:</span> Your sail is spilling too much wind (${ilca.boomAngle}°). 
+        <span class='tip-control-name'>Mainsheet:</span> Your sail setting (${currentBoomStr}°) is spilling too much wind. 
         Pull your mainsheet in toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
       </div>`;
     correctionsFound++;
@@ -94,7 +101,7 @@ export function evaluateSnapshot(sim, container) {
     tipsHTML += `
       <div class='tip-item'>
         <span class='tip-control-name'>Vang Line:</span> The wind is too soft for heavy boom tension. 
-        Ease your Vang control to <span class='tip-target-value'>LOOSE</span>.
+        Ease your Vang control to <span class='tip-value'>LOOSE</span>.
       </div>`;
     correctionsFound++;
   }
@@ -134,7 +141,6 @@ export function evaluateSnapshot(sim, container) {
   }
 
   // --- 7. TACTICAL STRATEGY COACHING PASS ---
-  // Only evaluate layout angles if on an upwind leg AND actively moving (not stalled)
   if ((sim.currentLeg === 0 || sim.currentLeg === 3) && ilca.pointOfSail !== "In Irons") {
     const windDir = Number(sim.windDirection) || 0;
     const bearingToMark = Number(sim.bearingToMark) || 0;
@@ -169,23 +175,12 @@ export function evaluateSnapshot(sim, container) {
         tipsHTML += `<br>Your sailing angle to the wind (${boatAngleToWind.toFixed(0)}°) is perfect. Keep tracking clean air straight to the mark.`;
       }
     }
-    tipsHTML += `</div>`;
-  } 
-  // Strict catch check if they are on an upwind track but have stalled head-to-wind
-  else if (ilca.pointOfSail === "In Irons") {
-    tipsHTML += `
-      <div class='tip-item critical-error'>
-        <span class='tip-control-name'>Tactical Strategy:</span> ⛵ <strong>You are stuck in irons!</strong> Your bow is pointing directly into the wind source. Do not try to trim sails or tack yet. You must turn your boat away from the wind direction (Turn Port or Starboard) to catch clean air and build up speed first!
-      </div>`;
-    correctionsFound++;
+    tipsHTML += `</div>`; // Fixed typo here
   }
 
+  // Final rendering injection
   tipsHTML += "</div>";
-
-  // Render compilation block text to screen canvas
-  if (correctionsFound === 0) {
-    container.innerHTML = "<div class='perfect-badge'>🌟 Your trim settings are flawless! Your trim settings perfectly match the manual specs for this leg. Keep holding this line!</div>";
-  } else {
-    container.innerHTML = "<p>Here are your customized trim adjustments:</p>" + tipsHTML;
-  }
+  container.innerHTML = correctionsFound === 0 
+    ? "<div class='tip-item flawless-victory'>🏆 <strong>Perfect Trim!</strong> Your setup matches Olympic target speeds exactly. Drive hard!</div>" 
+    : tipsHTML;
 }

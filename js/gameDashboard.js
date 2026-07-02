@@ -58,18 +58,24 @@
 
   // --- Update functions (replace the originals) ---
 
-  function updateBoomControl(boomAngle) {
-    showNotification('Boom Angle: ' + boomAngle);
-    window.globalSimulationData.ILCA.boomAngle = boomAngle;
+function updateBoomControl(boomAngle) {
+  showNotification('Boom Angle: ' + boomAngle + '°');
+  
+  // Save the range as a string in your global state data
+  window.globalSimulationData.ILCA.boomAngle = String(boomAngle);
 
-    // Update only the label, not the whole container
-    const lbl = document.getElementById('boomControlLabel');
-    if (lbl) lbl.textContent = 'BOOM ANGLE = ' + boomAngle;
-
-    // Highlight the input button and dashboard item
-    setActiveInputButton('boom', boomAngle);
-    setDashboardActiveForControl('boom');
+  // Update only the label, not the whole container
+  const lbl = document.getElementById('boomControlLabel');
+  if (lbl) {
+    lbl.textContent = 'BOOM ANGLE = ' + boomAngle + '°';
   }
+
+  // Highlight the input button and dashboard item
+  // Converting to String ensures data-value="0-8" matches perfectly
+  setActiveInputButton('boom', String(boomAngle));
+  setDashboardActiveForControl('boom');
+}
+
 
   function updateSailorPosition(position) {
     showNotification('Sailor Position: ' + position);

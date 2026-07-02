@@ -51,7 +51,7 @@ window.globalSimulationData = {
     heading: 0,
     speed: 0,
     sailorPosition: "Mid Center",
-    boomAngle: 5,
+    boomAngle: '0-8',
     daggerboard: 0,
     vang: 0,
     downhaul: 0,

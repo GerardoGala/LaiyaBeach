@@ -17,13 +17,22 @@
 
 <div id="boomControl" class="input-section">
   <div class="control-row">
-    <button class="control-button" data-control="boom" data-value="5" onclick="updateBoomControl(5)">5</button>
-    <button class="control-button" data-control="boom" data-value="10" onclick="updateBoomControl(10)">10</button>
-    <button class="control-button" data-control="boom" data-value="50" onclick="updateBoomControl(50)">50</button>
-    <button class="control-button" data-control="boom" data-value="80" onclick="updateBoomControl(80)">80</button>
-    <button class="control-button" data-control="boom" data-value="100" onclick="updateBoomControl(100)">100</button>
+    <!-- Upwind Ranges -->
+    <button class="control-button" data-control="boom" data-value="0-8" onclick="updateBoomControl('0-8')">0° - 8°</button>
+    <button class="control-button" data-control="boom" data-value="5-15" onclick="updateBoomControl('5-15')">5° - 15°</button>
+  </div>
+  <div class="control-row">
+    <!-- Reaching Ranges -->
+    <button class="control-button" data-control="boom" data-value="35-65" onclick="updateBoomControl('35-65')">35° - 65°</button>
+    <button class="control-button" data-control="boom" data-value="40-70" onclick="updateBoomControl('40-70')">40° - 70°</button>
+ </div>
+    <div class="control-row">  
+    <!-- Downwind Ranges -->
+    <button class="control-button" data-control="boom" data-value="75-85" onclick="updateBoomControl('75-85')">75° - 85°</button>
+    <button class="control-button" data-control="boom" data-value="90-110" onclick="updateBoomControl('90-110')">90° - 110°</button>
   </div>
 </div>
+
 
 <div id="daggerboardControl" class="input-section">
   <div class="control-column">
