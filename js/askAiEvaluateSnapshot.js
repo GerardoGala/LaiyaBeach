@@ -106,7 +106,7 @@ export function evaluateSnapshot(sim, container) {
     correctionsFound++;
   }
 
-  // --- 5. DOWNHAUL (CUNNINGHAM) DIAGNOSTIC ---
+  // --- 5. DOWNHAUL DIAGNOSTIC ---
   if (targets.cunningham <= 0.25 && ilca.downhaul !== -2) {
     tipsHTML += `
       <div class='tip-item'>

@@ -90,96 +90,56 @@ function updateBoomControl(boomAngle) {
     setDashboardActiveForControl('sailorPosition');
   }
 
-  function updateDaggerboardControl(daggerboard) {
-    // Updated labels so 0 maps to "Center"
-    const labels = {
-      '2': 'Down',
-      '0':  'Center',
-      '-2':  'Up'
-    };
-    const key = String(daggerboard);
-    const label = labels[key] ?? 'Unknown';
-    showNotification('Daggerboard: ' + label);
+function updateDaggerboardControl(daggerboard) {
+    // daggerboard is already a string like "Down", "Center", or "Up"
+    showNotification('Daggerboard: ' + daggerboard);
     window.globalSimulationData.ILCA.daggerboard = daggerboard;
 
-    // Update only the label, not the whole container
+    // Update only the label
     const lbl = document.getElementById('daggerboardLabel');
-    if (lbl) lbl.textContent = 'DAGGERBOARD = ' + label;
+    if (lbl) lbl.textContent = 'DAGGERBOARD = ' + daggerboard.toUpperCase();
 
     // Highlight the input button and dashboard item
     setActiveInputButton('daggerboard', daggerboard);
     setDashboardActiveForControl('daggerboard');
-  }
+}
 
-  function updateVangControl(vang) {
-    // Create a mapping object for your display text
-    const labelMapping = {
-        '2': 'LOOSE',
-        '0': 'CENTER',
-        '-2': 'TIGHT'
-    };
-
-        // Safely get the text representation, default back to the number if not found
-    const displayValue = labelMapping[vang] || vang;
-
-    showNotification('Vang: ' + displayValue);
+function updateVangControl(vang) {
+    // vang is already a string like "Ease", "Center", or "Max"
+    showNotification('Vang: ' + vang);
     window.globalSimulationData.ILCA.vang = vang;
 
-    // Update only the label, not the whole container
     const lbl = document.getElementById('vangLabel');
-    if (lbl) lbl.textContent = 'VANG = ' + displayValue;
+    if (lbl) lbl.textContent = 'VANG = ' + vang.toUpperCase();
 
-    // Highlight the input button and dashboard item
     setActiveInputButton('vang', vang);
     setDashboardActiveForControl('vang');
-  }
+}
 
-  function updateDownhaulControl(downhaul) {
-    // Create a mapping object for your display text
-    const labelMapping = {
-        '2': 'OFF',
-         '0': 'BASE',
-        '-2': 'MAX LUFF'
-    };
-
-    // Safely get the text representation, default back to the number if not found
-    const displayValue = labelMapping[downhaul] || downhaul;
-
-
-    showNotification('Downhaul: ' + displayValue);
+function updateDownhaulControl(downhaul) {
+    // downhaul is already a string like "Base", "Center", or "Max"
+    showNotification('Downhaul: ' + downhaul);
     window.globalSimulationData.ILCA.downhaul = downhaul;
 
-    // Update only the label, not the whole container
     const lbl = document.getElementById('downhaulLabel');
-    if (lbl) lbl.textContent = 'DOWNHAUL = ' + displayValue;
+    if (lbl) lbl.textContent = 'DOWNHAUL = ' + downhaul.toUpperCase();
 
-    // Highlight the input button and dashboard item
     setActiveInputButton('downhaul', downhaul);
     setDashboardActiveForControl('downhaul');
-  }
+}
 
-  function updateOuthaulControl(outhaul) {
-        // Create a mapping object for your display text
-    const labelMapping = {
-        '2': 'FULL',
-         '0': 'BASE',
-        '-2': 'FLAT'
-    };
-
-    // Safely get the text representation, default back to the number if not found
-    const displayValue = labelMapping[outhaul] || outhaul;
-
-    showNotification('Outhaul: ' + displayValue);
+function updateOuthaulControl(outhaul) {
+    // outhaul is already a string like "Flat", "Base", or "Full"
+    showNotification('Outhaul: ' + outhaul);
     window.globalSimulationData.ILCA.outhaul = outhaul;
 
-    // Update only the label, not the whole container
     const lbl = document.getElementById('outhaulLabel');
-    if (lbl) lbl.textContent = 'OUTHAUL = ' + displayValue;
+    if (lbl) lbl.textContent = 'OUTHAUL = ' + outhaul.toUpperCase();
 
-    // Highlight the input button and dashboard item
     setActiveInputButton('outhaul', outhaul);
     setDashboardActiveForControl('outhaul');
-  }
+}
+
 
 
 

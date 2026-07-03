@@ -9,40 +9,12 @@ export function getWindTier(windSpeed) {
   return "Heavy"; // 15+ knots
 }
 
-/**
- * Strictly maps the Daggerboard Matrix to UI values
- */
-export const DAGGERBOARD_MAP = {
-  UP: -2,
-  CENTER: 0,
-  DOWN: 2
-};
-
-/**
- * Strictly maps the Vang Matrix to UI values
- */
-export const VANG_MAP = {
-  TIGHT: -2,
-  CENTER: 0,
-  LOOSE: 2
-};
-
-/**
- * Strictly maps the Downhaul Matrix to UI values
- */
-export const DOWNHAUL_MAP = {
-  MAX_LUFF: -2,
-  BASE: 0,
-  OFF: 2
-};
-
-/**
- * Strictly maps the Outhaul Translation Matrix to UI values
- */
-export const OUTHAUL_MAP = {
-  FLAT: 0.0,
-  BASE: 0.5,
-  FULL: 1.0
+// Keep this ONLY if your physics/3D models need numbers to work!
+export const SIMULATION_VALUES = {
+  daggerboard: { "Up": -2, "Center": 0, "Down": 2 },
+  vang:        { "Ease": 2, "Center": 0, "Max": -2 }, 
+  downhaul:    { "Base": 2, "Center": 0, "Max": -2 },
+  outhaul:     { "Flat": 0.0, "Base": 0.5, "Full": 1.0 }
 };
 
 /**
@@ -54,78 +26,79 @@ export const SCENARIO_TARGETS = {
     "Light": {
       minBoom: 3, maxBoom: 8,
       sailor: "Forward", 
-      daggerboard: DAGGERBOARD_MAP.DOWN,
-      vang: 1.0,         
-      cunningham: 1.0,   
-      outhaul: OUTHAUL_MAP.BASE 
+      daggerboard: "Down", // Clean text string
+      vang: "Ease",        
+      downhaul: "Base", 
+      outhaul: "Base" // Clean text string
     },
     "Medium": {
       minBoom: 0, maxBoom: 3,
       sailor: "Hike Hard", 
-      daggerboard: DAGGERBOARD_MAP.DOWN,
-      vang: 0.25,          
-      cunningham: 0.25,    
-      outhaul: OUTHAUL_MAP.BASE 
+      daggerboard: "Down", 
+      vang: "Center",         
+      downhaul: "Center",   
+      outhaul: "Base" 
     },
     "Heavy": {
       minBoom: 5, maxBoom: 15,
       sailor: "Hike Hard", 
-      daggerboard: DAGGERBOARD_MAP.DOWN,
-      vang: 0.0,           
-      cunningham: 0.0,     
-      outhaul: OUTHAUL_MAP.FLAT 
+      daggerboard: "Down", 
+      vang: "Max",          
+      downhaul: "Max",    
+      outhaul: "Flat" // Clean text string
     }
   },
   "Reaching": {
     "Light": {
       minBoom: 35, maxBoom: 65,
       sailor: "Forward",   
-      daggerboard: DAGGERBOARD_MAP.CENTER,
-      vang: 1.0,           
-      cunningham: 1.0,     
-      outhaul: OUTHAUL_MAP.FULL 
+      daggerboard: "Center", // Clean text string
+      vang: "Ease",          
+      downhaul: "Base",    
+      outhaul: "Full" // Clean text string
     },
     "Medium": {
       minBoom: 35, maxBoom: 65,
-      sailor: "Hike Hard", // STANDARDIZED: Swapped "Hike Out" to "Hike Hard"
-      daggerboard: DAGGERBOARD_MAP.CENTER,
-      vang: 0.5,           
-      cunningham: 0.25,    
-      outhaul: OUTHAUL_MAP.BASE 
+      sailor: "Hike Hard", 
+      daggerboard: "Center", 
+      vang: "Center",          
+      downhaul: "Center",   
+      outhaul: "Base" 
     },
     "Heavy": {
       minBoom: 40, maxBoom: 70,
       sailor: "Aft",       
-      daggerboard: DAGGERBOARD_MAP.UP,
-      vang: 0.1,           
-      cunningham: 0.0,     
-      outhaul: OUTHAUL_MAP.FLAT 
+      daggerboard: "Up", // Clean text string
+      vang: "Max",          
+      downhaul: "Base",    
+      outhaul: "Flat" 
     }
   },
   "Running": {
     "Light": {
       minBoom: 75, maxBoom: 85,
-      sailor: "Forward",   // FIXED: Changed from "FORWARD" to "Forward"
-      daggerboard: DAGGERBOARD_MAP.UP,
-      vang: 0.8,           
-      cunningham: 1.0,     
-      outhaul: OUTHAUL_MAP.FULL 
+      sailor: "Forward",   
+      daggerboard: "Up", 
+      vang: "Center",          
+      downhaul: "Base",    
+      outhaul: "Full" 
     },
     "Medium": {
       minBoom: 90, maxBoom: 100,
       sailor: "Neutral",   
-      daggerboard: DAGGERBOARD_MAP.UP,
-      vang: 0.6,           
-      cunningham: 1.0,     
-      outhaul: OUTHAUL_MAP.FULL 
+      daggerboard: "Up", 
+      vang: "Center",          
+      downhaul: "Base",    
+      outhaul: "Full" 
     },
     "Heavy": {
       minBoom: 90, maxBoom: 110,
       sailor: "Aft",       
-      daggerboard: DAGGERBOARD_MAP.CENTER,
-      vang: 0.0,           
-      cunningham: 0.75,    
-      outhaul: OUTHAUL_MAP.FLAT 
+      daggerboard: "Center", 
+      vang: "Center",          
+      downhaul: "Center",   
+      outhaul: "Flat" 
     }
   }
 };
+

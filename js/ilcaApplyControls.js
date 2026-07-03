@@ -59,19 +59,21 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   let modifier = 1.0;
 
   // --- INTERFACE TRANSLATION LAYER ---
-  const v = (controls.vang + 2) / 4;          // 0.0 (Tight) to 1.0 (Loose)
-  const d = (controls.downhaul + 2) / 4;      // 0.0 (Tight) to 1.0 (Loose)
-  const o = (controls.outhaul + 2) / 4;        // 0.0 (Flat) to 1.0 (Full)
-  const db = controls.daggerboard;            // -2 (Up) to 2 (Down) [Now consistently standardized!]
-  const boomAngle = controls.boomAngle;       // 0 to 110 degrees
+  // The variables below are now simple text strings matching controls directly!
+  const v = controls.vang;            // "Ease", "Center", or "Max"
+  const d = controls.downhaul;        // "Base", "Center", or "Max"
+  const o = controls.outhaul;         // "Full", "Base", or "Flat"
+  const db = controls.daggerboard;    // "Up", "Center", or "Down"
+  const boomAngle = controls.boomAngle; // 0 to 110 degrees
 
   // --- 1. BOOM ANGLE PENALTY ---
   modifier *= getBoomRangeMultiplier(boomAngle, targets.minBoom, targets.maxBoom);
 
-  // --- 2. SAIL RIG CONTROLS PENALTIES (Dynamic across all states) ---
-  modifier *= getTrimMultiplier(v, targets.vang, 0.5);
-  modifier *= getTrimMultiplier(d, targets.cunningham, 0.4);
-  modifier *= getTrimMultiplier(o, targets.outhaul, 0.4);
+  // --- 2. SAIL RIG CONTROLS PENALTIES ---
+  // Directly compare text strings. Exact match = perfect (1.0). Wrong text = small penalty.
+  modifier *= (v === targets.vang) ? 1.0 : 0.85;
+  modifier *= (d === targets.downhaul) ? 1.0 : 0.85;
+  modifier *= (o === targets.outhaul) ? 1.0 : 0.85;
 
   // --- 3. SAILOR POSITION MATCHING ---
   if (controls.sailorPosition === targets.sailor) {
@@ -83,22 +85,28 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   }
 
   // --- 4. DAGGERBOARD PERFORMANCE & LEEWAY TRACKING ---
-  // Calculates linear distance penalty from the documentation's optimal target board depth
-  const boardDeviation = Math.abs(db - targets.daggerboard);
-  modifier *= Math.max(0.5, 1.05 - (boardDeviation * 0.15));
-
-  // Dynamically set boat drift sideways depending on point of sail and daggerboard
-  if (lookupHeading === "Close Hauled") {
-    // FIXED: Adjusted to expect 2 as Fully Down. 
-    // If board is fully down (db = 2), leeway is small. If pulled up (db = -2), leeway spikes!
-    controls.leeway = Math.max(2, 2 + (2 - db) * 8.25);
-  } else if (lookupHeading === "Reaching") {
-    // If board is dead center (db = 0), leeway is low. Deviation from center increases drift.
-    controls.leeway = 3 + Math.abs(0 - db) * 4;
+  // Check text configuration for simple speed penalties
+  if (db === targets.daggerboard) {
+    modifier *= 1.05; // Perfect board depth bonus
   } else {
-    // FIXED: Adjusted to expect -2 as Fully Up during a run.
-    // If board is up (db = -2), ( -2 + 2 ) * 0.5 = 0 extra leeway penalty.
-    controls.leeway = Math.max(1, 1 + (db - (-2)) * 0.5); 
+    modifier *= 0.90; // Wrong board position penalty
+  }
+
+  // Set sideways drift based on point of sail text labels
+  if (lookupHeading === "Close Hauled") {
+    // Up causes maximum drift, Down causes minimum drift
+    if (db === "Down") controls.leeway = 2.0;
+    else if (db === "Center") controls.leeway = 15.0;
+    else controls.leeway = 35.0; // Daggerboard is "Up"
+  } else if (lookupHeading === "Reaching") {
+    // Center is best
+    if (db === "Center") controls.leeway = 3.0;
+    else controls.leeway = 11.0; // Up or Down increases drift
+  } else {
+    // Running: Up is best
+    if (db === "Up") controls.leeway = 1.0;
+    else if (db === "Center") controls.leeway = 3.0;
+    else controls.leeway = 5.0; // Down causes excess drag/drift
   }
 
   // --- 5. HEEL SPILLING LOGIC ---
@@ -118,3 +126,4 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   const finalSpeedFactor = baseFactor * modifier;
   return Math.min(windSpeed * finalSpeedFactor, 12);
 }
+
