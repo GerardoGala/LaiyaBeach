@@ -22,14 +22,31 @@ export function evaluateSnapshot(sim, container) {
 
   const ilca = sim.ILCA;
 
-  // Catastrophic status handler checks
+  // --- CATASTROPHIC & CRITICAL STATUS CHECKS ---
+  
+  // Handle Capsize
   if (ilca.capsized) {
     container.innerHTML = "<div class='tip-item critical-error'>❌ <strong>You are capsized!</strong> Right the boat before trimming your lines.</div>";
     return;
   }
 
+  // Handle In Irons (Pointing straight into the wind)
+  if (ilca.pointOfSail === "In Irons" || Number(sim.speed) === 0 && ilca.pointOfSail === "Close Hauled" && Math.abs(((Number(ilca.heading) - Number(sim.windDirection) + 540) % 360) - 180) < 10) {
+    container.innerHTML = `
+      <div class='tips-list'>
+        <div class='tip-item critical-error' style='border-left-color: #dc3545; background: #fff5f5;'>
+          ⛵ <strong>You are In Irons!</strong> You are pointing directly into the wind with zero speed. 
+          <br><br>
+          <strong>How to fix it:</strong> Either bear away or tack.
+        </div>
+      </div>`;
+    return;
+  }
+
+
   // Identify general point of sail lookup groupings
   let lookupHeading = ilca.pointOfSail || "Close Hauled";
+  const posText = lookupHeading.toLowerCase(); // Visual anchor for sentence flow
   if (lookupHeading.includes("Reach")) lookupHeading = "Reaching";
 
   // Pull strategy configuration targets from database metrics file
@@ -39,40 +56,37 @@ export function evaluateSnapshot(sim, container) {
   let tipsHTML = "<div class='tips-list'>";
   let correctionsFound = 0;
 
-  // --- 1. BOOM ANGLE DIAGNOSTIC ---
-  // Safely parse the selected UI range string (e.g., "35-65") into separate numbers
+  // --- 1. MAIN SHEET (BOOM ANGLE) DIAGNOSTIC ---
   const currentBoomStr = String(ilca.boomAngle || "0-0");
   const parts = currentBoomStr.split('-');
   const currentMinBoom = Number(parts[0]) || 0;
   const currentMaxBoom = parts[1] ? Number(parts[1]) : currentMinBoom;
 
-  // Evaluate if the selected window falls completely outside the target window
   if (currentMaxBoom < targets.minBoom) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Mainsheet:</span> Your boom setting (${currentBoomStr}°) is too tight. 
-        Ease your sail out toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
+        <span class='tip-control-name'>Mainsheet:</span> The Mainsheet setting is ${currentBoomStr}° while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span> by easing your sail out.
       </div>`;
     correctionsFound++;
   } else if (currentMinBoom > targets.maxBoom) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Mainsheet:</span> Your sail setting (${currentBoomStr}°) is spilling too much wind. 
-        Pull your mainsheet in toward the target window of <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span>.
+        <span class='tip-control-name'>Mainsheet:</span> The Mainsheet setting is ${currentBoomStr}° while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targets.minBoom}°–${targets.maxBoom}°</span> by pulling your mainsheet in.
       </div>`;
     correctionsFound++;
   }
 
-  // --- 2. Standardized DAGGERBOARD DIAGNOSTIC ---
+  // --- 2. DAGGERBOARD DIAGNOSTIC ---
   if (ilca.daggerboard !== targets.daggerboard) {
-    // 🎯 FIXED: Removed old numbers and matched labels directly to text system strings
     const currentText = String(ilca.daggerboard).toUpperCase();
     const targetText = String(targets.daggerboard).toUpperCase();
     
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Daggerboard:</span> Your board is currently ${currentText}. 
-        Move your configuration to <span class='tip-target-value'>${targetText}</span> for this point of sail. This maximizes tracking stability and eliminates sideways leeway slippage.
+        <span class='tip-control-name'>Daggerboard:</span> The Daggerboard is ${currentText} while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targetText}</span>.
       </div>`;
     correctionsFound++;
   }
@@ -82,43 +96,52 @@ export function evaluateSnapshot(sim, container) {
   const targetStance = (targets.sailor || "").trim();
 
   if (currentStance !== targetStance) {
+    const currentText = currentStance.toUpperCase() || "UNKNOWN";
+    const targetText = targetStance.toUpperCase();
+
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Hiking Stance:</span> Your body positioning is incorrect ("${ilca.sailorPosition}"). 
-        Move your sailor to <span class='tip-target-value'>"${targets.sailor}"</span> to establish the perfect weight distribution for these wind speeds.
+        <span class='tip-control-name'>Hiking Stance:</span> The Hiking Stance is ${currentText} while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targetText}</span>.
       </div>`;
     correctionsFound++;
   }
 
   // --- 4. VANG FORCE DIAGNOSTIC ---
-  // 🎯 FIXED: Direct text checks replacing numeric metrics comparisons
   if (ilca.vang !== targets.vang) {
+    const currentText = String(ilca.vang).toUpperCase();
+    const targetText = String(targets.vang).toUpperCase();
+
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Vang Line:</span> Your current Vang setting ("${ilca.vang}") does not match the ideal target. 
-        Adjust your Vang control to <span class='tip-target-value'>${targets.vang.toUpperCase()}</span>.
+        <span class='tip-control-name'>Vang Line:</span> The Vang Line is ${currentText} while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targetText}</span>.
       </div>`;
     correctionsFound++;
   }
 
   // --- 5. DOWNHAUL DIAGNOSTIC ---
-  // 🎯 FIXED: Swapped targets.cunningham to targets.downhaul and updated to string comparisons
   if (ilca.downhaul !== targets.downhaul) {
+    const currentText = String(ilca.downhaul).toUpperCase();
+    const targetText = String(targets.downhaul).toUpperCase();
+
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Downhaul:</span> Luff tension formatting is incorrect for this wind speed tier. 
-        Adjust your Downhaul control to <span class='tip-target-value'>${targets.downhaul.toUpperCase()}</span>.
+        <span class='tip-control-name'>Downhaul:</span> The Downhaul is ${currentText} while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targetText}</span>.
       </div>`;
     correctionsFound++;
   }
 
   // --- 6. OUTHAUL DIAGNOSTIC ---
-  // 🎯 FIXED: Swapped numeric scaling evaluations out for exact text checking matches
   if (ilca.outhaul !== targets.outhaul) {
+    const currentText = String(ilca.outhaul).toUpperCase();
+    const targetText = String(targets.outhaul).toUpperCase();
+
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Outhaul:</span> Your lower sail outhaul profile is suboptimal. 
-        Adjust your Outhaul control to <span class='tip-target-value'>${targets.outhaul.toUpperCase()}</span>.
+        <span class='tip-control-name'>Outhaul:</span> The Outhaul is ${currentText} while sailing ${posText}. 
+        I suggest changing to <span class='tip-target-value'>${targetText}</span>.
       </div>`;
     correctionsFound++;
   }
@@ -147,11 +170,11 @@ export function evaluateSnapshot(sim, container) {
       tipsHTML += `Nice routing! You are holding a good position <strong>ON THE LAYLINE TRACK</strong> (${markAngleToWind.toFixed(0)}° off the wind). `;
       
       if (boatAngleToWind > 50) {
-        tipsHTML += `<br><span style='color: #28a745; font-weight: bold;'>💨 Wind Lift Active!</span> You are at a wide ${boatAngleToWind.toFixed(0)}° angle to the breeze. <span style='color: #007bff; font-weight: bold;'>HEAD UP</span> to point closer to the buoy instead of tacking!`;
+        tipsHTML += `<br><span style='color: #28a745; font-weight: bold;'>💨 Wind Lift Active!</span> You are at a wide ${boatAngleToWind.toFixed(0)}° angle to the breeze. <span style='color: #007bff; font-weight: bold;'>HEAD UP</span> to ride the lift straight toward the buoy!`;
         correctionsFound++;
       } 
       else if (boatAngleToWind < 42) {
-        tipsHTML += `<br><span style='color: #dc3545; font-weight: bold;'>📉 Wind Header Warning!</span> You are getting knocked down by a shift. <span style='color: #dc3545; font-weight: bold;'>BEAR AWAY</span> to keep your speed up and establish control.`;
+        tipsHTML += `<br><span style='color: #dc3545; font-weight: bold;'>📉 Wind Header Warning!</span> You are getting knocked down by a shift. <span style='color: #dc3545; font-weight: bold;'>TACK IMMEDIATELY</span> to find a lift on the opposite side!`;
         correctionsFound++;
       }
     }
@@ -166,7 +189,8 @@ export function evaluateSnapshot(sim, container) {
       <div class='tip-item success-banner' style='border-left-color: #28a745; background: #eafaf1;'>
         🏆 <strong>Perfect Sail Trim!</strong> All controls are tracking 100% on target for this point of sail and wind condition. Keep your speed vector locked!
       </div>`;
-  } else {
-    container.innerHTML = tipsHTML;
+    return;
   }
+
+  container.innerHTML = tipsHTML;
 }
