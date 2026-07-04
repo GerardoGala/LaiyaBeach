@@ -65,9 +65,10 @@ export function evaluateSnapshot(sim, container) {
 
   // --- 2. Standardized DAGGERBOARD DIAGNOSTIC ---
   if (ilca.daggerboard !== targets.daggerboard) {
-    const humanLabels = { '2': 'Fully DOWN', '0': 'CENTERED', '-2': 'Fully UP' };
-    const currentText = humanLabels[String(ilca.daggerboard)] || ilca.daggerboard;
-    const targetText = humanLabels[String(targets.daggerboard)] || "Adjusted";
+    // 🎯 FIXED: Removed old numbers and matched labels directly to text system strings
+    const currentText = String(ilca.daggerboard).toUpperCase();
+    const targetText = String(targets.daggerboard).toUpperCase();
+    
     tipsHTML += `
       <div class='tip-item'>
         <span class='tip-control-name'>Daggerboard:</span> Your board is currently ${currentText}. 
@@ -90,52 +91,34 @@ export function evaluateSnapshot(sim, container) {
   }
 
   // --- 4. VANG FORCE DIAGNOSTIC ---
-  if (targets.vang <= 0.25 && ilca.vang !== -2) {
+  // 🎯 FIXED: Direct text checks replacing numeric metrics comparisons
+  if (ilca.vang !== targets.vang) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Vang Line:</span> This breeze demands a flattened sail blueprint. 
-        Pull your Vang control to <span class='tip-target-value'>TIGHT</span>.
-      </div>`;
-    correctionsFound++;
-  } else if (targets.vang >= 0.75 && ilca.vang !== 2) {
-    tipsHTML += `
-      <div class='tip-item'>
-        <span class='tip-control-name'>Vang Line:</span> The wind is too soft for heavy boom tension. 
-        Ease your Vang control to <span class='tip-value'>LOOSE</span>.
+        <span class='tip-control-name'>Vang Line:</span> Your current Vang setting ("${ilca.vang}") does not match the ideal target. 
+        Adjust your Vang control to <span class='tip-target-value'>${targets.vang.toUpperCase()}</span>.
       </div>`;
     correctionsFound++;
   }
 
   // --- 5. DOWNHAUL DIAGNOSTIC ---
-  if (targets.cunningham <= 0.25 && ilca.downhaul !== -2) {
+  // 🎯 FIXED: Swapped targets.cunningham to targets.downhaul and updated to string comparisons
+  if (ilca.downhaul !== targets.downhaul) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Downhaul:</span> Your luff tension is too soft for this breeze. 
-        Pull your Downhaul control to <span class='tip-target-value'>MAX LUFF</span>.
-      </div>`;
-    correctionsFound++;
-  } else if (targets.cunningham >= 0.75 && ilca.downhaul !== 2) {
-    tipsHTML += `
-      <div class='tip-item'>
-        <span class='tip-control-name'>Downhaul:</span> High luff tension is strangling your sail outline in these conditions. 
-        Ease your Downhaul control to <span class='tip-target-value'>OFF</span>.
+        <span class='tip-control-name'>Downhaul:</span> Luff tension formatting is incorrect for this wind speed tier. 
+        Adjust your Downhaul control to <span class='tip-target-value'>${targets.downhaul.toUpperCase()}</span>.
       </div>`;
     correctionsFound++;
   }
 
   // --- 6. OUTHAUL DIAGNOSTIC ---
-  if (targets.outhaul <= 0.25 && ilca.outhaul !== -2) {
+  // 🎯 FIXED: Swapped numeric scaling evaluations out for exact text checking matches
+  if (ilca.outhaul !== targets.outhaul) {
     tipsHTML += `
       <div class='tip-item'>
-        <span class='tip-control-name'>Outhaul:</span> Your lower sail outline is too full. 
-        Pull your Outhaul control to <span class='tip-target-value'>FLAT</span>.
-      </div>`;
-    correctionsFound++;
-  } else if (targets.outhaul >= 0.75 && ilca.outhaul !== 2) {
-    tipsHTML += `
-      <div class='tip-item'>
-        <span class='tip-control-name'>Outhaul:</span> Your foot profile is too flat to collect light air volume. 
-        Ease your Outhaul control to <span class='tip-target-value'>FULL</span>.
+        <span class='tip-control-name'>Outhaul:</span> Your lower sail outhaul profile is suboptimal. 
+        Adjust your Outhaul control to <span class='tip-target-value'>${targets.outhaul.toUpperCase()}</span>.
       </div>`;
     correctionsFound++;
   }
@@ -168,19 +151,22 @@ export function evaluateSnapshot(sim, container) {
         correctionsFound++;
       } 
       else if (boatAngleToWind < 42) {
-        tipsHTML += `<br><span style='color: #dc3545; font-weight: bold;'>📉 Wind Header Warning!</span> You are getting knocked down by a shift. <span style='color: #dc3545; font-weight: bold;'>EXECUTE A TACK NOW</span> onto the opposite boards to escape it!`;
+        tipsHTML += `<br><span style='color: #dc3545; font-weight: bold;'>📉 Wind Header Warning!</span> You are getting knocked down by a shift. <span style='color: #dc3545; font-weight: bold;'>BEAR AWAY</span> to keep your speed up and establish control.`;
         correctionsFound++;
-      } 
-      else {
-        tipsHTML += `<br>Your sailing angle to the wind (${boatAngleToWind.toFixed(0)}°) is perfect. Keep tracking clean air straight to the mark.`;
       }
     }
-    tipsHTML += `</div>`; // Fixed typo here
+    tipsHTML += `</div>`;
   }
 
-  // Final rendering injection
   tipsHTML += "</div>";
-  container.innerHTML = correctionsFound === 0 
-    ? "<div class='tip-item flawless-victory'>🏆 <strong>Perfect Trim!</strong> Your setup matches Olympic target speeds exactly. Drive hard!</div>" 
-    : tipsHTML;
+
+  // If no adjustments are needed, print out a success card banner
+  if (correctionsFound === 0) {
+    container.innerHTML = `
+      <div class='tip-item success-banner' style='border-left-color: #28a745; background: #eafaf1;'>
+        🏆 <strong>Perfect Sail Trim!</strong> All controls are tracking 100% on target for this point of sail and wind condition. Keep your speed vector locked!
+      </div>`;
+  } else {
+    container.innerHTML = tipsHTML;
+  }
 }

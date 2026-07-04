@@ -36,7 +36,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Hike Hard", 
       daggerboard: "Down", 
       vang: "Center",         
-      downhaul: "Center",   
+      downhaul: "Base",   
       outhaul: "Base" 
     },
     "Heavy": {
@@ -44,7 +44,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Hike Hard", 
       daggerboard: "Down", 
       vang: "Max",          
-      downhaul: "Max",    
+      downhaul: "Max Luff",    
       outhaul: "Flat" // Clean text string
     }
   },
@@ -54,7 +54,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Forward",   
       daggerboard: "Center", // Clean text string
       vang: "Ease",          
-      downhaul: "Base",    
+      downhaul: "Off",    
       outhaul: "Full" // Clean text string
     },
     "Medium": {
@@ -62,7 +62,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Hike Hard", 
       daggerboard: "Center", 
       vang: "Center",          
-      downhaul: "Center",   
+      downhaul: "Base",   
       outhaul: "Base" 
     },
     "Heavy": {
@@ -80,7 +80,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Forward",   
       daggerboard: "Up", 
       vang: "Center",          
-      downhaul: "Base",    
+      downhaul: "Off",    
       outhaul: "Full" 
     },
     "Medium": {
@@ -88,7 +88,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Neutral",   
       daggerboard: "Up", 
       vang: "Center",          
-      downhaul: "Base",    
+      downhaul: "Off",    
       outhaul: "Full" 
     },
     "Heavy": {
@@ -96,7 +96,7 @@ export const SCENARIO_TARGETS = {
       sailor: "Aft",       
       daggerboard: "Center", 
       vang: "Center",          
-      downhaul: "Center",   
+      downhaul: "Base",   
       outhaul: "Flat" 
     }
   }
