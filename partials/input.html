@@ -166,9 +166,105 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex: 1;                
-  gap: 6px;               
-  min-height: 0;          
+  flex: 1;                /* FORCES rows to split the parent vertical height equally */
+  gap: 6px;               /* Adds uniform spacing between buttons */
+  min-height: 0;          /* Prevents rows from bursting past flex parent bounds */
+}
+
+
+/* Buttons stretch to fill 100% of their available space evenly */
+.control-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  flex: 1;                  /* Forces buttons in a row/column to share space equally */
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-sizing: border-box;
+  text-transform: uppercase;
+}
+</style>
+
+<style>
+
+.control-row {
+  display: flex;
+  gap: 10px;
+}
+
+.row-directions .control-button {
+  flex: 1;
+}
+
+.row-adjustments .control-button {
+  flex: 1;
+}
+
+/* Container Layout */
+/* Container Layout */
+#input-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;        /* Fills exactly the leftover space provided by #input-container */
+  background: #000;    /* Dark background to match the black divider theme */
+  padding: 6px;        /* Matches the outer border spacing */
+  box-sizing: border-box;
+}
+
+/* Make active sections fill the container entirely and distribute rows evenly */
+.input-section.active {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  height: 100%;
+  width: 100%;
+  gap: 6px;            /* Matches the black gap thickness from the dashboard */
+  box-sizing: border-box;
+}
+
+/* Row layouts distribute buttons horizontally across the screen */
+.control-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex: 1;             /* FORCES active rows to share the leftover space equally */
+  gap: 6px;            /* Adds uniform spacing between buttons */
+  min-height: 0;       /* Prevents buttons from expanding past the layout limit */
+}
+
+
+
+
+
+
+.control-side-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+.control-center-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  gap: 6px;
+}
+
+.control-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 6px;
 }
 
 /* Buttons stretch to fill 100% of their available space evenly */
@@ -190,4 +286,11 @@
   box-sizing: border-box;
   text-transform: uppercase;
 }
+
+.control-button.active {
+  background: #343a40 !important; /* dark accent */
+  color: #fff;
+  border: 2px solid #fff;
+}
+
 </style>
