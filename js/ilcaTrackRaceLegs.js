@@ -174,13 +174,12 @@ export function trackRaceLegs(map) {
 
   // --- 4. REDIRECTION & DIALOG INTERCEPTOR ---
   if (triggerRedirect) {
-    // 🎯 FIXED: Stop raw routing bypass. Call the Firebase check modal system instead!
-    if (typeof window.showFinishDialog === "function") {
-      window.showFinishDialog();
-    } else {
-      // Emergency fallback if the firebase script hasn't loaded
-      window.location.href = `finish.html?time=${finalTimeScore}&wind=${finalWindSpeed}&top10=false`;
-    }
+    // 🎯 FIXED: Completely removed window.showFinishDialog() to banish the first screen forever!
+    // The tracker now instantly forwards the browser straight to your beautiful finish.html dashboard.
+    
+    // We pass a default 'top10=false' here because your fresh finish.html now runs its own independent 
+    // cloud database checks the moment a player clicks the Close button anyway!
+    window.location.href = `finish.html?time=${finalTimeScore}&wind=${finalWindSpeed}&top10=false&askedAI=${window.globalSimulationData.askedAI === true}`;
   }
 }
 
