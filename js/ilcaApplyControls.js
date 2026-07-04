@@ -25,6 +25,9 @@ function getBoomRangeMultiplier(currentAngle, minAngle, maxAngle) {
 }
 
 export function applyControls(pointOfSail, windSpeed, controls) {
+  // 🔬 DEBUG TRACER
+  console.log("PAYLOAD CHECK:", JSON.stringify(controls));
+
   // --- CAPSIZE CHECK ---
   if (controls.capsized) {
     controls.heelAngle = 90;
@@ -52,32 +55,41 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   if (pointOfSail === "Beam Reach") baseFactor = 1.2;
   if (pointOfSail === "Running") baseFactor = 0.8;
 
-  // Retrieve exact target metrics from config file
-  const windTier = getWindTier(windSpeed);
-  const targets = SCENARIO_TARGETS[lookupHeading][windTier];
+  // --- FIXED: ROUNDED DECIMAL & SAFE FALLBACK TARGETS ---
+  const roundedWindSpeed = Math.round(windSpeed || 0);
+  const windTier = getWindTier(roundedWindSpeed) || "Medium";
+  
+  const safeHeading = SCENARIO_TARGETS[lookupHeading] ? lookupHeading : "Close Hauled";
+  const targets = SCENARIO_TARGETS[safeHeading][windTier] || SCENARIO_TARGETS[safeHeading]["Medium"];
 
   let modifier = 1.0;
 
   // --- INTERFACE TRANSLATION LAYER ---
-  // The variables below are now simple text strings matching controls directly!
-  const v = controls.vang;            // "Ease", "Center", or "Max"
-  const d = controls.downhaul;        // "Base", "Center", or "Max"
-  const o = controls.outhaul;         // "Full", "Base", or "Flat"
-  const db = controls.daggerboard;    // "Up", "Center", or "Down"
-  const boomAngle = controls.boomAngle; // 0 to 110 degrees
+  const v = controls.vang;            
+  const d = controls.downhaul;        
+  const o = controls.outhaul;         
+  const db = controls.daggerboard;    
+
+  // 🎯 FIX: Convert a string range like "0-8" into a clean numeric value (8)
+  let numericBoomAngle = 0;
+  if (typeof controls.boomAngle === 'string' && controls.boomAngle.includes('-')) {
+    const parts = controls.boomAngle.split('-');
+    numericBoomAngle = parseFloat(parts[parts.length - 1]) || 0; // Extracts the high end number (8)
+  } else {
+    numericBoomAngle = parseFloat(controls.boomAngle) || 0;
+  }
 
   // --- 1. BOOM ANGLE PENALTY ---
-  modifier *= getBoomRangeMultiplier(boomAngle, targets.minBoom, targets.maxBoom);
+  modifier *= getBoomRangeMultiplier(numericBoomAngle, targets.minBoom, targets.maxBoom);
 
   // --- 2. SAIL RIG CONTROLS PENALTIES ---
-  // Directly compare text strings. Exact match = perfect (1.0). Wrong text = small penalty.
   modifier *= (v === targets.vang) ? 1.0 : 0.85;
   modifier *= (d === targets.downhaul) ? 1.0 : 0.85;
   modifier *= (o === targets.outhaul) ? 1.0 : 0.85;
 
   // --- 3. SAILOR POSITION MATCHING ---
   if (controls.sailorPosition === targets.sailor) {
-    modifier *= 1.08; // Perfect matching stance boost
+    modifier *= 1.08; 
   } else if (controls.sailorPosition === "Neutral") {
     modifier *= 0.98;
   } else {
@@ -85,39 +97,35 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   }
 
   // --- 4. DAGGERBOARD PERFORMANCE & LEEWAY TRACKING ---
-  // Check text configuration for simple speed penalties
   if (db === targets.daggerboard) {
-    modifier *= 1.05; // Perfect board depth bonus
+    modifier *= 1.05; 
   } else {
-    modifier *= 0.90; // Wrong board position penalty
+    modifier *= 0.90; 
   }
 
-  // Set sideways drift based on point of sail text labels
   if (lookupHeading === "Close Hauled") {
-    // Up causes maximum drift, Down causes minimum drift
     if (db === "Down") controls.leeway = 2.0;
     else if (db === "Center") controls.leeway = 15.0;
-    else controls.leeway = 35.0; // Daggerboard is "Up"
+    else controls.leeway = 35.0; 
   } else if (lookupHeading === "Reaching") {
-    // Center is best
     if (db === "Center") controls.leeway = 3.0;
-    else controls.leeway = 11.0; // Up or Down increases drift
+    else controls.leeway = 11.0; 
   } else {
-    // Running: Up is best
     if (db === "Up") controls.leeway = 1.0;
     else if (db === "Center") controls.leeway = 3.0;
-    else controls.leeway = 5.0; // Down causes excess drag/drift
+    else controls.leeway = 5.0; 
   }
 
   // --- 5. HEEL SPILLING LOGIC ---
-  if (boomAngle > targets.maxBoom) {
-    const easeDeg = boomAngle - targets.maxBoom;
+  if (numericBoomAngle > targets.maxBoom) {
+    const easeDeg = numericBoomAngle - targets.maxBoom;
     controls.heelingForceMultiplier = Math.max(0.0, 1.0 - (easeDeg / 45.0));
   } else {
     controls.heelingForceMultiplier = 1.0;
   }
 
   // --- FINAL Physics PASS LINK ---
+  // Pass the wind speed and let the physics processor calculate tilt mechanics
   const isCapsized = calculateHeelAndCapsize(pointOfSail, windSpeed, controls);
   if (isCapsized) {
     return 0.0;
@@ -126,4 +134,3 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   const finalSpeedFactor = baseFactor * modifier;
   return Math.min(windSpeed * finalSpeedFactor, 12);
 }
-
