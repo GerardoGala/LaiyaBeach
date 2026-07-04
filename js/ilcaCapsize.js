@@ -1,6 +1,6 @@
-// capsize.js
+// ilcaCapsize.js
 
-/**
+/**Wind updated:
  * Calculates the dynamic heeling forces, handles momentum smoothing,
  * sets the clinometer display angle, and checks for an over-rotation capsize event.
  * @param {string} pointOfSail - Current relative point of sail string
@@ -12,6 +12,16 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   // If the boat is already marked as capsized, clamp stats and exit immediately
   if (controls.capsized) {
     controls.heelAngle = 90;
+  console.log("capsized");
+
+    // Safely calculate direction even during an existing capsize
+    const windDirection = window.globalSimulationData?.windDirection || 0;
+    const boatHeading = typeof controls.heading === 'number' ? controls.heading : 0;
+    const relativeAngle = ((boatHeading - windDirection) + 540) % 360 - 180;
+    const displayDirectionMultiplier = relativeAngle >= 0 ? 1 : -1;
+    
+    controls.clinometer = 90 * displayDirectionMultiplier;
+     console.log("displayDirectionMultiplier= " + displayDirectionMultiplier);
     return true;
   }
 
@@ -37,18 +47,21 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   // Calculate raw linear tension fraction where 0° = 1.0 (Max power) and 90° = 0.1 (Dumped wind)
   const linearTension = Math.max(0.1, (90 - sheet) / 90);
   
-  // ⛵ FIXED: Use Math.pow() to scale the tension exponentially. 
+  // Use Math.pow() to scale the tension exponentially. 
   // In heavy winds, tightening the sail into a hard wall on a reach causes a sudden, dramatic 
   // spike in aerodynamic lift leverage instead of a slow, predictable, linear increase.
   const sheetTensionFactor = Math.pow(linearTension, 1.5);
 
-  // --- ⛵ NEW: DAGGERBOARD PIVOT FORCE ---
-  // Converts your standardized -2 (Up) to 2 (Down) scale into a tipping multiplier.
-  // Board Fully Down (2) = 1.20x tipping leverage (highly unstable in a breeze)
-  // Board Centered (0)   = 1.00x tipping leverage
-  // Board Fully Up (-2)  = 0.80x tipping leverage (boat slides instead of flipping over)
-  const db = typeof controls.daggerboard === 'number' ? controls.daggerboard : 2;
-  const daggerboardLeverage = 1.0 + (db * 0.10);
+  // --- ⛵ FIXED: DAGGERBOARD PIVOT TEXT TRANSLATION ---
+  // Converts your new text strings into numeric leverage factors so the math engine does not crash.
+  let daggerboardLeverage = 1.0;
+  if (controls.daggerboard === "Down") {
+    daggerboardLeverage = 1.20; // Matches old value of 2
+  } else if (controls.daggerboard === "Up") {
+    daggerboardLeverage = 0.80; // Matches old value of -2
+  } else {
+    daggerboardLeverage = 1.00; // Default for "Center" or missing data (matches old value of 0)
+  }
 
   // Sailor counter-weight stability multipliers (Righting Moment)
   // Selecting "Hike Out" reduces total tipping leverage down to 35% of raw capacity.
@@ -77,7 +90,8 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
     controls.heelAngle += (maximumCalculatedAngle - controls.heelAngle) * 0.6;
   }
 
-  // FIXED: Subtract the wind's directional angle (degrees), not its velocity (knots)
+  // --- ⛵ FIXED: HEADING PROTECTION ---
+  // Safely defaults to 0 if controls.heading is undefined or missing to prevent NaN errors.
   const windDirection = window.globalSimulationData?.windDirection || 0; 
   const relativeAngle = ((controls.heading - windDirection) + 540) % 360 - 180;
   const displayDirectionMultiplier = relativeAngle >= 0 ? 1 : -1;
