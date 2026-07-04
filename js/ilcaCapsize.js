@@ -52,16 +52,13 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   // spike in aerodynamic lift leverage instead of a slow, predictable, linear increase.
   const sheetTensionFactor = Math.pow(linearTension, 1.5);
 
-  // --- ⛵ FIXED: DAGGERBOARD PIVOT TEXT TRANSLATION ---
-  // Converts your new text strings into numeric leverage factors so the math engine does not crash.
-  let daggerboardLeverage = 1.0;
-  if (controls.daggerboard === "Down") {
-    daggerboardLeverage = 1.20; // Matches old value of 2
-  } else if (controls.daggerboard === "Up") {
-    daggerboardLeverage = 0.80; // Matches old value of -2
-  } else {
-    daggerboardLeverage = 1.00; // Default for "Center" or missing data (matches old value of 0)
-  }
+  // --- ⛵ NEW: DAGGERBOARD PIVOT FORCE ---
+  // Converts your standardized -2 (Up) to 2 (Down) scale into a tipping multiplier.
+  // Board Fully Down (2) = 1.20x tipping leverage (highly unstable in a breeze)
+  // Board Centered (0)   = 1.00x tipping leverage
+  // Board Fully Up (-2)  = 0.80x tipping leverage (boat slides instead of flipping over)
+  const db = typeof controls.daggerboard === 'number' ? controls.daggerboard : 2;
+  const daggerboardLeverage = 1.0 + (db * 0.10);
 
   // Sailor counter-weight stability multipliers (Righting Moment)
   // Selecting "Hike Out" reduces total tipping leverage down to 35% of raw capacity.
