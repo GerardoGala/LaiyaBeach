@@ -212,7 +212,7 @@
       document.body.removeChild(textArea);
     }
 
-    /**
+        /**
      * Checks URL flag strings to determine correct leaderboard target routing channels
      */
     function closeFinishDialog() {
@@ -221,15 +221,22 @@
       const finalTimeScore = urlParams.get('time') || '0';
       const windSpeedValue = urlParams.get('wind') || '0';
       const makesTop10 = urlParams.get('top10') === 'true';
+      const askedAI = urlParams.get('askedAI') === 'true';
 
       if (makesTop10) {
         alert(`Congratulations! Your time of ${finalTimeScore} seconds qualified for the Top 10!`);
         window.location.href = `enterName.html?time=${finalTimeScore}&wind=${windSpeedValue}`;
+      } else if (askedAI) {
+        // 🎯 FIXED: Explains why they didn't make the board instead of giving a false time rejection
+        alert(`Great race! However, seeking AI Coach assistance disqualifies this run from the official leaderboard.`);
+        window.location.href = "leaderboard.html";
       } else {
+        // True organic leaderboard miss
         alert(`Great race! However, your time of ${finalTimeScore} seconds did not break into the Top 10.`);
         window.location.href = "leaderboard.html";
       }
     }
+
 
     // Launch execution loops on view loading
     initResultsPage();
