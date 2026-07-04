@@ -172,10 +172,18 @@ export function trackRaceLegs(map) {
     }
   }
 
+  // --- 4. REDIRECTION & DIALOG INTERCEPTOR ---
   if (triggerRedirect) {
-    window.location.href = `finish.html?time=${finalTimeScore}&wind=${finalWindSpeed}`;
+    // 🎯 FIXED: Stop raw routing bypass. Call the Firebase check modal system instead!
+    if (typeof window.showFinishDialog === "function") {
+      window.showFinishDialog();
+    } else {
+      // Emergency fallback if the firebase script hasn't loaded
+      window.location.href = `finish.html?time=${finalTimeScore}&wind=${finalWindSpeed}&top10=false`;
+    }
   }
 }
+
 
 // --- LOCAL MATH ENGINE MODULE ---
 function calculateDistance(lat1, lon1, lat2, lon2) {

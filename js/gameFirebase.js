@@ -1,3 +1,4 @@
+// gameFireBase.html
 // 1. ADDED: Your explicit Firebase configuration credentials
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, query, orderBy, limit, getDocs, addDoc, writeBatch} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -63,35 +64,35 @@ window.showFinishDialog = function showFinishDialog() {
             newBtn.textContent = "Checking Leaderboard...";
 
             try {
-                // Query your cloud Firestore leaderboard targets (Ascending Sequence)
-                const leaderboardRef = collection(db, "leaderboard");
-                const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
-                const querySnapshot = await getDocs(q);
-                
                 let makesTop10 = false;
 
-                // Condition A: If database is wiped or clear (0 to 9 slots filled), qualify instantly!
-                if (querySnapshot.size < 10) {
-                    makesTop10 = true;
+                // STAGE ONE: Check if they used the Ask AI coaching tool first
+                if (data.askedAI === true) {
+                    makesTop10 = false; // Disqualified instantly from leaderboard submission
                 } else {
-                    // Condition B: Compare run duration scores against the 10th slot cutoff anchor
-                    const docs = querySnapshot.docs;
-                    const tenthPlaceDoc = docs[docs.length - 1].data();
-                    const tenthPlaceTime = Number(tenthPlaceDoc.finalTime);
+                    // STAGE TWO: Query your cloud Firestore leaderboard targets (Ascending Sequence)
+                    const leaderboardRef = collection(db, "leaderboard");
+                    const q = query(leaderboardRef, orderBy("finalTime", "asc"), limit(10));
+                    const querySnapshot = await getDocs(q);
 
-                    if (finalTimeScore < tenthPlaceTime) {
+                    // Condition A: If database has empty slots (0 to 9 scores total), qualify instantly!
+                    if (querySnapshot.size < 10) {
                         makesTop10 = true;
+                    } else {
+                        // Condition B: Compare run duration scores against the 10th slot cutoff anchor (.finalTime)
+                        const docs = querySnapshot.docs;
+                        const tenthPlaceDoc = docs[docs.length - 1].data();
+                        const tenthPlaceTime = Number(tenthPlaceDoc.finalTime);
+
+                        if (Number(finalTimeScore) < tenthPlaceTime) {
+                            makesTop10 = true;
+                        }
                     }
                 }
 
-                // Execution routing block based on evaluated ranking rules
-// ... Your existing Firestore query code that calculates makesTop10 ...
-
-            // New Execution routing block: Pass the results to finish.html first!
-            const windSpeedValue = Number(data.windSpeed) || 0;
-
-            window.location.href = `finish.html?time=${finalTimeScore}&wind=${windSpeedValue}&top10=${makesTop10}`;
-
+                // New Execution routing block: Pass the correct results to finish.html
+                const windSpeedValue = Number(data.windSpeed) || 0;
+                window.location.href = `finish.html?time=${finalTimeScore}&wind=${windSpeedValue}&top10=${makesTop10}`;
 
             } catch (error) {
                 console.error("Database Verification Loop Interrupted:", error);
