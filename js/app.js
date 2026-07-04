@@ -112,7 +112,7 @@ async function updateWindFromAPI() {
       window.globalSimulationData.windDirection = Number(windData.direction);
       window.globalSimulationData.windSpeed = Number(windData.speed);
       
-      console.log("Wind updated:", window.globalSimulationData.windDirection, window.globalSimulationData.windSpeed);
+      //console.log("Wind updated:", window.globalSimulationData.windDirection, window.globalSimulationData.windSpeed);
     }
   } catch (err) {
     console.error("Wind fetch failed:", err);

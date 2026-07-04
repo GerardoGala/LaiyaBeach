@@ -26,7 +26,7 @@ export function handleControls(windDir, windSpeed) {
         // ⛵ INTENTIONAL TACK COMPENSATOR: Instead of stalling in irons,
         // snap the boat perfectly to the opposite upwind Close Hauled tack (-45° from wind)
         ilca.heading = (windDir - 45 + 360) % 360;
-        console.log(`⛵ Port Turn forced a tack! Compensating to Port Close Hauled at ${ilca.heading}° to avoid In Irons.`);
+        //console.log(`⛵ Port Turn forced a tack! Compensating to Port Close Hauled at ${ilca.heading}° to avoid In Irons.`);
       } else {
         ilca.heading = targetHeading;
       }
@@ -44,7 +44,7 @@ export function handleControls(windDir, windSpeed) {
         // ⛵ INTENTIONAL TACK COMPENSATOR: Instead of stalling in irons,
         // snap the boat perfectly to the opposite upwind Close Hauled tack (+45° from wind)
         ilca.heading = (windDir + 45) % 360;
-        console.log(`⛵ Starboard Turn forced a tack! Compensating to Starboard Close Hauled at ${ilca.heading}° to avoid In Irons.`);
+        //console.log(`⛵ Starboard Turn forced a tack! Compensating to Starboard Close Hauled at ${ilca.heading}° to avoid In Irons.`);
       } else {
         ilca.heading = targetHeading;
       }
@@ -70,7 +70,7 @@ export function handleControls(windDir, windSpeed) {
         } else {
           ilca.heading = (windDir - 45 + 360) % 360; // Snap left out to Port Close Hauled
         }
-        console.log(`⛵ Trapped In Irons! Bear away forced a clean recovery snap to Close Hauled at ${ilca.heading}°.`);
+        //console.log(`⛵ Trapped In Irons! Bear away forced a clean recovery snap to Close Hauled at ${ilca.heading}°.`);
       } else {
         // ⛵ NORMAL OPERATION: Execute standard, smooth 3-degree adjustments when sailing freely
         if (isStarboardTackBefore) {
@@ -101,7 +101,7 @@ export function handleControls(windDir, windSpeed) {
       const oldSpeed = ilca.speed || 0;
       ilca.speed = oldSpeed * 0.65;
       
-      console.log(`⛵ TACK DETECTED! Heading changed through the wind axis. Speed penalized from ${oldSpeed.toFixed(1)}kn to ${ilca.speed.toFixed(1)}kn.`);
+      //console.log(`⛵ TACK DETECTED! Heading changed through the wind axis. Speed penalized from ${oldSpeed.toFixed(1)}kn to ${ilca.speed.toFixed(1)}kn.`);
     }
   }
 

@@ -26,7 +26,7 @@ function getBoomRangeMultiplier(currentAngle, minAngle, maxAngle) {
 
 export function applyControls(pointOfSail, windSpeed, controls) {
   // 🔬 DEBUG TRACER
-  console.log("PAYLOAD CHECK:", JSON.stringify(controls));
+  //console.log("PAYLOAD CHECK:", JSON.stringify(controls));
 
   // --- CAPSIZE CHECK ---
   if (controls.capsized) {
