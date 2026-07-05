@@ -59,7 +59,7 @@
   // --- Update functions (replace the originals) ---
 
 function updateBoomControl(boomAngle) {
-  showNotification('Boom Angle: ' + boomAngle + '°');
+  buttonClickNotification('Boom Angle: ' + boomAngle + '°');
   
   // Save the range as a string in your global state data
   window.globalSimulationData.ILCA.boomAngle = String(boomAngle);
@@ -78,7 +78,7 @@ function updateBoomControl(boomAngle) {
 
 
   function updateSailorPosition(position) {
-    showNotification('Sailor Position: ' + position);
+    buttonClickNotification('Sailor Position: ' + position);
     window.globalSimulationData.ILCA.sailorPosition = position;
 
     // Update only the label, not the whole container
@@ -92,7 +92,7 @@ function updateBoomControl(boomAngle) {
 
 function updateDaggerboardControl(daggerboard) {
     // daggerboard is already a string like "Down", "Center", or "Up"
-    showNotification('Daggerboard: ' + daggerboard);
+    buttonClickNotification('Daggerboard: ' + daggerboard);
     window.globalSimulationData.ILCA.daggerboard = daggerboard;
 
     // Update only the label
@@ -106,7 +106,7 @@ function updateDaggerboardControl(daggerboard) {
 
 function updateVangControl(vang) {
     // vang is already a string like "Ease", "Center", or "Max"
-    showNotification('Vang: ' + vang);
+    buttonClickNotification('Vang: ' + vang);
     window.globalSimulationData.ILCA.vang = vang;
 
     const lbl = document.getElementById('vangLabel');
@@ -118,7 +118,7 @@ function updateVangControl(vang) {
 
 function updateDownhaulControl(downhaul) {
     // downhaul is already a string like "Base", "Center", or "Max"
-    showNotification('Downhaul: ' + downhaul);
+    buttonClickNotification('Downhaul: ' + downhaul);
     window.globalSimulationData.ILCA.downhaul = downhaul;
 
     const lbl = document.getElementById('downhaulLabel');
@@ -130,7 +130,7 @@ function updateDownhaulControl(downhaul) {
 
 function updateOuthaulControl(outhaul) {
     // outhaul is already a string like "Flat", "Base", or "Full"
-    showNotification('Outhaul: ' + outhaul);
+    buttonClickNotification('Outhaul: ' + outhaul);
     window.globalSimulationData.ILCA.outhaul = outhaul;
 
     const lbl = document.getElementById('outhaulLabel');

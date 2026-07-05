@@ -69,7 +69,9 @@
         </div>
       </div>
 
-      <div id="notification-container"></div>
+      <!-- Replace your old <div id="notification-container"> with these two: -->
+      <div id="notification-container-top" class="notification-container-top"></div>
+      <div id="notification-container-bottom" class="notification-container-bottom"></div>
       <div id="nearBuoy"
         style="display:none;position:absolute;bottom:0%;left:30%;
                 transform:translateX(-50%);background:rgba(0,0,0,0.8);
@@ -173,7 +175,7 @@
           }
 
           // Show the feedback notification
-          showNotification("You are in Irons! Do something to start moving.");
+          eventNotification("You are in Irons! Do something to start moving.");
        });
     }
   </script>

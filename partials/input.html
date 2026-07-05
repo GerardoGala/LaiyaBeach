@@ -3,14 +3,14 @@
 <div id="ilcaControl" class="input-section directional-controls active">
   <!-- Row 1: Directional Controls (Two Columns) -->
   <div class="control-row row-directions">
-    <button class="control-button button-port" onclick="showNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
-    <button class="control-button button-starboard" onclick="showNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
+    <button class="control-button button-port" onclick="buttonClickNotification('Turn Port!'); window.globalSimulationData.ILCA.maneuver = 'turn-port'">TURN PORT</button>
+    <button class="control-button button-starboard" onclick="buttonClickNotification('Turn Starboard!'); window.globalSimulationData.ILCA.maneuver = 'turn-starboard'">TURN STARBOARD</button>
   </div>
   
   <!-- Row 2: Strategic Wind-Relative Adjustments (Two Columns) -->
   <div class="control-row row-adjustments">
-    <button class="control-button button-headup" onclick="showNotification('Heading Up'); window.globalSimulationData.ILCA.maneuver = 'head-up'">HEAD UP</button>
-    <button class="control-button button-bearaway" onclick="showNotification('Bearing Away'); window.globalSimulationData.ILCA.maneuver = 'bear-away'">BEAR AWAY</button>
+    <button class="control-button button-headup" onclick="buttonClickNotification('Heading Up'); window.globalSimulationData.ILCA.maneuver = 'head-up'">HEAD UP</button>
+    <button class="control-button button-bearaway" onclick="buttonClickNotification('Bearing Away'); window.globalSimulationData.ILCA.maneuver = 'bear-away'">BEAR AWAY</button>
   </div>
 </div>
 
@@ -114,9 +114,9 @@
 #input-pane {
   display: flex;
   flex-direction: column;
-  height: 100%;        /* Updated to automatically fill parent vertical limits safely */
-  background: #000;    
-  padding: 6px;        
+  height: 300px;       /* Forces the pane to match the dashboard's 300px height */
+  background: #000;    /* Dark background to match the black divider theme */
+  padding: 6px;        /* Matches the outer border spacing */
   box-sizing: border-box;
 }
 
