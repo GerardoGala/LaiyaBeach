@@ -62,7 +62,7 @@ export function calculateHeelAndCapsize(pointOfSail, windSpeed, controls) {
   let hikingEffort = 1.0; 
   if (controls.sailorPosition === "Hike Out" || controls.sailorPosition === "Hike Hard") {
     hikingEffort = 0.35; 
-  } else if (controls.sailorPosition === "Neutral" || controls.sailorPosition === "Mid Center") {
+  } else if (controls.sailorPosition === "Mid Center" || controls.sailorPosition === "Mid Center") {
     hikingEffort = 1.15; // Added your "Mid Center" log name variant here for stability!
   } else if (controls.sailorPosition === "Aft") {
     hikingEffort = 1.45; 
