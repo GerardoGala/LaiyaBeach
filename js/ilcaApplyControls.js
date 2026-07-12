@@ -57,10 +57,10 @@ export function applyControls(pointOfSail, windSpeed, controls) {
 
   // --- FIXED: ROUNDED DECIMAL & SAFE FALLBACK TARGETS ---
   const roundedWindSpeed = Math.round(windSpeed || 0);
-  const windTier = getWindTier(roundedWindSpeed) || "Medium";
+  const windTier = getWindTier(roundedWindSpeed) || "Moderate"; // ◄ Updated fallback to Moderate
   
   const safeHeading = SCENARIO_TARGETS[lookupHeading] ? lookupHeading : "Close Hauled";
-  const targets = SCENARIO_TARGETS[safeHeading][windTier] || SCENARIO_TARGETS[safeHeading]["Medium"];
+  const targets = SCENARIO_TARGETS[safeHeading][windTier] || SCENARIO_TARGETS[safeHeading]["Moderate"]; // ◄ Updated fallback to Moderate
 
   let modifier = 1.0;
 
@@ -90,7 +90,7 @@ export function applyControls(pointOfSail, windSpeed, controls) {
   // --- 3. SAILOR POSITION MATCHING ---
   if (controls.sailorPosition === targets.sailor) {
     modifier *= 1.08; 
-  } else if (controls.sailorPosition === "Neutral") {
+  } else if (controls.sailorPosition === "Mid Center") {
     modifier *= 0.98;
   } else {
     modifier *= 0.88;

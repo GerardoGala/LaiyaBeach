@@ -1,12 +1,12 @@
 // ilcaTargets.js
 
 /**
- * Maps the 3 strategic wind tiers defined in proTip.html
+ * Maps the 4 strategic wind tiers defined in proTip.html
  */
 export function getWindTier(windSpeed) {
-  if (windSpeed < 8.0) return "Light";
-  if (windSpeed >= 8.0 && windSpeed < 15.0) return "Medium";
-  return "Heavy"; // 15+ knots
+  if (windSpeed < 6.0) return "Light";               // 3 to 5 knots (and fallback below 3)
+  if (windSpeed >= 6.0 && windSpeed < 15.0) return "Moderate"; // 6 to 14 knots
+  return "Heavy";                                    // 15+ knots
 }
 
 // Keep this ONLY if your physics/3D models need numbers to work!
@@ -19,20 +19,20 @@ export const SIMULATION_VALUES = {
 
 /**
  * Strict database mirroring the proTip.html specification matrix.
- * Using our clean, standardized mapping variables throughout!
+ * Updated to support Light (3-5 kn) and Moderate (6-14 kn) split!
  */
 export const SCENARIO_TARGETS = {
   "Close Hauled": {
     "Light": {
-      minBoom: 3, maxBoom: 8,
+      minBoom: 0, maxBoom: 8,
       sailor: "Forward", 
-      daggerboard: "Down", // Clean text string
+      daggerboard: "Down", 
       vang: "Ease",        
       downhaul: "Base", 
-      outhaul: "Base" // Clean text string
+      outhaul: "Base" 
     },
-    "Medium": {
-      minBoom: 0, maxBoom: 3,
+    "Moderate": {
+      minBoom: 0, maxBoom: 8,
       sailor: "Hike Hard", 
       daggerboard: "Down", 
       vang: "Center",         
@@ -45,19 +45,19 @@ export const SCENARIO_TARGETS = {
       daggerboard: "Down", 
       vang: "Max",          
       downhaul: "Max Luff",    
-      outhaul: "Flat" // Clean text string
+      outhaul: "Flat" 
     }
   },
   "Reaching": {
     "Light": {
       minBoom: 35, maxBoom: 65,
       sailor: "Forward",   
-      daggerboard: "Center", // Clean text string
+      daggerboard: "Center", 
       vang: "Ease",          
       downhaul: "Off",    
-      outhaul: "Full" // Clean text string
+      outhaul: "Full" 
     },
-    "Medium": {
+    "Moderate": {
       minBoom: 35, maxBoom: 65,
       sailor: "Hike Hard", 
       daggerboard: "Center", 
@@ -68,7 +68,7 @@ export const SCENARIO_TARGETS = {
     "Heavy": {
       minBoom: 40, maxBoom: 70,
       sailor: "Aft",       
-      daggerboard: "Up", // Clean text string
+      daggerboard: "Center", 
       vang: "Max",          
       downhaul: "Base",    
       outhaul: "Flat" 
@@ -83,22 +83,21 @@ export const SCENARIO_TARGETS = {
       downhaul: "Off",    
       outhaul: "Full" 
     },
-    "Medium": {
-      minBoom: 90, maxBoom: 100,
-      sailor: "Neutral",   
+    "Moderate": {
+      minBoom: 90, maxBoom: 90, // Strict 90° as requested in your updated HTML page
+      sailor: "Mid Center",   
       daggerboard: "Up", 
       vang: "Center",          
       downhaul: "Off",    
       outhaul: "Full" 
     },
     "Heavy": {
-      minBoom: 90, maxBoom: 110,
+      minBoom: 90, maxBoom: 90,
       sailor: "Aft",       
       daggerboard: "Center", 
       vang: "Center",          
-      downhaul: "Base",   
-      outhaul: "Flat" 
+      downhaul: "Center",   
+      outhaul: "Full" 
     }
   }
 };
-
